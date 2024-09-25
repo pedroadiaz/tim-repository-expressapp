@@ -8,7 +8,7 @@ const fetch = require('node-fetch');
 const uuidv4 = require('uuid').v4;
 
 const admin = "[user]";
-const tableName = "table_simplereports";
+const tableName = "gmrgfeoc_simplereports";
 const connectionPool = mysql.createPool({
     host: process.env.DATABASE_ENDPOINT,
     user: process.env.DATABASE_USER,
