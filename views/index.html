@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SimpleReports Home</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700'>
+  <link rel="stylesheet" href="./css/desktopstyle.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./css/ffolders.min.css" />
+
+  <style>
+    .spacingFolder {
+      margin-right: 30px;
+      margin-bottom: 30px;
+    }
+
+    .spacingFolder:last-child {
+      margin-right: 0;
+    }
+
+    #reportContents {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 33%;
+      position: relative;
+      border-radius: 10px;
+    }
+
+    .close {
+      color: #aaaaaa;
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+      top: 0;
+      right: 10px;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modalButton {
+      background: linear-gradient(45deg, #0074f5 0, #03aaff 100%);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .modalButton:hover {
+      background: linear-gradient(45deg, #03aaff 0, #0074f5 100%);
+    }
+
+    .danger {
+      background: linear-gradient(45deg, #f02e2e 0, #d50101 100%);
+    }
+
+    .danger:hover {
+      background: linear-gradient(45deg, #d50101 0, #f02e2e 100%);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="deletionModal" class="modal">
+    <div id="innerModal" class="modal-content">
+      <div class="close">&times;</div>
+      <p id="modalMessage">Delete: </p>
+      <div style="display: flex; margin-top: 20px; justify-content: space-between;">
+        <button class="modalButton danger" id="modalYes">Yes</button>
+        <button class="modalButton" id="modalNo">No</button>
+      </div>
+    </div>
+  </div>
+  <img src="./full_logo.png" alt="SimpleReports Logo" width="150px" class="logo"
+    style="position: absolute; top: 0; left: 0" />
+  <div id="chartpanel" class="row" data-equalizer>
+    <div class="column small-12 left_panel">
+      <header data-equalizer-watch>
+        <i class="fa fa-bars menu_top_icon" aria-hidden="true"></i>
+
+        <div class="right_nav">
+          <div class="welcome-profile-text"><span class="user-name">
+              <span id="welcome-name-display"></span>
+            </span></div>
+          <a href="/settings"> <i class="fa fa-cog dashboard-icons dashboard-icons-next-to-another"
+              aria-hidden="true"></i></a>
+          <i id="user_button" class="fa fa-user-circle dashboard-icons" aria-hidden="true"></i>
+
+        </div>
+        <div class="title">
+          <h2 style="text-align: center;">REPORTS</h2>
+        </div>
+      </header>
+
+
+      <div id="chart_table">
+        <form id="chart_datas">
+        </form>
+
+        <div id="reportContents">
+          <!--
+          <div class="ffolder small cyan spacingFolder">
+            <span>Jane D.</span>
+          </div>
+          <div class="ffolder small yellow spacingFolder">
+            <span>John S.</span>
+          </div>
+          <div class="ffolder small pink spacingFolder">
+            <span>Michael S.</span>
+          </div>
+          <div class="ffolder small green spacingFolder">
+            <span>Jack S.</span>
+          </div>
+          -->
+        </div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+  <!--<div class="column small-12 medium-4 right_panel">
+    <header data-equalizer-watch>
+<chartsubtitle> </chartsubtitle>
+    </header>
+  </div> -->
+  </div>
+  <script>
+    let isAdminPass = "<%=user.admin%>";
+    let isAdmin = (isAdminPass === "true") ? true : false;
+
+    function HasFreeAccount() {
+      console.log("HasFreeAccount");
+      const reportContents = document.getElementById('reportContents');
+
+      const title = document.createElement('h3');
+      title.innerHTML = "Temporary Message: Your account is limited.";
+      reportContents.appendChild(title);
+
+      const div = document.createElement('div');
+      div.style.paddingBottom = "25px";
+      const a = document.createElement('a');
+      a.href = "/upgrade";
+      a.innerHTML = "Upgrade";
+      a.style.color = "blue";
+      div.appendChild(a);
+      reportContents.appendChild(div);
+
+    }
+
+    function deleteReport(event, element) {
+      event.stopPropagation();
+      console.log("deleteReport");
+      
+
+      var modal = document.getElementById("deletionModal");
+      var innerModal = document.getElementById("innerModal");
+      var span = document.getElementsByClassName("close")[0];
+      var modalMessage = document.getElementById("modalMessage");
+
+      modal.style.display = "block";
+      modal.onclick = function () {
+        modal.style.display = "none";
+      }
+      innerModal.onclick = function (event) {
+        event.stopPropagation();
+      }
+      span.onclick = function () {
+        modal.style.display = "none";
+      }
+      modalMessage.innerHTML = "Really delete report: " + element.parentElement.getAttribute("data-cached-title") + "?";
+
+      var modalYes = document.getElementById("modalYes");
+      var modalNo = document.getElementById("modalNo");
+      modalYes.onclick = function () {
+        const reportUuid = element.parentElement.id;
+        console.log(reportUuid);
+
+        fetch('/app/deleteReportByUuid', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            uuid: reportUuid
+          })
+        })
+          .then(response => response.json())
+          .then(result => {
+            console.log(result);
+            if (result["status"] !== "success") {
+              alert("Failed to delete report - probably a connection issue.");
+              return;
+            }
+            element.parentElement.remove();
+            modal.style.display = "none";
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }
+      modalNo.onclick = function () {
+        modal.style.display = "none";
+      }
+    }
+
+    function InitialLoad() {
+
+      const userWelcomeNameDisplay = document.getElementById('welcome-name-display');
+      fetch('/app/getUser')
+        .then(response => response.json())
+        .then(result => {
+          userWelcomeNameDisplay.innerHTML = result["email"];
+          let accountType = result["accountType"];
+          if (accountType === 0) {
+            console.log("Free account");
+            HasFreeAccount();
+            throw new Error("Free account");
+          } else if (accountType === 1) {
+
+          } else if (accountType === 2) {
+
+          }
+        }).catch(error => {console.error('Error:', error); throw error;}).then(() => {
+
+          const reportContents = document.getElementById('reportContents');
+          fetch('/app/getReportEntriesByUser')
+            .then(response => response.json())
+            .then(result => {
+              const data = result.data;
+              let defaultColor = 'cyan';
+              data.forEach(report => {
+
+                let folderColor = defaultColor;
+                const ffolder = document.createElement('div');
+                ffolder.onclick = () => {
+                  window.open(`/report/${report.uuid}`, '_blank');
+                };
+                ffolder.id = report.uuid;
+                ffolder.setAttribute('data-cached-title', report.cachedTitle);
+                ffolder.classList.add('ffolder', 'small', folderColor, 'spacingFolder');
+                ffolder.innerHTML = `<span>${report.cachedTitle}</span>
+          <div class="deleteIcon" onclick="deleteReport(event, this)"><i class="fa fa-times"></i></div>`;
+                ffolder.style.background = `linear-gradient(0deg, rgba(35, 203, 244, 1) 100%, rgba(0, 0, 0, 0) 100%)`;
+                reportContents.appendChild(ffolder);
+              });
+            }).then(() => {
+
+              const newReportButton = document.createElement('div');
+              newReportButton.id = 'addReportBtn';
+              newReportButton.classList.add('ffolder', 'small', 'white', 'spacingFolder');
+              newReportButton.innerHTML = `<i class="fa fa-plus"></i>`;
+              reportContents.appendChild(newReportButton);
+              newReportButton.addEventListener('click', () => {
+                fetch('/app/addReportEntry', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    title: '',
+                    description: 'New Report Description',
+                    dueDate: '2024-06-21',
+                    cachedTitle: 'Untitled'
+                  })
+                })
+                  .then(response => response.json())
+                  .then(result => {
+                    console.log(result);
+                    console.log(result["uuid"]);
+                    const ffolder = document.createElement('div');
+                    ffolder.onclick = () => {
+                      window.open(`/report/${result["uuid"]}`, '_blank');
+                    };
+                    ffolder.id = result["uuid"];
+                    ffolder.setAttribute('data-cached-title', "Untitled");
+                    ffolder.classList.add('ffolder', 'small', 'cyan', 'spacingFolder');
+                    ffolder.innerHTML = `<span>${"Untitled"}</span>
+              <div class="deleteIcon" onclick="deleteReport(event, this)"><i class="fa fa-times"></i></div>`;
+                    ffolder.style.background = `linear-gradient(0deg, rgba(35, 203, 244, 1) 100%, rgba(0, 0, 0, 0) 100%)`;
+                    reportContents.appendChild(ffolder);
+
+                    window.open(`/report/${result["uuid"]}`, '_blank');
+                  })
+                  .catch(error => console.error('Error fetching data:', error));
+              });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        });
+    };
+    InitialLoad();
+
+    if (isAdmin) {
+      
+      
+      const userButton = document.getElementById('user_button');
+      userButton.style.cursor = 'pointer';
+      userButton.onclick = () => {
+        window.location.href = '/admin';
+      };
+
+    }
+  </script>
+</body>
+
+</html>

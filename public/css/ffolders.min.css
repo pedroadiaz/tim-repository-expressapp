@@ -1,0 +1,268 @@
+.ffolder {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* on rollover, add a shadow and icon top right */
+.ffolder:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3)
+}
+
+.ffolder .deleteIcon {
+    display: none
+}
+
+.ffolder:hover .deleteIcon {
+    display: block;
+    position: absolute;
+    top: -2.5px;
+    right: -2.5px;
+    color: #fff;
+    border-radius: 0 0 0 5px
+}
+
+.ffolder .deleteIcon i {
+    font-size: 1.5rem !important;
+    cursor: pointer;
+}
+
+.ffolder .deleteIcon i:hover {
+    color: #f00;
+}
+
+.ffolder:after, .ffolder:before {
+    content: '';
+    display: block;
+    position: absolute
+}
+
+.ffolder.small {
+    margin-top: 8px;
+    width: 88px;
+    height: 61px;
+    border-radius: 0 6px 6px
+}
+
+.ffolder.medium {
+    margin-top: 16px;
+    width: 176px;
+    height: 122px;
+    border-radius: 0 10px 10px
+}
+
+.ffolder.big {
+    margin-top: 24px;
+    width: 264px;
+    height: 183px;
+    border-radius: 0 14px 14px
+}
+
+.ffolder:after {
+    width: 0;
+    height: 0
+}
+
+.ffolder.small:before {
+    top: -8px;
+    left: 0;
+    width: 32px;
+    height: 8px;
+    border-radius: 6px 0 0
+}
+
+.ffolder.small:after {
+    top: -15px;
+    left: 24px;
+    border: 8px solid transparent
+}
+
+.ffolder.medium:before {
+    top: -16px;
+    left: 0;
+    width: 64px;
+    height: 16px;
+    border-radius: 10px 0 0
+}
+
+.ffolder.medium:after {
+    top: -32px;
+    left: 48px;
+    border: 16px solid transparent
+}
+
+.ffolder.big:before {
+    top: -24px;
+    left: 0;
+    width: 96px;
+    height: 24px;
+    border-radius: 14px 0 0
+}
+
+.ffolder.big:after {
+    top: -48px;
+    left: 72px;
+    border: 24px solid transparent
+}
+
+.ffolder i, .ffolder span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}
+
+.ffolder span {
+    font-size: 17px;
+    padding: 2px 8px;
+    border-radius: 15px;
+    white-space: nowrap
+}
+
+.ffolder.small i {
+    font-size: 37px
+}
+
+.ffolder.big i, .ffolder.medium i {
+    font-size: 53px
+}
+
+.ffolder.cyan {
+    background-color: #23CBF4;
+    background: linear-gradient(0deg, rgba(35, 203, 244, 1) 37%, rgba(0, 0, 0, 0) 37%);
+    border: 2.4px solid #23CBF4;
+    border-radius: 5px;
+}
+
+.ffolder.cyan span, .ffolder.cyan:before {
+    background-color: #06BAEE
+}
+
+.ffolder.cyan:after {
+    border-bottom-color: #06BAEE
+}
+
+.ffolder.cyan span {
+    color: #000000;
+    background-color: transparent;
+}
+
+.ffolder.cyan i {
+    color: #06BAEE
+}
+
+.ffolder.yellow {
+    /*background-color: #FFBD00*/
+    background: linear-gradient(0deg, rgba(255, 189, 0, 1) 37%, rgba(0, 0, 0, 0) 37%);
+    border: 2.4px solid #FFBD00;
+    border-radius: 5px;
+}
+
+.ffolder.yellow span, .ffolder.yellow:before {
+    background-color: #F1A402
+}
+
+.ffolder.yellow:after {
+    border-bottom-color: #F1A402
+}
+
+.ffolder.yellow span {
+    color: #000000;
+    background-color: transparent;
+}
+
+.ffolder.yellow i {
+    color: #F1A402;
+}
+
+.ffolder.pink {
+    background-color: #FF7F92;
+    background: linear-gradient(0deg, rgba(255, 127, 146, 1) 37%, rgba(0, 0, 0, 0) 37%);
+    border: 2.4px solid #FF7F92;
+    border-radius: 5px;
+}
+
+.ffolder.pink span, .ffolder.pink:before {
+    background-color: #FF5E6E
+}
+
+.ffolder.pink:after {
+    border-bottom-color: #FF5E6E
+}
+
+.ffolder.pink span {
+    color: #383838;
+    background-color: transparent;
+}
+
+.ffolder.pink i {
+    color: #FF5E6E
+}
+
+.ffolder.green {
+    background-color: #62DE82;
+    background: linear-gradient(0deg, rgba(102, 202, 127, 1) 80%, rgba(0, 0, 0, 0) 80%);
+    border: 2.4px solid #66CA7F;
+    border-radius: 5px;
+}
+
+.ffolder.green span, .ffolder.green:before {
+    background-color: #66CA7F
+}
+
+.ffolder.green:after {
+    border-bottom-color: #66CA7F
+}
+
+.ffolder.green span {
+    background-color: #5fd28c;
+    background-color: transparent;
+}
+
+.ffolder.green i {
+    color: #54C170
+}
+
+.ffolder.white {
+    background-color: #dfdfdf;
+}
+
+.ffolder.white span, .ffolder.white:before {
+    background-color: #c7c7c7;
+}
+
+.ffolder.white:after {
+    border-bottom-color: #c7c7c7;
+}
+
+.ffolder.white span {
+    background-color: transparent
+}
+
+.ffolder.white i {
+    color: #687F8C
+}
+
+/* only border and transparent bg */
+.ffolder.whiteAlt {
+    background-color: transparent;
+    border: 2.4px solid #dfdfdf;
+    border-radius: 5px;
+}
+
+.ffolder.whiteAlt span, .ffolder.whiteAlt:before {
+    background-color: #dfdfdf;
+}
+
+.ffolder.whiteAlt:after {
+    border-bottom-color: #e2e2e2;
+}
+
+.ffolder.whiteAlt span {
+    background-color: transparent
+}
+
+.ffolder.whiteAlt i {
+    color: #cfcfcf
+}

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SimpleReports Upgrade</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700">
+  <link rel="stylesheet" href="./css/desktopstyle.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    @property --blink-opacity {
+      syntax: "<number>";
+      inherits: false;
+      initial-value: 1;
+    }
+
+    @keyframes blink-animation {
+
+      0%,
+      100% {
+        opacity: var(--blink-opacity, 1);
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    :root {
+      font-family: Inter, sans-serif;
+
+      --stripe-color: #fff;
+      --bg: var(--stripe-color);
+      --maincolor: var(--bg);
+    }
+
+    body {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      place-content: center;
+      place-items: flex-start center;
+      background: var(--bg);
+      margin: 0;
+    }
+
+
+    @keyframes smoothBg {
+      from {
+        background-position: 50% 50%, 50% 50%;
+      }
+
+      to {
+        background-position: 350% 50%, 350% 50%;
+      }
+    }
+
+    .wrapper {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+
+    .hero {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      place-content: center;
+      place-items: center;
+      --stripes: repeating-linear-gradient(100deg,
+          var(--stripe-color) 0%,
+          var(--stripe-color) 7%,
+          transparent 10%,
+          transparent 12%,
+          var(--stripe-color) 16%);
+
+      
+      --rainbow: repeating-linear-gradient(100deg,
+          #60a5fa 10%,
+          #e879f9 15%,
+          #60a5fa 20%,
+          #5eead4 25%,
+          #60a5fa 30%,
+          #60a5fa 40%,
+          #e879f9 45%,
+          #60a5fa 50%,
+          #ce5eea 55%,
+          #60a5fa 60%,
+          #60a5fa 70%,
+          #aa79f9 75%,
+          #8597d3 80%);
+      background-image: var(--stripes), var(--rainbow);
+      background-size: 300%, 200%;
+      background-position: 50% 50%, 50% 50%;
+
+      
+      
+      filter: blur(50px) invert(100%);
+
+      mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%);
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: var(--stripes), var(--rainbow);
+        background-size: 200%, 100%;
+        animation: smoothBg 180s linear infinite;
+        background-attachment: fixed;
+        mix-blend-mode: difference;
+      }
+    }
+
+    .content {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      place-content: center;
+      place-items: center;
+      flex-flow: column;
+      gap: 4.5%;
+      text-align: center;
+      mix-blend-mode: difference;
+      -webbkit-mix-blend-mode: difference;
+      filter: invert(1);
+    }
+
+    .h1--scalingSize {
+      font-size: calc(1rem - -5vw);
+      position: relative;
+    }
+
+    
+    .h1--scalingSize::before {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      background: white;
+      text-shadow: 0 0 1px #ffffff;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-color: white;
+      -webkit-mask: linear-gradient(#000 0 0) luminance;
+      mask: linear-gradient(#000 0 0) luminance, alpha;
+      backdrop-filter: blur(999px) brightness(12.5);
+      -webkit-text-stroke: 1px white;
+      display: flex;
+      margin: auto;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    
+    @keyframes upgrade-btn-glow {
+      0% {
+        background-position: 0 100%;
+      }
+
+      100% {
+        background-position: 0 300%;
+      }
+    }
+
+    .upgrade-btn {
+      position: relative;
+      display: inline-block;
+      border-radius: 999em;
+      color: white;
+      letter-spacing: 0.075em;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: 500;
+      font-style: bold;
+      padding: 1px 1px;
+      cursor: pointer;
+    }
+
+    .upgrade-btn__inner {
+      padding: 1px;
+      position: relative;
+      z-index: 2;
+      display: block;
+      overflow: hidden;
+      border-radius: inherit;
+    }
+
+    .upgrade-btn__inner:before {
+      position: absolute;
+      inset: 4px;
+      z-index: 1;
+      display: block;
+      animation: upgrade-btn-glow 5s infinite linear;
+      background: linear-gradient(20deg, #e300f8, #ffbd1e20 16.5%, #fe84e0 33%, #fe848f20 49.5%, #0095f8 66%, #9500f860 85.5%, #ff531e 100%) 0 100%/100% 200%;
+      border-radius: inherit;
+      filter: blur(5px);
+      mix-blend-mode: overlay;
+      opacity: 0;
+      transition: opacity 0.2s linear 0.1s;
+      content: "";
+    }
+
+    .upgrade-btn__label {
+      position: relative;
+      display: block;
+      overflow: hidden;
+      padding: 0.95em 10em 0.95em 0.5em;
+      border-radius: inherit;
+      color: transparent;
+      white-space: nowrap;
+    }
+
+    .upgrade-btn__label:before,
+    .upgrade-btn__label:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      display: block;
+      padding: inherit;
+      width: 100%;
+      height: 100%;
+      color: white;
+      white-space: nowrap;
+      transition: transform 0.3s cubic-bezier(1, 0, 0, 1) 0s;
+    }
+
+    .upgrade-btn__label:before {
+      transform: translate3d(0, 0, 0);
+      content: attr(data-label);
+    }
+
+    .upgrade-btn__label:after {
+      transform: translate3d(0, -100%, 0);
+      content: attr(data-hover);
+    }
+
+    .upgrade-btn__label__background {
+      position: absolute;
+      inset: -100px;
+      display: block;
+      
+      background: #2f0141;
+    }
+
+    .upgrade-btn__background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .upgrade-btn__background:before,
+    .upgrade-btn__background:after {
+      position: absolute;
+      inset: 0;
+      display: block;
+      border-radius: inherit;
+      content: "";
+    }
+
+    .upgrade-btn__background:before {
+      background: white;
+      transition: background 0.3s linear 0s;
+    }
+
+    
+    .upgrade-btn__background:after {
+      animation: upgrade-btn-glow 5s infinite linear;
+      background: linear-gradient(-20deg, #db00f8, #00f8f120 16.5%, #cf00f8 33%, #00f8f110 49.5%, #8000f8 66%, #00f8f100 85.5%, #6c00f8 100%) 0 100%/100% 200%;
+      filter: blur(5px);
+      opacity: 0;
+      transition: opacity 0s linear 0s;
+    }
+
+    .upgrade-btn:hover .upgrade-btn__background:before {
+      background: #4cede1;
+      transition: background 0.07s linear;
+    }
+
+    .upgrade-btn:hover .upgrade-btn__background:after {
+      opacity: 1;
+      transition: opacity 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) 0s;
+    }
+
+    .upgrade-btn:hover .upgrade-btn__inner:before {
+      opacity: 0.5;
+    }
+
+    .upgrade-btn:hover .upgrade-btn__label:before,
+    .upgrade-btn:hover .upgrade-btn__label:after {
+      transition-duration: 0.6s;
+      transition-timing-function: cubic-bezier(1, -0.6, 0, 1.6);
+    }
+
+    .upgrade-btn:hover .upgrade-btn__label:before {
+      transform: translate3d(0, 100%, 0);
+    }
+
+    .upgrade-btn:hover .upgrade-btn__label:after {
+      transform: translate3d(0, 0, 0);
+    }
+
+    
+    @keyframes noise-background {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      20% {
+        transform: translate3d(50px, 30px, 0);
+      }
+
+      40% {
+        transform: translate3d(10px, 50px, 0);
+      }
+
+      60% {
+        transform: translate3d(30px, 20px, 0);
+      }
+
+      80% {
+        transform: translate3d(50px, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(100px, 0, 0);
+      }
+    }
+
+    
+    
+    .logoContainer {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!--
+  <img src="./full_logo.png" alt="SimpleReports Logo" width="150px" class="logo"
+    style="position: absolute; top: 0; left: 0" />
+  <div id="chartpanel" class="row" data-equalizer>
+    <div class="column small-12 left_panel">
+      <header data-equalizer-watch>
+        <i class="fa fa-bars menu_top_icon" aria-hidden="true"></i>
+        <div class="right_nav">
+          <div class="welcome-profile-text"><span class="user-name">
+              <span id="welcome-name-display"></span>
+            </span></div>
+          <a href="/settings"> <i class="fa fa-cog dashboard-icons dashboard-icons-next-to-another"
+              aria-hidden="true"></i></a>
+          <i class="fa fa-user-circle dashboard-icons" aria-hidden="true"></i>
+
+        </div>
+        <div class="title">
+          <h2 style="text-align: center;">UPGRADE ACCOUNT</h2>
+        </div>
+      </header>
+
+
+      <div id="chart_table">
+        <form id="chart_datas">
+        </form>
+
+        <div id="details">
+
+        </div>
+      </div>
+      <div class="spacer"></div>
+
+    </div>
+  </div>
+  </div>
+-->
+  <section class='wrapper'>
+    <div class='hero'>
+    </div>
+    <div class='content'>
+      <div class="container">
+        <h1 style="margin-bottom: 1rem;" class='h1--scalingSize' data-text='An awesome title'>Hello<br /><span
+            id="welcome-name-display"></span>
+        </h1>
+
+        <div id="details">
+
+        </div>
+        <div class="logoContainer">
+          <img src="./full_logo.png" alt="SimpleReports Logo" width="150px" class="logo" />
+          <span>Get access to SimpleReports full features by upgrading your account.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function HasFreeAccount() {
+      console.log("HasFreeAccount");
+      const reportContents = document.getElementById('details');
+
+      const title = document.createElement('h3');
+      title.innerHTML = "Your account is limited. Click below to upgrade using PayPal.";
+      reportContents.appendChild(title);
+
+      const div = document.createElement('div');
+      div.style.paddingTop = "25px";
+
+      div.innerHTML = `<a onclick="handleUpgradeClick(event)" class="upgrade-btn"><span class="upgrade-btn__inner"><span class="upgrade-btn__label" data-label="Upgrade" data-hover="Upgrade Now">Upgrade<span class="upgrade-btn__label__background"></span></span></span>
+  <span class="upgrade-btn__background"></span>
+</a>`;
+      
+      reportContents.appendChild(div);
+    }
+
+    var goingToPaypal = false;
+    function handleUpgradeClick(event) {
+      if (goingToPaypal)
+        return;
+
+      event.target.disabled = true;
+
+      event.target.innerHTML = "Loading...";
+      window.location.href = "/paypal";
+      goingToPaypal = true;
+    }
+
+
+    function HasPaidAccount() {
+      console.log("HasPaidAccount");
+      const reportContents = document.getElementById('details');
+
+      const message = document.createElement('h3');
+      message.innerHTML = "Your account is already paid.";
+      reportContents.appendChild(message);
+      const a = document.createElement('a');
+      a.href = "/main";
+      a.innerHTML = "Home";
+      reportContents.appendChild(a);
+    }
+
+    function InitialLoad() {
+
+      const userWelcomeNameDisplay = document.getElementById('welcome-name-display');
+      fetch('/app/getUser')
+        .then(response => response.json())
+        .then(result => {
+          userWelcomeNameDisplay.innerHTML = result["email"];
+          let accountType = result["accountType"];
+
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const success = urlParams.get('success');
+          const cancel = urlParams.get('cancel');
+
+          if (success === "true") {
+            const reportContents = document.getElementById('details');
+            var h1 = document.createElement('h1');
+            h1.innerHTML = "Checking your subscription payment status...";
+            reportContents.appendChild(h1);
+
+
+            fetch('/paypalcheck')
+              .then(response => response.json())
+              .then(result => {
+                console.log(result);
+                if (result["status"] === "success") {
+                  h1.innerHTML = "Success: Your account has been upgraded.";
+
+                  const a = document.createElement('a');
+                  a.href = "/main";
+                  a.innerHTML = "Go to main";
+                  reportContents.appendChild(a);
+                } else if (result["status"] === "already_upgraded") {
+                  h1.innerHTML = "Your account is already upgraded.";
+                  const a = document.createElement('a');
+                  a.href = "/main";
+                  a.innerHTML = "Go to main";
+                  reportContents.appendChild(a);
+                } else {
+                  h1.innerHTML = "Error: Your account could not be upgraded.";
+                }
+              }).catch(error => {console.error('Error:', error); throw error;});
+
+            return;
+          }
+
+          if (cancel === "true") {
+            const reportContents = document.getElementById('details');
+            const h1 = document.createElement('h1');
+            h1.innerHTML = "Temporary Message: Your account upgrade has been cancelled.";
+            reportContents.appendChild(h1);
+            return;
+          }
+
+          if (accountType === 0) {
+            console.log("Free account");
+            HasFreeAccount();
+          } else {
+            console.log("Paid account");
+            HasPaidAccount();
+          }
+        }).catch(error => {console.error('Error:', error); throw error;});
+    };
+    InitialLoad();
+  </script>
+</body>
+
+</html>

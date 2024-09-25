@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, 
+                   initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div id="notesModal" class="modal">
+        <div id="innerModal" class="modal-content">
+            <div class="close">&times;</div>
+            <p id="modalMessage">Notes: </p>
+            <form id="notesForm" action="/admin/savenotes" method="POST">
+                <input type="hidden" name="userIdInput" id="userIdInput" value="">
+                <textarea id="notesInput" style="width:100%" name="notesInput" rows="4" cols="50"></textarea>
+                <button class="btn" style="float: right; padding: 5px;" onclick="saveNotes(event)">Save</button>
+            </form>
+            <p id="statusText">Notes are private.</p>
+        </div>
+    </div>
+
+    <header>
+
+        <div class="logosec">
+            <img src="./simplelogo.png" alt="logo" width="25px">
+
+            <div class="logo">simplereports</div>
+        </div>
+        <!--
+        <div class="searchbar">
+            <input type="text" placeholder="Search">
+            <div class="searchbtn">
+                <img src="
+                    class="icn srchicn" alt="search-icon">
+            </div>
+        </div>
+-->
+        <div class="message">
+
+            <div class="dp clickable" id="admin_profile_menu">
+                <i class="fas fa-user-circle"></i>
+                <div class="dropdown" id="admin_profile_dropdown">
+
+                    <a href="/main">Back to main</a>
+                    |
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <div class="main">
+
+        <div class="report-container">
+            <div class="report-header">
+                <h1 class="title">Users List</h1>
+                <!--
+                    <button class="view">View All</button>
+                    -->
+            </div>
+
+            <div class="report-body">
+
+
+                <table class="fold-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th><span class="visible-small" title="Next Renewal">Next</span><span
+                                    class="visible-big">Next Renewal</span></th>
+                            <th><span class="visible-small" title="Premiumns">Referred</span><span
+                                    class="visible-big">Referred By</span></th>
+                            <th><span class="visible-small" title="Strategy A">Referral</span><span
+                                    class="visible-big">Account Referral Code</span></th>
+                            <th><span class="visible-small" title="Strategy B">Sub. ID</span><span
+                                    class="visible-big">Subscription ID</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="view">
+                            <td>Company Name</td>
+                            <td class="pcs">457</td>
+                            <td class="cur">6 535 178</td>
+                            <td>-</td>
+                            <td class="per">50,71</td>
+                            <td class="per">49,21</td>
+                            <td class="per">0</td>
+                        </tr>
+                        <tr class="fold">
+                            <td colspan="7">
+                                <div class="fold-content">
+                                    <h3>Notes</h3>
+                                    <p>notes about user.</p>
+                                    <button class="btn" onclick="showNotesModal(this)">Edit</button>
+
+
+                                    <!--
+                                    <table class="small-friendly">
+                                        <thead>
+                                            <tr>
+                                                <th><span class="visible-small" title="Company name">Active.
+                                                        name</span><span class="visible-big">Company name</span></th>
+                                                <th><span class="visible-small"
+                                                        title="Customer number">Cust.#</span><span
+                                                        class="visible-big">Customer no</span></th>
+                                                <th><span class="visible-small" title="Customer name">Cust.
+                                                        name</span><span class="visible-big">Customer name</span></th>
+                                                <th><span class="visible-small"
+                                                        title="Insurance number">Ins.#</span><span
+                                                        class="visible-big">Insurance no</span></th>
+                                                <th><span class="visible-small" title="Strategy">Str.</span><span
+                                                        class="visible-big">Strategy</span></th>
+                                                <th>Start</th>
+                                                <th><span class="visible-small" title="Current">Cur.</span><span
+                                                        class="visible-big">Current</span></th>
+                                                <th>Diff</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td data-th="Company name">Sony</td>
+                                                <td data-th="Customer no">13245</td>
+                                                <td data-th="Customer name">John Doe</td>
+                                                <td data-th="Insurance no">064578</td>
+                                                <td data-th="Strategy">A, 100%</td>
+                                                <td data-th="Start"><span class="cur">20 000</span></td>
+                                                <td data-th="Current"><span class="cur">33 000</span></td>
+                                                <td data-th="Diff"><span class="cur">13 000</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td data-th="Company name">Packard Bell</td>
+                                                <td data-th="Customer no">12457</td>
+                                                <td data-th="Customer name">Howard Steel</td>
+                                                <td data-th="Insurance no">064353</td>
+                                                <td data-th="Strategy">A, 100%</td>
+                                                <td data-th="Start"><span class="cur">52 000</span></td>
+                                                <td data-th="Current"><span class="cur">82 000</span></td>
+                                                <td data-th="Diff"><span class="cur">40 000</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td data-th="Company name">Apple</td>
+                                                <td data-th="Customer no">23885</td>
+                                                <td data-th="Customer name">Jack Blue</td>
+                                                <td data-th="Insurance no">068874</td>
+                                                <td data-th="Strategy">B, 100%</td>
+                                                <td data-th="Start"><span class="cur">30 500</span></td>
+                                                <td data-th="Current"><span class="cur">42 000</span></td>
+                                                <td data-th="Diff"><span class="cur">11 500</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td data-th="Company name">Samsung</td>
+                                                <td data-th="Customer no">13981</td>
+                                                <td data-th="Customer name">Chung Pi Kah</td>
+                                                <td data-th="Insurance no">068112</td>
+                                                <td data-th="Strategy">C, 100%</td>
+                                                <td data-th="Start"><span class="cur">100 000</span></td>
+                                                <td data-th="Current"><span class="cur">133 000</span></td>
+                                                <td data-th="Diff"><span class="cur">33 000</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    -->
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pages" id="pages">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .pages {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page {
+            padding: 5px;
+            margin: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 1px #ccc;
+            cursor: pointer;
+        }
+    </style>
+
+
+    <script>
+        const adminProfileMenu = document.getElementById('admin_profile_menu');
+        const adminProfileSettings = document.getElementById('admin_profile_dropdown');
+
+        adminProfileSettings.style.display = 'none';
+        adminProfileMenu.onclick = () => {
+            if (adminProfileSettings.style.display === 'none') {
+                adminProfileSettings.style.display = 'block';
+            } else {
+                adminProfileSettings.style.display = 'none';
+            }
+        }
+
+        function getUsers(pageNumber = 1) {
+            fetch(`/admin/users?page=${pageNumber}`)
+                .then(response =>
+                    response.json()
+                )
+                .then(data => {
+                    console.log(data);
+                    const totalPages = data.totalPages;
+                    const users = data.rows;
+                    const table = document.querySelector('.fold-table tbody');
+                    table.innerHTML = '';
+                    users.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.id = `${user.id}`;
+                        row.classList.add('view');
+
+                        row.setAttribute('data-notes', user.userNote !== null ? user.userNote : "");
+                        let accountType = "Free";
+                        if (user.accountType === 1) {
+                            accountType = "Trial";
+                        } else if (user.accountType === 2) {
+                            accountType = "Premium";
+                        }
+
+                        let nextRenewal = user.accountRenewal;
+                        if (nextRenewal) {
+                            nextRenewal = new Date(nextRenewal).toLocaleDateString();
+                        } else {
+                            nextRenewal = "N/A";
+                        }
+                        row.innerHTML = `
+                            <td>${user.email}</td>
+                            <td>${user.firstName} ${user.lastName}</td>
+                            <td>${accountType}</td>
+                            <td>${nextRenewal}</td>
+                            <td>${user.referredBy}</td>
+                            <td>${user.referralCode}</td>
+                            <td>${user.subscriptionId}</td>
+                        `;
+                        table.appendChild(row);
+
+
+                        const foldRow = document.createElement('tr');
+                        foldRow.classList.add('fold');
+
+                        let userNote = user.userNote;
+                        if (!userNote) {
+                            userNote = "No note.";
+                        }
+                        foldRow.innerHTML = `
+                            <td colspan="7">
+                                <div class="fold-content">
+                                    <h3>Notes</h3>
+                                    <p>${userNote}</p>
+                                    <button class="btn" onclick="showNotesModal(${user.id})">Edit</button>
+                                </div>
+                            </td>
+                        `;
+                        table.appendChild(foldRow);
+                    });
+
+
+                    var foldTable = document.querySelector('.fold-table');
+                    foldTable.addEventListener('click', function (e) {
+
+                        if (e.target.tagName === 'TD') {
+                            var tr = e.target.parentNode;
+                            var next = tr.nextElementSibling;
+                            if (next.classList.contains('fold')) {
+                                next.classList.remove('fold');
+                                next.classList.add('show');
+                            } else {
+                                next.classList.remove('show');
+                                next.classList.add('fold');
+                            }
+                        }
+                    });
+
+
+                    const pages = document.getElementById('pages');
+                    pages.innerHTML = '';
+                    let pagePerLimit = 10;
+                    
+
+
+                    if (pageNumber > 1) {
+                        const prev = document.createElement('div');
+                        prev.classList.add('page');
+                        prev.textContent = 'Previous';
+                        prev.onclick = function () {
+                            getUsers(pageNumber - 1);
+                            window.history.replaceState({}, '', `/admin?page=${pageNumber - 1}`);
+                        }
+                        pages.appendChild(prev);
+                    }
+                    if (totalPages > 1) {
+                        const pageInput = document.createElement('input');
+                        pageInput.type = 'number';
+                        pageInput.min = 1;
+                        pageInput.max = totalPages;
+                        pageInput.value = pageNumber;
+                        pageInput.style.width = '50px';
+                        pageInput.style.height = '40px';
+                        pageInput.style.textAlign = 'center';
+                        pageInput.style.margin = '5px';
+                        pageInput.style.border = '2px solid #ccc';
+                        pageInput.style.padding = '5px';
+                        pageInput.style.borderRadius = '5px';
+                        pageInput.onchange = function () {
+                            const value = parseInt(pageInput.value);
+                            if (value > 0 && value <= totalPages) {
+                                getUsers(value);
+                                window.history.replaceState({}, '', `/admin?page=${value}`);
+                            }
+                        }
+                        pages.appendChild(pageInput);
+                    }
+
+                    if (pageNumber < totalPages) {
+                        const next = document.createElement('div');
+                        next.classList.add('page');
+                        next.textContent = 'Next';
+                        next.onclick = function () {
+                            getUsers(pageNumber + 1);
+                            window.history.replaceState({}, '', `/admin?page=${pageNumber + 1}`);
+                        }
+                        pages.appendChild(next);
+                    }
+
+                });
+        }
+        let pagePassed = "<%=page%>";
+        let page = parseInt(pagePassed);
+        console.log(page);
+        console.log(pagePassed);
+        getUsers(page);
+
+        function showNotesModal(id) {
+            var row = document.getElementById(id);
+            var userId = row.id;
+            var notes = row.getAttribute('data-notes');
+            var modal = document.getElementById('notesModal');
+            var modalMessage = document.getElementById('modalMessage');
+            var userIdInput = document.getElementById('userIdInput');
+            var closeModal = document.querySelector('.close');
+            userIdInput.value = userId;
+            notesInput.value = notes;
+
+            modalMessage.textContent = `Notes for user ${row.children[0].textContent}`;
+            modal.style.display = 'block';
+
+            modal.onclick = function () {
+                modal.style.display = "none";
+            }
+            innerModal.onclick = function (event) {
+                event.stopPropagation();
+            }
+            closeModal.onclick = function () {
+                modal.style.display = "none";
+            }
+
+        }
+
+        function saveNotes(event) {
+            event.preventDefault();
+            const form = document.getElementById('notesForm');
+            const userId = document.getElementById('userIdInput').value;
+            const notes = document.getElementById('notesInput').value;
+            fetch('/admin/savenotes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId,
+                    notes
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        document.getElementById('statusText').textContent = '✔️ Note saved successfully.';
+
+                        const row = document.getElementById(userId);
+                        row.setAttribute('data-notes', notes);
+                        const foldRow = row.nextElementSibling;
+                        foldRow.querySelector('p').textContent = notes;
+                    } else {
+                        document.getElementById('statusText').textContent = '❌️ Failed to save notes.';
+                    }
+                });
+        }
+
+
+
+    </script>
+</body>
+
+</html>

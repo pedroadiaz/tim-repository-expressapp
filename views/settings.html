@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SimpleReports Upgrade</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700">
+  <link rel="stylesheet" href="./css/desktopstyle.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./css/ffolders.min.css" />
+
+  <style>
+    .spacingFolder {
+      margin-right: 30px;
+      margin-bottom: 30px;
+    }
+
+    .spacingFolder:last-child {
+      margin-right: 0;
+    }
+
+    #reportContents {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="./full_logo.png" alt="SimpleReports Logo" width="150px" class="logo"
+    style="position: absolute; top: 0; left: 0" />
+  <div id="chartpanel" class="row" data-equalizer>
+    <div class="column small-12 left_panel">
+      <header data-equalizer-watch>
+        <i class="fa fa-bars menu_top_icon" aria-hidden="true"></i>
+
+        <div class="right_nav">
+          <div class="welcome-profile-text"><span class="user-name">
+              <span id="welcome-name-display"></span>
+            </span></div>
+
+          <a href="/main"><i class="fa fa-cog dashboard-icons dashboard-icons-next-to-another"
+              aria-hidden="true"></i></a>
+          <i class="fa fa-user-circle dashboard-icons" aria-hidden="true"></i>
+
+        </div>
+        <div class="title">
+          <h2 style="text-align: center;">SETTINGS</h2>
+        </div>
+      </header>
+
+
+      <div id="chart_table">
+        <form id="chart_datas">
+        </form>
+
+        <div id="details">
+        </div>
+
+      </div>
+      <div class="spacer"></div>
+
+    </div>
+  </div>
+  </div>
+  <script>
+    function PopulateDetails(accountType) {
+      console.log("PopulateDetails");
+      const reportContents = document.getElementById('details');
+      const div = document.createElement('div');
+      div.style.borderRadius = "10px";
+      div.style.border = "1px solid #d3d3d3";
+      div.style.padding = "10px";
+      div.style.marginTop = "10px";
+      const h3 = document.createElement('h3');
+      h3.innerHTML = "Account Information";
+      div.appendChild(h3);
+      const p1 = document.createElement('p');
+      p1.innerHTML = "Account Type: ";
+      if (accountType === 1) {
+        p1.innerHTML += "Trial";
+      } else if (accountType === 2) {
+        p1.innerHTML += "Active";
+      } else {
+        p1.innerHTML += "Inactive";
+      }
+      div.appendChild(p1);
+      const p2 = document.createElement('p');
+      if (accountType === 1) {
+        p2.innerHTML = "Subscription Status: Trial";
+      } else if (accountType === 2) {
+        p2.innerHTML = "Subscription Status: Active";
+      } else {
+        p2.innerHTML = "Subscription Status: Inactive";
+      }
+
+      div.appendChild(p2);
+      /*const p3 = document.createElement('p');
+      if (accountType === 1) {
+        p3.innerHTML = "Subscription Expires: 30 days";
+      } else if (accountType === 2) {
+        p3.innerHTML = "Subscription Expires: Never";
+      } else {
+        p3.innerHTML = "Subscription Expires: N/A";
+      }*/
+      reportContents.appendChild(div);
+
+      const statusText = document.createElement('p');
+      statusText.style.marginTop = "10px";
+
+      const button = document.createElement('button');
+      button.innerHTML = "Restore Last Deleted";
+      button.className = "btn";
+      button.style.marginTop = "10px";
+      button.onclick = function () {
+        console.log("Restore Last Deleted");
+        fetch('/app/restoreDeletion', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(response => response.json())
+          .then(result => {
+            console.log(result);
+            if (result["status"] === "success") {
+              statusText.innerHTML = "Last deleted report restored.";
+            } else if (result["status"] === "no_last_deleted") {
+              statusText.innerHTML = "No report to restore.";
+            } else if (result["status"] === "not_found") {
+              statusText.innerHTML = "Error: Report not found.";
+            } else {
+              statusText.innerHTML = "Error: " + result["status"];
+            }
+          }).catch(error => {console.error('Error:', error); throw error;});
+      };
+      reportContents.appendChild(button);
+      reportContents.appendChild(statusText);
+    }
+    function HasFreeAccount() {
+      console.log("HasFreeAccount");
+      const reportContents = document.getElementById('details');
+
+      const title = document.createElement('h3');
+      title.innerHTML = "Your account is limited.";
+      reportContents.appendChild(title);
+
+      const div = document.createElement('div');
+      div.style.paddingBottom = "25px";
+      const a = document.createElement('a');
+      a.href = "/upgrade";
+      a.target = "_blank";
+      a.innerHTML = "Upgrade";
+      a.style.color = "blue";
+      div.appendChild(a);
+      reportContents.appendChild(div);
+      PopulateDetails(0);
+    }
+
+    function HasPaidAccount(accountType) {
+      console.log("HasPaidAccount");
+      PopulateDetails(accountType);
+    }
+
+    function InitialLoad() {
+
+      const userWelcomeNameDisplay = document.getElementById('welcome-name-display');
+      fetch('/app/getUser')
+        .then(response => response.json())
+        .then(result => {
+          userWelcomeNameDisplay.innerHTML = result["email"];
+          let accountType = result["accountType"];
+
+          if (accountType === 0) {
+            console.log("Free account");
+            HasFreeAccount();
+          } else {
+            console.log("Paid account");
+            HasPaidAccount(accountType);
+          }
+        }).catch(error => {console.error('Error:', error); throw error;});
+    };
+    InitialLoad();
+  </script>
+</body>
+
+</html>
