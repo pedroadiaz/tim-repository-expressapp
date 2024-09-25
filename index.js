@@ -1,6 +1,6 @@
 global.CONSTANTS = Object.freeze({
-    paypal_clientId: "ARRJTbBY6INhPDFG7-gck9hgeJGDlYsL-8P4oqDhIPL1uu2ik68HxCrLzO3zY625DyLHzhx-dGUF9kTg",
-    paypal_secret: "EJg7m_vBWqx68n39SurnrW9LTyU0obZlrToXORPqXguhso7g-cmNPpRfeL-tbdrgKZuXTnQT2DPZudYZ"
+    paypal_clientId: process.env.PAYPAL_CLIENT_ID,
+    paypal_secret: process.env.PAYPAL_SECRET
 });
 
 const prefix = "";
@@ -32,9 +32,9 @@ const fetch = require('node-fetch');
 const admin = "[user]";
 const tableName = "table_simplereports";
 const connectionPool = mysql.createPool({
-    host: 'localhost',
-    user: admin,
-    password: '[password]',
+    host: process.env.DATABASE_ENDPOINT,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
     connectionLimit: 5
 });
 
@@ -97,13 +97,6 @@ authUser = (user, password, done) => {
 
 }
 
-
-
-
-
-
-
-
 checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {return next()}
     res.redirect(prefix + "/login")
@@ -153,15 +146,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
 
     return done(null, user)
-
-
-
-
-
-
-
-
-
 })
 
 

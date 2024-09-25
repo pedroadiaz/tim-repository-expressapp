@@ -10,9 +10,9 @@ const uuidv4 = require('uuid').v4;
 const admin = "[user]";
 const tableName = "table_simplereports";
 const connectionPool = mysql.createPool({
-    host: 'localhost',
-    user: admin,
-    password: '[password]',
+    host: process.env.DATABASE_ENDPOINT,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
     connectionLimit: 5
 });
 
