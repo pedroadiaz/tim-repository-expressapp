@@ -29,6 +29,7 @@ const mysql = require('mysql2');
 const url = require('url');
 const fetch = require('node-fetch');
 
+require('dotenv').config();
 const admin = "[user]";
 const tableName = "gmrgfeoc_simplereports";
 const connectionPool = mysql.createPool({
@@ -37,8 +38,6 @@ const connectionPool = mysql.createPool({
     password: process.env.DATABASE_PASSWORD,
     connectionLimit: 5
 });
-
-
 
 
 app.use(helmet({
@@ -144,7 +143,6 @@ passport.serializeUser((user, done) => {
 
 
 passport.deserializeUser((user, done) => {
-
     return done(null, user)
 })
 

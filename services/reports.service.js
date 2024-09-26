@@ -26,6 +26,9 @@ module.exports = {
 
         connectionPool.query("SELECT * FROM " + tableName + ".users WHERE id = ?", [req.user.id], (err, rows) => {
 
+            if (rows.length == 0) {
+                return res.status(404).json({status: "Not found"});
+            }
             let email = rows[0].email;
             let accountType = rows[0].accountType;
             return res.status(200).json({email: email, accountType: accountType});
