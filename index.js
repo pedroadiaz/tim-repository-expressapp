@@ -63,6 +63,46 @@ app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
+// Update auth function to check if account is locked
+authUser = (user, password, done) => {
+    console.log("Authenticating")
+
+    connectionPool.query("SELECT * FROM " + tableName + ".users WHERE email = ?", [user], (err, rows) => {
+        console.log("Authenticating")
+        console.log(rows)
+
+        if (err) {
+            console.log("There was an error - the sql connection itself isn't passing")
+            console.log(err)
+            return done(null, false, {message: "Incorrect username or password"});
+        }
+        if (rows.length === 0) {
+            console.log("No user found");
+            return done(null, false, {message: "Incorrect username or password"});
+        }
+        
+        // Check if account is locked
+        if (rows[0].account_locked) {
+            console.log("Account is locked");
+            return done(null, false, {message: "Account is locked. Please reset your password."});
+        }
+        
+        // Check temp password if exists
+        if (rows[0].temp_password && bcrypt.compareSync(password, rows[0].temp_password)) {
+            console.log("Authenticated with temp password");
+            return done(null, rows[0]);
+        }
+        
+        if (bcrypt.compareSync(password, rows[0].password)) {
+            console.log("Authenticated");
+            return done(null, rows[0])
+        }
+
+        console.log("Incorrect password");
+        return done(null, false, {message: "Incorrect username or password"})
+    });
+}
+
 
 authUser = (user, password, done) => {
     console.log("Authenticating")
@@ -160,6 +200,7 @@ app.use(printData)
 
 const reportService = require('./services/reports.service.js');
 const reportsService = require('./services/reports.service.js');
+const passwordService = require('./services/password.service.js');
 
 app.get(prefix + "/app/isloggedin", (req, res) => {
     if (req.isAuthenticated()) {
@@ -226,8 +267,11 @@ app.get(prefix + "/main", checkAuthenticated, (req, res) => {
     res.render('index.html', {user: req.user})
 });
 app.get(prefix + '/login', (req, res) => {
-    res.sendFile(path.join(__dirname + '/views', 'login.html'));
-
+    if (req.query.success) {
+        res.render('login.html', { success: req.query.success });
+    } else {
+        res.sendFile(path.join(__dirname + '/views', 'login.html'));
+    }
 });
 app.post(prefix + "/login", passport.authenticate('local', {
     successRedirect: prefix + "/main",
@@ -279,6 +323,23 @@ app.get(prefix + '/logout', (req, res) => {
 
         res.redirect(prefix + "/login")
     })
+});
+
+// Forgot password routes
+app.get(prefix + '/forgot-password', (req, res) => {
+    res.render('forgot_password.html');
+});
+
+app.post(prefix + '/forgot-password', (req, res) => {
+    passwordService.requestPasswordReset(req, res);
+});
+
+app.get(prefix + '/reset-password', (req, res) => {
+    passwordService.resetPasswordPage(req, res);
+});
+
+app.post(prefix + '/reset-password', (req, res) => {
+    passwordService.processResetPassword(req, res);
 });
 
 app.post(prefix + '/register', (req, res) => {

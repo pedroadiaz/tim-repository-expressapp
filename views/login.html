@@ -211,6 +211,18 @@
             text-align: center;
             font-size: 1.1rem;
         }
+        
+        .message {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .message.success {
+            background-color: rgba(0, 255, 0, 0.1);
+            color: #ccffcc;
+        }
     </style>
 </head>
 
@@ -223,6 +235,11 @@
                 In</label>
             <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
             <div class="login-form">
+                <% if (typeof success !== 'undefined') { %>
+                <div class="message success">
+                    <%= success %>
+                </div>
+                <% } %>
                 <div class="sign-in-htm">
                     <form id="login" method="POST" action="./login">
                         <div class="group">
@@ -243,7 +260,7 @@
                     </form>
                     <div class="hr"></div>
                     <div class="foot-lnk">
-                        <a href="#forgot">Forgot Password?</a>
+                        <a href="./forgot-password">Forgot Password?</a>
                     </div>
                 </div>
                 <div class="sign-up-htm">
