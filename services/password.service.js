@@ -3,12 +3,16 @@ const crypto = require('crypto');
 const mysql = require('mysql2');
 const path = require('path');
 
-// AWS SES for sending emails
-const AWS = require('aws-sdk');
+// Nodemailer for sending emails
+const nodemailer = require('nodemailer');
 
-// Configure AWS SES
-AWS.config.update({
-    region: process.env.AWS_REGION || 'us-east-1'
+// Configure Nodemailer with Gmail
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+    }
 });
 
 const tableName = "gmrgfeoc_simplereports";
@@ -77,48 +81,33 @@ exports.requestPasswordReset = (req, res) => {
                     
                     // Send email with temp password
                     try {
-                        const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+                        const resetUrl = `${process.env.APP_URL || 'http://localhost:3000'}/reset-password?email=${encodeURIComponent(email)}&token=${resetToken}`;
                         
-                        const params = {
-                            Destination: {
-                                ToAddresses: [email]
-                            },
-                            Message: {
-                                Body: {
-                                    Html: {
-                                        Charset: "UTF-8",
-                                        Data: `
-                                            <h1>Password Reset</h1>
-                                            <p>You have requested to reset your password.</p>
-                                            <p>Your temporary password is: <strong>${tempPassword}</strong></p>
-                                            <p>Please use this temporary password to log in and then set a new password.</p>
-                                            <p>This temporary password will expire in 1 hour.</p>
-                                            <p><a href="${process.env.APP_URL || 'http://localhost:3000'}/reset-password?email=${encodeURIComponent(email)}&token=${resetToken}">Click here to reset your password</a></p>
-                                        `
-                                    },
-                                    Text: {
-                                        Charset: "UTF-8",
-                                        Data: `
-                                            Password Reset
-                                            
-                                            You have requested to reset your password.
-                                            Your temporary password is: ${tempPassword}
-                                            Please use this temporary password to log in and then set a new password.
-                                            This temporary password will expire in 1 hour.
-                                            
-                                            To reset your password, visit: ${process.env.APP_URL || 'http://localhost:3000'}/reset-password?email=${encodeURIComponent(email)}&token=${resetToken}
-                                        `
-                                    }
-                                },
-                                Subject: {
-                                    Charset: "UTF-8",
-                                    Data: "Password Reset"
-                                }
-                            },
-                            Source: process.env.SES_EMAIL_FROM || "noreply@example.com"
+                        const mailOptions = {
+                            from: process.env.EMAIL_FROM,
+                            to: email,
+                            subject: "Password Reset",
+                            html: `
+                                <h1>Password Reset</h1>
+                                <p>You have requested to reset your password.</p>
+                                <p>Your temporary password is: <strong>${tempPassword}</strong></p>
+                                <p>Please use this temporary password to log in and then set a new password.</p>
+                                <p>This temporary password will expire in 1 hour.</p>
+                                <p><a href="${resetUrl}">Click here to reset your password</a></p>
+                            `,
+                            text: `
+                                Password Reset
+                                
+                                You have requested to reset your password.
+                                Your temporary password is: ${tempPassword}
+                                Please use this temporary password to log in and then set a new password.
+                                This temporary password will expire in 1 hour.
+                                
+                                To reset your password, visit: ${resetUrl}
+                            `
                         };
                         
-                        await ses.sendEmail(params).promise();
+                        await transporter.sendMail(mailOptions);
                         
                         return res.redirect('/forgot-password?success=' + encodeURIComponent("Password reset instructions have been sent to your email."));
                     } catch (emailErr) {
