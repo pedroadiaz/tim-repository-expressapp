@@ -267,11 +267,7 @@ app.get(prefix + "/main", checkAuthenticated, (req, res) => {
     res.render('index.html', {user: req.user})
 });
 app.get(prefix + '/login', (req, res) => {
-    if (req.query.success) {
-        res.render('login.html', { success: req.query.success });
-    } else {
-        res.sendFile(path.join(__dirname + '/views', 'login.html'));
-    }
+    res.sendFile(path.join(__dirname + '/views', 'login.html'));
 });
 app.post(prefix + "/login", passport.authenticate('local', {
     successRedirect: prefix + "/main",
@@ -327,7 +323,7 @@ app.get(prefix + '/logout', (req, res) => {
 
 // Forgot password routes
 app.get(prefix + '/forgot-password', (req, res) => {
-    res.render('forgot_password.html');
+    res.sendFile(path.join(__dirname + '/views', 'forgot_password.html'));
 });
 
 app.post(prefix + '/forgot-password', (req, res) => {
@@ -335,7 +331,25 @@ app.post(prefix + '/forgot-password', (req, res) => {
 });
 
 app.get(prefix + '/reset-password', (req, res) => {
-    passwordService.resetPasswordPage(req, res);
+    const { email, token } = req.query;
+    
+    if (!email || !token) {
+        return res.redirect('/forgot-password');
+    }
+    
+    // Check if token is valid
+    connectionPool.query(
+        "SELECT * FROM " + tableName + ".users WHERE email = ? AND password_reset_token = ? AND password_reset_expires > NOW()",
+        [email, token],
+        (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.redirect('/forgot-password?error=' + encodeURIComponent("Invalid or expired reset link. Please request a new one."));
+            }
+            
+            // Token is valid, send the reset password page
+            return res.sendFile(path.join(__dirname + '/views', 'reset_password.html'));
+        }
+    );
 });
 
 app.post(prefix + '/reset-password', (req, res) => {
@@ -350,9 +364,16 @@ app.post(prefix + '/register', (req, res) => {
     console.log(req.body.confirmPassword)
     console.log(req.body.referralCode)
 
+    // Validate password format (one number, one special character, at least 9 characters long)
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z]).{9,}$/;
+    if (!passwordRegex.test(req.body.password)) {
+        console.log("Password doesn't meet requirements");
+        return res.redirect(prefix + '/login?registerError=' + encodeURIComponent("Password must contain at least one number, one special character, and be at least 9 characters long"));
+    }
+
     if (req.body.password !== req.body.confirmPassword) {
-        console.log("Passwords don't match")
-        return res.status(400).json({success: false, message: "Passwords don't match"})
+        console.log("Passwords don't match");
+        return res.redirect(prefix + '/login?registerError=' + encodeURIComponent("Passwords don't match"));
     }
 
     connectionPool.query("SELECT * FROM gmrgfeoc_simplereports.users WHERE email = ?", [req.body.username], (err, rows) => {
@@ -363,7 +384,7 @@ app.post(prefix + '/register', (req, res) => {
         }
         if (rows.length !== 0) {
             console.log("User already exists")
-            return res.status(400).json({success: false, message: "User already exists"})
+            return res.redirect(prefix + '/login?registerError=' + encodeURIComponent("Email address already exists. Please use a different email."))
         }
 
         let hashedPassword = bcrypt.hashSync(req.body.password, 15)

@@ -223,6 +223,19 @@
             background-color: rgba(0, 255, 0, 0.1);
             color: #ccffcc;
         }
+        
+        .message.error {
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ffcccc;
+            font-weight: bold;
+        }
+        
+        .password-requirements {
+            color: #e7e7e7;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            padding-left: 5px;
+        }
     </style>
 </head>
 
@@ -235,11 +248,7 @@
                 In</label>
             <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
             <div class="login-form">
-                <% if (typeof success !== 'undefined') { %>
-                <div class="message success">
-                    <%= success %>
-                </div>
-                <% } %>
+                <div id="success-message" class="message success" style="display: none;"></div>
                 <div class="sign-in-htm">
                     <form id="login" method="POST" action="./login">
                         <div class="group">
@@ -264,6 +273,7 @@
                     </div>
                 </div>
                 <div class="sign-up-htm">
+                    <div id="register-error" class="message error" style="display: none;"></div>
                     <form id="register" method="POST" action="./register">
                         <div class="group">
                             <label for="user" class="label">Email</label>
@@ -272,6 +282,9 @@
                         <div class="group">
                             <label for="pass" class="label">Password</label>
                             <input id="pass" type="password" class="input" data-type="password" name="password">
+                            <div class="password-requirements">
+                                Password must have one number, one special character, and be at least 9 characters long
+                            </div>
                         </div>
                         <div class="group">
                             <label for="pass" class="label">Repeat Password</label>
@@ -297,6 +310,34 @@
     </div>
 
 
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Handle success message
+        var success = getUrlParameter('success');
+        if (success) {
+            var successElement = document.getElementById('success-message');
+            successElement.textContent = success;
+            successElement.style.display = 'block';
+        }
+
+        // Handle register error message
+        var registerError = getUrlParameter('registerError');
+        if (registerError) {
+            var errorElement = document.getElementById('register-error');
+            errorElement.textContent = registerError;
+            errorElement.style.display = 'block';
+            
+            // Switch to the signup tab
+            document.getElementById('tab-2').checked = true;
+        }
+    </script>
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const mysql = require('mysql2');
+const path = require('path');
 
 // AWS SES for sending emails
 const AWS = require('aws-sdk');
@@ -30,8 +31,8 @@ const generateTempPassword = () => {
 
 // Validate password meets requirements
 const isValidPassword = (password) => {
-    // At least one number, one letter, and at least 9 characters long
-    const regex = /^(?=.*[0-9])(?=.*[a-zA-Z]).{9,}$/;
+    // At least one number, one special character, and at least 9 characters long
+    const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z]).{9,}$/;
     return regex.test(password);
 };
 
@@ -51,11 +52,11 @@ exports.requestPasswordReset = (req, res) => {
         (err, rows) => {
             if (err) {
                 console.error("Database error:", err);
-                return res.status(500).render('forgot_password.html', { error: "An error occurred. Please try again." });
+                return res.redirect('/forgot-password?error=' + encodeURIComponent("An error occurred. Please try again."));
             }
             
             if (rows.length === 0) {
-                return res.status(404).render('forgot_password.html', { error: "No account exists with that email address." });
+                return res.redirect('/forgot-password?error=' + encodeURIComponent("No account exists with that email address."));
             }
             
             const user = rows[0];
@@ -71,7 +72,7 @@ exports.requestPasswordReset = (req, res) => {
                 async (updateErr) => {
                     if (updateErr) {
                         console.error("Update error:", updateErr);
-                        return res.status(500).render('forgot_password.html', { error: "An error occurred. Please try again." });
+                        return res.redirect('/forgot-password?error=' + encodeURIComponent("An error occurred. Please try again."));
                     }
                     
                     // Send email with temp password
@@ -119,14 +120,10 @@ exports.requestPasswordReset = (req, res) => {
                         
                         await ses.sendEmail(params).promise();
                         
-                        return res.status(200).render('forgot_password.html', { 
-                            success: "Password reset instructions have been sent to your email." 
-                        });
+                        return res.redirect('/forgot-password?success=' + encodeURIComponent("Password reset instructions have been sent to your email."));
                     } catch (emailErr) {
                         console.error("Email sending error:", emailErr);
-                        return res.status(500).render('forgot_password.html', { 
-                            error: "Failed to send reset email. Please try again or contact support." 
-                        });
+                        return res.redirect('/forgot-password?error=' + encodeURIComponent("Failed to send reset email. Please try again or contact support."));
                     }
                 }
             );
@@ -148,12 +145,10 @@ exports.resetPasswordPage = (req, res) => {
         [email, token],
         (err, rows) => {
             if (err || rows.length === 0) {
-                return res.status(400).render('forgot_password.html', { 
-                    error: "Invalid or expired reset link. Please request a new one." 
-                });
+                return res.redirect('/forgot-password?error=' + encodeURIComponent("Invalid or expired reset link. Please request a new one."));
             }
             
-            return res.render('reset_password.html', { email, token });
+            return res.sendFile(path.join(__dirname, '../views', 'reset_password.html'));
         }
     );
 };
@@ -164,19 +159,11 @@ exports.processResetPassword = (req, res) => {
     
     // Validate passwords
     if (new_password !== confirm_password) {
-        return res.status(400).render('reset_password.html', { 
-            error: "Passwords do not match.", 
-            email, 
-            token 
-        });
+        return res.redirect(`/reset-password?error=${encodeURIComponent("Passwords do not match.")}&email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
     }
     
     if (!isValidPassword(new_password)) {
-        return res.status(400).render('reset_password.html', { 
-            error: "Password must contain at least one number, one letter, and be at least 9 characters long.", 
-            email, 
-            token 
-        });
+        return res.redirect(`/reset-password?error=${encodeURIComponent("Password must contain at least one number, one special character, and be at least 9 characters long.")}&email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
     }
     
     // Verify token and temp password
@@ -185,30 +172,18 @@ exports.processResetPassword = (req, res) => {
         [email, token],
         (err, rows) => {
             if (err) {
-                return res.status(500).render('reset_password.html', { 
-                    error: "An error occurred. Please try again.", 
-                    email, 
-                    token 
-                });
+                return res.redirect(`/reset-password?error=${encodeURIComponent("An error occurred. Please try again.")}&email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
             }
             
             if (rows.length === 0) {
-                return res.status(400).render('reset_password.html', { 
-                    error: "Invalid or expired reset token. Please request a new password reset.", 
-                    email, 
-                    token 
-                });
+                return res.redirect(`/reset-password?error=${encodeURIComponent("Invalid or expired reset token. Please request a new password reset.")}&email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
             }
             
             const user = rows[0];
             
             // Verify temp password
             if (!bcrypt.compareSync(temp_password, user.temp_password)) {
-                return res.status(400).render('reset_password.html', { 
-                    error: "Incorrect temporary password.", 
-                    email, 
-                    token 
-                });
+                return res.redirect(`/reset-password?error=${encodeURIComponent("Incorrect temporary password.")}&email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
             }
             
             // Hash new password
@@ -220,16 +195,10 @@ exports.processResetPassword = (req, res) => {
                 [hashedPassword, user.id],
                 (updateErr) => {
                     if (updateErr) {
-                        return res.status(500).render('reset_password.html', { 
-                            error: "Failed to update password. Please try again.", 
-                            email, 
-                            token 
-                        });
+                        return res.redirect(`/reset-password?error=${encodeURIComponent("Failed to update password. Please try again.")}&email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
                     }
                     
-                    return res.status(200).render('login.html', { 
-                        success: "Your password has been reset successfully. You can now log in with your new password." 
-                    });
+                    return res.redirect('/login?success=' + encodeURIComponent("Your password has been reset successfully. You can now log in with your new password."));
                 }
             );
         }
