@@ -25,6 +25,56 @@
       margin-left: auto;
       margin-right: auto;
     }
+    
+    /* Subscription section styles */
+    .subscription-section {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .subscription-section h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    
+    .subscription-info {
+      margin-bottom: 20px;
+    }
+    
+    .subscription-info p {
+      margin: 5px 0;
+    }
+    
+    .subscription-label {
+      font-weight: bold;
+      display: inline-block;
+      width: 150px;
+    }
+    
+    .subscription-actions {
+      margin-top: 20px;
+    }
+    
+    .subscription-button {
+      background-color: #7f578f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .subscription-button:hover {
+      background-color: #6a4478;
+    }
   </style>
 </head>
 
@@ -97,15 +147,91 @@
       }
 
       div.appendChild(p2);
-      /*const p3 = document.createElement('p');
-      if (accountType === 1) {
-        p3.innerHTML = "Subscription Expires: 30 days";
-      } else if (accountType === 2) {
-        p3.innerHTML = "Subscription Expires: Never";
-      } else {
-        p3.innerHTML = "Subscription Expires: N/A";
-      }*/
+      // Add subscription management section
+      const subscriptionDiv = document.createElement('div');
+      subscriptionDiv.style.borderRadius = "10px";
+      subscriptionDiv.style.border = "1px solid #d3d3d3";
+      subscriptionDiv.style.padding = "10px";
+      subscriptionDiv.style.marginTop = "20px";
+      subscriptionDiv.className = "subscription-section";
+      
+      const subscriptionTitle = document.createElement('h3');
+      subscriptionTitle.innerHTML = "Subscription Management";
+      subscriptionDiv.appendChild(subscriptionTitle);
+      
+      // Create subscription info div
+      const subscriptionInfo = document.createElement('div');
+      subscriptionInfo.className = "subscription-info";
+      
+      // Fetch user subscription details
+      fetch('/app/getUser')
+        .then(response => response.json())
+        .then(userData => {
+          // Add subscription status
+          const statusP = document.createElement('p');
+          const statusLabel = document.createElement('span');
+          statusLabel.className = "subscription-label";
+          statusLabel.innerHTML = "Status:";
+          statusP.appendChild(statusLabel);
+          
+          if (userData.unlimited_access) {
+            statusP.innerHTML += " Unlimited Access";
+            
+            const infoP = document.createElement('p');
+            infoP.innerHTML = "You have unlimited access to SimpleReports.";
+            subscriptionInfo.appendChild(infoP);
+          } else if (userData.is_paid) {
+            statusP.innerHTML += " Active Subscription";
+            
+            const infoP = document.createElement('p');
+            infoP.innerHTML = "Your subscription is active. You have full access to SimpleReports.";
+            subscriptionInfo.appendChild(infoP);
+          } else if (userData.trial_end_date) {
+            statusP.innerHTML += " Trial Period";
+            
+            const trialEndDate = new Date(userData.trial_end_date).toLocaleDateString();
+            const infoP = document.createElement('p');
+            infoP.innerHTML = `Your trial period ends on: <strong>${trialEndDate}</strong>`;
+            subscriptionInfo.appendChild(infoP);
+            
+            const pricingP = document.createElement('p');
+            pricingP.innerHTML = "After your trial ends, you will be charged $9.99/month.";
+            subscriptionInfo.appendChild(pricingP);
+          } else {
+            statusP.innerHTML += " No Active Subscription";
+          }
+          
+          subscriptionInfo.appendChild(statusP);
+          
+          // Add subscription actions
+          const actionsDiv = document.createElement('div');
+          actionsDiv.className = "subscription-actions";
+          
+          if (userData.stripe_customer_id && !userData.unlimited_access) {
+            const manageButton = document.createElement('a');
+            manageButton.href = "/billing-portal";
+            manageButton.className = "subscription-button";
+            manageButton.innerHTML = "Manage Payment Methods";
+            actionsDiv.appendChild(manageButton);
+          } else if (!userData.unlimited_access) {
+            const upgradeButton = document.createElement('a');
+            upgradeButton.href = "/upgrade";
+            upgradeButton.className = "subscription-button";
+            upgradeButton.innerHTML = "Upgrade Account";
+            actionsDiv.appendChild(upgradeButton);
+          }
+          
+          subscriptionDiv.appendChild(subscriptionInfo);
+          subscriptionDiv.appendChild(actionsDiv);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          subscriptionInfo.innerHTML = "Error loading subscription information.";
+          subscriptionDiv.appendChild(subscriptionInfo);
+        });
+        
       reportContents.appendChild(div);
+      reportContents.appendChild(subscriptionDiv);
 
       const statusText = document.createElement('p');
       statusText.style.marginTop = "10px";

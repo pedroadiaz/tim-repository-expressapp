@@ -201,6 +201,7 @@ app.use(printData)
 const reportService = require('./services/reports.service.js');
 const reportsService = require('./services/reports.service.js');
 const passwordService = require('./services/password.service.js');
+const stripeService = require('./services/stripe.service.js');
 
 app.get(prefix + "/app/isloggedin", (req, res) => {
     if (req.isAuthenticated()) {
@@ -247,10 +248,95 @@ app.post(prefix + '/app/setConsentStatus', checkAuthenticated, (req, res) => {
     reportService.setConsentStatus(req, res);
 });
 app.get(prefix + "/upgrade", checkAuthenticated, (req, res) => {
-    res.render('upgrade.html', {user: req.user})
+    // Check for success or error messages
+    const success = req.query.success;
+    const error = req.query.error;
+    
+    res.render('upgrade.html', {
+        user: req.user,
+        success: success,
+        error: error
+    });
+});
+
+// Create Stripe checkout session
+app.post(prefix + "/create-checkout-session", checkAuthenticated, async (req, res) => {
+    try {
+        // Get user data
+        connectionPool.query(
+            "SELECT * FROM " + tableName + ".users WHERE id = ?", 
+            [req.user.id],
+            async (err, rows) => {
+                if (err || rows.length === 0) {
+                    return res.redirect('/upgrade?error=' + encodeURIComponent("Error retrieving user data"));
+                }
+                
+                const user = rows[0];
+                
+                // If user already has unlimited access or is paid, redirect
+                if (user.unlimited_access === 1 || user.is_paid === 1) {
+                    return res.redirect('/upgrade?success=' + encodeURIComponent("You already have an active subscription"));
+                }
+                
+                try {
+                    // Create or get Stripe customer
+                    let customerId = user.stripe_customer_id;
+                    
+                    if (!customerId) {
+                        // Create new customer
+                        const stripeResult = await stripeService.processNewUserRegistration(
+                            user.id, 
+                            user.email, 
+                            user.referredBy
+                        );
+                        
+                        customerId = stripeResult.stripeCustomerId;
+                    }
+                    
+                    // Create checkout session
+                    const trialDays = user.trial_days || 15;
+                    const checkoutSession = await stripeService.createCheckoutSession(
+                        customerId,
+                        user.id,
+                        trialDays
+                    );
+                    
+                    // Redirect to Stripe checkout
+                    return res.redirect(checkoutSession.url);
+                } catch (stripeErr) {
+                    console.error("Error creating checkout session:", stripeErr);
+                    return res.redirect('/upgrade?error=' + encodeURIComponent("Error creating checkout session"));
+                }
+            }
+        );
+    } catch (err) {
+        console.error("Error in create-checkout-session route:", err);
+        return res.redirect('/upgrade?error=' + encodeURIComponent("An unexpected error occurred"));
+    }
 });
 app.get(prefix + "/settings", checkAuthenticated, (req, res) => {
-    res.render('settings.html', {user: req.user})
+    // Get full user data from database
+    connectionPool.query(
+        "SELECT * FROM " + tableName + ".users WHERE id = ?", 
+        [req.user.id],
+        async (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.render('settings.html', { user: req.user });
+            }
+            
+            const user = rows[0];
+            
+            return res.render('settings.html', { 
+                user: req.user,
+                userData: user,
+                hasStripeAccount: !!user.stripe_customer_id,
+                hasSubscription: !!user.stripe_subscription_id,
+                unlimitedAccess: user.unlimited_access,
+                trialEndDate: user.trial_end_date ? new Date(user.trial_end_date).toLocaleDateString() : null,
+                isPaid: user.is_paid
+            });
+        }
+    );
 });
 
 app.get(prefix + "/paypal", checkAuthenticated, (req, res) => {
@@ -261,10 +347,33 @@ app.get(prefix + "/paypalcheck", checkAuthenticated, (req, res) => {
 });
 
 app.get(prefix + "/main", checkAuthenticated, (req, res) => {
-
-
-
-    res.render('index.html', {user: req.user})
+    // Get full user data from database
+    connectionPool.query(
+        "SELECT * FROM " + tableName + ".users WHERE id = ?", 
+        [req.user.id],
+        async (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.render('index.html', { user: req.user });
+            }
+            
+            const user = rows[0];
+            
+            try {
+                // Check if user needs trial warning
+                const warningInfo = await stripeService.checkTrialWarning(user);
+                
+                // Pass warning info to template
+                return res.render('index.html', { 
+                    user: req.user,
+                    showTrialWarning: warningInfo.showWarning,
+                    trialDaysRemaining: warningInfo.daysRemaining
+                });
+            } catch (err) {
+                console.error("Error checking trial warning:", err);
+                return res.render('index.html', { user: req.user });
+            }
+        }
+    );
 });
 app.get(prefix + '/login', (req, res) => {
     res.sendFile(path.join(__dirname + '/views', 'login.html'));
@@ -356,6 +465,89 @@ app.post(prefix + '/reset-password', (req, res) => {
     passwordService.processResetPassword(req, res);
 });
 
+// Stripe payment success and cancel routes
+app.get(prefix + '/payment-success', async (req, res) => {
+    const sessionId = req.query.session_id;
+    
+    if (!sessionId) {
+        return res.redirect(prefix + "/main");
+    }
+    
+    try {
+        // Process checkout success
+        await stripeService.processCheckoutSuccess(sessionId);
+        
+        // Redirect to main page
+        return res.redirect(prefix + "/main");
+    } catch (err) {
+        console.error("Error processing payment success:", err);
+        return res.redirect(prefix + "/main");
+    }
+});
+
+app.get(prefix + '/payment-cancel', (req, res) => {
+    // Just redirect to main page
+    return res.redirect(prefix + "/main");
+});
+
+// Stripe customer portal
+app.get(prefix + '/billing-portal', checkAuthenticated, async (req, res) => {
+    // Get user from database
+    connectionPool.query(
+        "SELECT * FROM " + tableName + ".users WHERE id = ?", 
+        [req.user.id],
+        async (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.redirect(prefix + "/settings");
+            }
+            
+            const user = rows[0];
+            
+            // If user doesn't have a Stripe customer ID, redirect to settings
+            if (!user.stripe_customer_id) {
+                return res.redirect(prefix + "/settings");
+            }
+            
+            try {
+                // Create customer portal session
+                const session = await stripeService.createCustomerPortalSession(user.stripe_customer_id);
+                
+                // Redirect to portal
+                return res.redirect(session.url);
+            } catch (err) {
+                console.error("Error creating customer portal session:", err);
+                return res.redirect(prefix + "/settings");
+            }
+        }
+    );
+});
+
+// Stripe webhook endpoint
+app.post(prefix + '/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    let event;
+    
+    try {
+        // Verify webhook signature
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } catch (err) {
+        console.error(`Webhook signature verification failed: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    
+    try {
+        // Handle the event
+        await stripeService.handleWebhookEvent(event);
+        res.json({received: true});
+    } catch (err) {
+        console.error(`Error handling webhook event: ${err.message}`);
+        res.status(500).send(`Server Error: ${err.message}`);
+    }
+});
+
 app.post(prefix + '/register', (req, res) => {
     console.log("Registering")
     console.log(req.body)
@@ -394,16 +586,51 @@ app.post(prefix + '/register', (req, res) => {
 
         let referralCode = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 
-        connectionPool.query("INSERT INTO gmrgfeoc_simplereports.users (email, password, referredBy, referralCode) VALUES (?, ?, ?, ?)", [req.body.username, hashedPassword, req.body.referralCode, referralCode], (err, rows) => {
+        connectionPool.query("INSERT INTO gmrgfeoc_simplereports.users (email, password, referredBy, referralCode) VALUES (?, ?, ?, ?)", [req.body.username, hashedPassword, req.body.referralCode, referralCode], async (err, result) => {
             if (err) {
                 console.log("There was an error with sql")
                 return res.status(500).json({error: err})
             }
-            console.log("User registered")
-
-
-
-            res.redirect(prefix + "/login")
+            console.log("User registered");
+            
+            try {
+                // Get the new user ID
+                const userId = result.insertId;
+                
+                // Process user registration with Stripe (create customer, handle referral code)
+                const stripeResult = await stripeService.processNewUserRegistration(
+                    userId, 
+                    req.body.username, 
+                    req.body.referralCode
+                );
+                
+                // If user has unlimited access or doesn't need payment method, redirect to main page
+                if (!stripeResult.needsPaymentMethod) {
+                    // Log them in
+                    req.login({ id: userId }, (loginErr) => {
+                        if (loginErr) {
+                            console.log("Error logging in after registration:", loginErr);
+                            return res.redirect(prefix + "/login");
+                        }
+                        
+                        return res.redirect(prefix + "/main");
+                    });
+                } else {
+                    // Create checkout session for payment method
+                    const checkoutSession = await stripeService.createCheckoutSession(
+                        stripeResult.stripeCustomerId,
+                        userId,
+                        stripeResult.trialDays
+                    );
+                    
+                    // Redirect to Stripe checkout
+                    return res.redirect(checkoutSession.url);
+                }
+            } catch (stripeErr) {
+                console.error("Error processing Stripe registration:", stripeErr);
+                // If Stripe fails, still consider registration successful but redirect to login
+                return res.redirect(prefix + "/login");
+            }
         });
     });
 });

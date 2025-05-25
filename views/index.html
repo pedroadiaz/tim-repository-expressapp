@@ -28,6 +28,56 @@
 
     .modal {
       display: none;
+      
+    /* Trial warning modal styles */
+    #trialWarningModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .trial-warning-content {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      width: 500px;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .trial-warning-content h2 {
+      color: #e74c3c;
+      margin-top: 0;
+    }
+    
+    .trial-warning-content p {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    
+    .trial-warning-content .btn {
+      background-color: #7f578f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 10px;
+    }
+    
+    .trial-warning-content .btn:hover {
+      background-color: #6a4478;
+    }
       position: fixed;
       z-index: 1;
       padding-top: 100px;
@@ -328,6 +378,27 @@
 
     }
   </script>
+  
+  <!-- Trial Warning Modal -->
+  <% if (locals.showTrialWarning && showTrialWarning) { %>
+  <div id="trialWarningModal">
+    <div class="trial-warning-content">
+      <h2>Trial Period Ending Soon</h2>
+      <p>Your free trial period will end in <strong><%= trialDaysRemaining %> day<%= trialDaysRemaining !== 1 ? 's' : '' %></strong>.</p>
+      <p>After this period, your card will be charged according to your subscription plan.</p>
+      <div>
+        <a href="/billing-portal" class="btn">Manage Subscription</a>
+        <button onclick="closeTrialWarning()" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function closeTrialWarning() {
+      document.getElementById('trialWarningModal').style.display = 'none';
+    }
+  </script>
+  <% } %>
 </body>
 
 </html>
