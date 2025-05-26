@@ -29,9 +29,23 @@ module.exports = {
             if (rows.length == 0) {
                 return res.status(404).json({status: "Not found"});
             }
-            let email = rows[0].email;
-            let accountType = rows[0].accountType;
-            return res.status(200).json({email: email, accountType: accountType});
+            
+            // Format data for client consumption
+            const userData = {
+                email: rows[0].email,
+                accountType: rows[0].accountType,
+                lastDeletedReport: rows[0].lastDeletedReport,
+                
+                // Subscription-related fields
+                stripe_customer_id: rows[0].stripe_customer_id,
+                stripe_subscription_id: rows[0].stripe_subscription_id,
+                trial_end_date: rows[0].trial_end_date,
+                trial_days: rows[0].trial_days,
+                is_paid: rows[0].is_paid === 1, // Convert to boolean
+                unlimited_access: rows[0].unlimited_access === 1, // Convert to boolean
+            };
+
+            return res.status(200).json(userData);
         });
     },
     getReportEntriesByUser: (req, res) => {
