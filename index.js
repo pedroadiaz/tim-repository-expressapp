@@ -81,18 +81,18 @@ authUser = (user, password, done) => {
             return done(null, false, {message: "Incorrect username or password"});
         }
         
-        // Check if account is locked
-        if (rows[0].account_locked) {
-            console.log("Account is locked");
-            return done(null, false, {message: "Account is locked. Please reset your password."});
-        }
-        
         // Check temp password if exists
         if (rows[0].temp_password && bcrypt.compareSync(password, rows[0].temp_password)) {
             console.log("Authenticated with temp password");
             return done(null, rows[0]);
         }
         
+        // Check if account is locked
+        if (rows[0].account_locked) {
+            console.log("Account is locked");
+            return done(null, false, {message: "Account is locked. Please reset your password."});
+        }
+        
         if (bcrypt.compareSync(password, rows[0].password)) {
             console.log("Authenticated");
             return done(null, rows[0])
@@ -104,37 +104,6 @@ authUser = (user, password, done) => {
 }
 
 
-authUser = (user, password, done) => {
-    console.log("Authenticating")
-
-
-
-
-    connectionPool.query("SELECT * FROM " + tableName + ".users WHERE email = ?", [user], (err, rows) => {
-        console.log("Authenticating")
-        console.log(rows)
-
-        if (err) {
-            console.log("There was an error - the sql connection itself isn't passing")
-            console.log(err)
-            return done(null, false, {message: "Incorrect username or password"});
-        }
-        if (rows.length === 0) {
-            console.log("No user found");
-            return done(null, false, {message: "Incorrect username or password"});
-        }
-        if (bcrypt.compareSync(password, rows[0].password)) {
-            console.log("Authenticated");
-
-
-            return done(null, rows[0])
-        }
-
-        console.log("Incorrect password");
-        return done(null, false, {message: "Incorrect username or password"})
-    });
-
-}
 
 checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {return next()}
@@ -411,25 +380,7 @@ app.post(prefix + '/forgot-password', (req, res) => {
 });
 
 app.get(prefix + '/reset-password', (req, res) => {
-    const { email, token } = req.query;
-    
-    if (!email || !token) {
-        return res.redirect('/forgot-password');
-    }
-    
-    // Check if token is valid
-    connectionPool.query(
-        "SELECT * FROM " + tableName + ".users WHERE email = ? AND password_reset_token = ? AND password_reset_expires > NOW()",
-        [email, token],
-        (err, rows) => {
-            if (err || rows.length === 0) {
-                return res.redirect('/forgot-password?error=' + encodeURIComponent("Invalid or expired reset link. Please request a new one."));
-            }
-            
-            // Token is valid, send the reset password page
-            return res.sendFile(path.join(__dirname + '/views', 'reset_password.html'));
-        }
-    );
+    passwordService.resetPasswordPage(req, res);
 });
 
 app.post(prefix + '/reset-password', (req, res) => {
