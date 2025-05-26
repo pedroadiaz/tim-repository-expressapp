@@ -107,9 +107,6 @@ authUser = (user, password, done) => {
 authUser = (user, password, done) => {
     console.log("Authenticating")
 
-
-
-
     connectionPool.query("SELECT * FROM " + tableName + ".users WHERE email = ?", [user], (err, rows) => {
         console.log("Authenticating")
         console.log(rows)
@@ -123,18 +120,30 @@ authUser = (user, password, done) => {
             console.log("No user found");
             return done(null, false, {message: "Incorrect username or password"});
         }
+        
+        // Check temp password if exists
+        if (rows[0].temp_password && bcrypt.compareSync(password, rows[0].temp_password)) {
+            console.log("Authenticated with temp password");
+            return done(null, rows[0]);
+        }
+        
+        // Check if account is locked
+        if (rows[0].account_locked) {
+            console.log("Account is locked");
+            return done(null, false, {message: "Account is locked. Please reset your password."});
+        }
+        
         if (bcrypt.compareSync(password, rows[0].password)) {
             console.log("Authenticated");
-
-
             return done(null, rows[0])
         }
 
         console.log("Incorrect password");
         return done(null, false, {message: "Incorrect username or password"})
     });
-
 }
+
+
 
 checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {return next()}
@@ -247,6 +256,78 @@ app.get(prefix + '/app/getConsentStatus', checkAuthenticated, (req, res) => {
 app.post(prefix + '/app/setConsentStatus', checkAuthenticated, (req, res) => {
     reportService.setConsentStatus(req, res);
 });
+// EULA page and handling
+app.get(prefix + "/eula", checkAuthenticated, (req, res) => {
+    // Get params from URL
+    const userId = req.query.userId;
+    const needsPayment = req.query.needsPayment === 'true';
+    const stripeCustomerId = req.query.stripeCustomerId;
+    const trialDays = parseInt(req.query.trialDays || '15', 10);
+    
+    // Render EULA page with userId
+    res.render('eula.html', {
+        userId: userId,
+        needsPayment: needsPayment,
+        stripeCustomerId: stripeCustomerId,
+        trialDays: trialDays
+    });
+});
+
+// Accept EULA
+app.post(prefix + "/accept-eula", checkAuthenticated, async (req, res) => {
+    const userId = req.body.userId;
+    const needsPayment = req.body.needsPayment === 'true';
+    const stripeCustomerId = req.body.stripeCustomerId;
+    const trialDays = parseInt(req.body.trialDays || '15', 10);
+    
+    // Record EULA acceptance in database
+    connectionPool.query(
+        "UPDATE " + tableName + ".users SET eula_accepted = TRUE, eula_accepted_date = NOW() WHERE id = ?",
+        [userId],
+        async (err) => {
+            if (err) {
+                console.error("Error recording EULA acceptance:", err);
+                return res.redirect(prefix + "/main");
+            }
+            
+            // If user needs payment, create checkout session and redirect to Stripe
+            if (needsPayment && stripeCustomerId) {
+                try {
+                    // Create checkout session
+                    const checkoutSession = await stripeService.createCheckoutSession(
+                        stripeCustomerId,
+                        userId,
+                        trialDays
+                    );
+                    
+                    // Redirect to Stripe checkout
+                    return res.redirect(checkoutSession.url);
+                } catch (stripeErr) {
+                    console.error("Error creating checkout session:", stripeErr);
+                    return res.redirect(prefix + "/main");
+                }
+            } else {
+                // No payment needed, redirect to main page
+                return res.redirect(prefix + "/main");
+            }
+        }
+    );
+});
+
+// Decline EULA
+app.post(prefix + "/decline-eula", checkAuthenticated, (req, res) => {
+    // Log out the user
+    req.logout(function (err) {
+        if (err) {
+            console.log("There was an error logging out")
+            return res.status(500).json({success: false, message: "Error logging out"})
+        }
+        
+        // Redirect to login page
+        return res.redirect(prefix + "/login?error=" + encodeURIComponent("You must accept the EULA to use SimpleReports"));
+    });
+});
+
 app.get(prefix + "/upgrade", checkAuthenticated, (req, res) => {
     // Check for success or error messages
     const success = req.query.success;
