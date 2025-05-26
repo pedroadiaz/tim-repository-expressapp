@@ -63,12 +63,9 @@ app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
-
+// Update auth function to check if account is locked
 authUser = (user, password, done) => {
     console.log("Authenticating")
-
-
-
 
     connectionPool.query("SELECT * FROM " + tableName + ".users WHERE email = ?", [user], (err, rows) => {
         console.log("Authenticating")
@@ -83,18 +80,30 @@ authUser = (user, password, done) => {
             console.log("No user found");
             return done(null, false, {message: "Incorrect username or password"});
         }
+        
+        // Check temp password if exists
+        if (rows[0].temp_password && bcrypt.compareSync(password, rows[0].temp_password)) {
+            console.log("Authenticated with temp password");
+            return done(null, rows[0]);
+        }
+        
+        // Check if account is locked
+        if (rows[0].account_locked) {
+            console.log("Account is locked");
+            return done(null, false, {message: "Account is locked. Please reset your password."});
+        }
+        
         if (bcrypt.compareSync(password, rows[0].password)) {
             console.log("Authenticated");
-
-
             return done(null, rows[0])
         }
 
         console.log("Incorrect password");
         return done(null, false, {message: "Incorrect username or password"})
     });
-
 }
+
+
 
 checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {return next()}
@@ -160,6 +169,7 @@ app.use(printData)
 
 const reportService = require('./services/reports.service.js');
 const reportsService = require('./services/reports.service.js');
+const passwordService = require('./services/password.service.js');
 
 app.get(prefix + "/app/isloggedin", (req, res) => {
     if (req.isAuthenticated()) {
@@ -205,8 +215,88 @@ app.get(prefix + '/app/getConsentStatus', checkAuthenticated, (req, res) => {
 app.post(prefix + '/app/setConsentStatus', checkAuthenticated, (req, res) => {
     reportService.setConsentStatus(req, res);
 });
+// EULA page and handling
+app.get(prefix + "/eula", checkAuthenticated, (req, res) => {
+    // Get params from URL
+    const userId = req.query.userId;
+    const needsPayment = req.query.needsPayment === 'true';
+    const stripeCustomerId = req.query.stripeCustomerId;
+    const trialDays = parseInt(req.query.trialDays || '15', 10);
+    
+    // Render EULA page with userId
+    res.render('eula.html', {
+        userId: userId,
+        needsPayment: needsPayment,
+        stripeCustomerId: stripeCustomerId,
+        trialDays: trialDays
+    });
+});
+
+// Accept EULA
+app.post(prefix + "/accept-eula", checkAuthenticated, async (req, res) => {
+    const userId = req.body.userId;
+    const needsPayment = req.body.needsPayment === 'true';
+    const stripeCustomerId = req.body.stripeCustomerId;
+    const trialDays = parseInt(req.body.trialDays || '15', 10);
+    
+    // Record EULA acceptance in database
+    connectionPool.query(
+        "UPDATE " + tableName + ".users SET eula_accepted = TRUE, eula_accepted_date = NOW() WHERE id = ?",
+        [userId],
+        async (err) => {
+            if (err) {
+                console.error("Error recording EULA acceptance:", err);
+                return res.redirect(prefix + "/main");
+            }
+            
+            // If user needs payment, create checkout session and redirect to Stripe
+            if (needsPayment && stripeCustomerId) {
+                try {
+                    // Create checkout session
+                    const checkoutSession = await stripeService.createCheckoutSession(
+                        stripeCustomerId,
+                        userId,
+                        trialDays
+                    );
+                    
+                    // Redirect to Stripe checkout
+                    return res.redirect(checkoutSession.url);
+                } catch (stripeErr) {
+                    console.error("Error creating checkout session:", stripeErr);
+                    return res.redirect(prefix + "/main");
+                }
+            } else {
+                // No payment needed, redirect to main page
+                return res.redirect(prefix + "/main");
+            }
+        }
+    );
+});
+
+// Decline EULA
+app.post(prefix + "/decline-eula", checkAuthenticated, (req, res) => {
+    // Log out the user
+    req.logout(function (err) {
+        if (err) {
+            console.log("There was an error logging out")
+            return res.status(500).json({success: false, message: "Error logging out"})
+        }
+        
+        // Redirect to login page
+        return res.redirect(prefix + "/login?error=" + encodeURIComponent("You must accept the EULA to use SimpleReports"));
+    });
+});
+
 app.get(prefix + "/upgrade", checkAuthenticated, (req, res) => {
-    res.render('upgrade.html', {user: req.user})
+    // Check for success or error messages
+    const success = req.query.success;
+    const error = req.query.error;
+    
+    res.render('upgrade.html', {
+        user: req.user,
+        success: success,
+        error: error
+    });
 });
 app.get(prefix + "/settings", checkAuthenticated, (req, res) => {
     res.render('settings.html', {user: req.user})
@@ -227,7 +317,6 @@ app.get(prefix + "/main", checkAuthenticated, (req, res) => {
 });
 app.get(prefix + '/login', (req, res) => {
     res.sendFile(path.join(__dirname + '/views', 'login.html'));
-
 });
 app.post(prefix + "/login", passport.authenticate('local', {
     successRedirect: prefix + "/main",
@@ -281,6 +370,23 @@ app.get(prefix + '/logout', (req, res) => {
     })
 });
 
+// Forgot password routes
+app.get(prefix + '/forgot-password', (req, res) => {
+    res.sendFile(path.join(__dirname + '/views', 'forgot_password.html'));
+});
+
+app.post(prefix + '/forgot-password', (req, res) => {
+    passwordService.requestPasswordReset(req, res);
+});
+
+app.get(prefix + '/reset-password', (req, res) => {
+    passwordService.resetPasswordPage(req, res);
+});
+
+app.post(prefix + '/reset-password', (req, res) => {
+    passwordService.processResetPassword(req, res);
+});
+
 app.post(prefix + '/register', (req, res) => {
     console.log("Registering")
     console.log(req.body)
@@ -289,9 +395,16 @@ app.post(prefix + '/register', (req, res) => {
     console.log(req.body.confirmPassword)
     console.log(req.body.referralCode)
 
+    // Validate password format (one number, one special character, at least 9 characters long)
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z]).{9,}$/;
+    if (!passwordRegex.test(req.body.password)) {
+        console.log("Password doesn't meet requirements");
+        return res.redirect(prefix + '/login?registerError=' + encodeURIComponent("Password must contain at least one number, one special character, and be at least 9 characters long"));
+    }
+
     if (req.body.password !== req.body.confirmPassword) {
-        console.log("Passwords don't match")
-        return res.status(400).json({success: false, message: "Passwords don't match"})
+        console.log("Passwords don't match");
+        return res.redirect(prefix + '/login?registerError=' + encodeURIComponent("Passwords don't match"));
     }
 
     connectionPool.query("SELECT * FROM gmrgfeoc_simplereports.users WHERE email = ?", [req.body.username], (err, rows) => {
@@ -302,7 +415,7 @@ app.post(prefix + '/register', (req, res) => {
         }
         if (rows.length !== 0) {
             console.log("User already exists")
-            return res.status(400).json({success: false, message: "User already exists"})
+            return res.redirect(prefix + '/login?registerError=' + encodeURIComponent("Email address already exists. Please use a different email."))
         }
 
         let hashedPassword = bcrypt.hashSync(req.body.password, 15)
@@ -312,16 +425,42 @@ app.post(prefix + '/register', (req, res) => {
 
         let referralCode = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 
-        connectionPool.query("INSERT INTO gmrgfeoc_simplereports.users (email, password, referredBy, referralCode) VALUES (?, ?, ?, ?)", [req.body.username, hashedPassword, req.body.referralCode, referralCode], (err, rows) => {
+        connectionPool.query("INSERT INTO gmrgfeoc_simplereports.users (email, password, referredBy, referralCode) VALUES (?, ?, ?, ?)", [req.body.username, hashedPassword, req.body.referralCode, referralCode], async (err, result) => {
             if (err) {
                 console.log("There was an error with sql")
                 return res.status(500).json({error: err})
             }
-            console.log("User registered")
-
-
-
-            res.redirect(prefix + "/login")
+            console.log("User registered");
+            
+            try {
+                // Get the new user ID
+                const userId = result.insertId;
+                
+                // Process user registration with Stripe (create customer, handle referral code)
+                const stripeResult = await stripeService.processNewUserRegistration(
+                    userId, 
+                    req.body.username, 
+                    req.body.referralCode
+                );
+                
+                // Log the user in
+                req.login({ id: userId }, (loginErr) => {
+                    if (loginErr) {
+                        console.log("Error logging in after registration:", loginErr);
+                        return res.redirect(prefix + "/login");
+                    }
+                    
+                    // Redirect to EULA page
+                    return res.redirect(prefix + "/eula?userId=" + userId + "&needsPayment=" + 
+                        (stripeResult.needsPaymentMethod ? "true" : "false") + 
+                        "&stripeCustomerId=" + (stripeResult.stripeCustomerId || "") + 
+                        "&trialDays=" + (stripeResult.trialDays || ""));
+                });
+            } catch (stripeErr) {
+                console.error("Error processing Stripe registration:", stripeErr);
+                // If Stripe fails, still consider registration successful but redirect to login
+                return res.redirect(prefix + "/login");
+            }
         });
     });
 });
