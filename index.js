@@ -280,6 +280,8 @@ app.post(prefix + "/accept-eula", checkAuthenticated, async (req, res) => {
     const stripeCustomerId = req.body.stripeCustomerId;
     const trialDays = parseInt(req.body.trialDays || '15', 10);
     
+    console.log("EULA acceptance - userId:", userId, "needsPayment:", needsPayment, "stripeCustomerId:", stripeCustomerId, "trialDays:", trialDays);
+    
     // Record EULA acceptance in database
     connectionPool.query(
         "UPDATE " + tableName + ".users SET eula_accepted = TRUE, eula_accepted_date = NOW() WHERE id = ?",
@@ -292,6 +294,7 @@ app.post(prefix + "/accept-eula", checkAuthenticated, async (req, res) => {
             
             // If user needs payment, create checkout session and redirect to Stripe
             if (needsPayment && stripeCustomerId) {
+                console.log("Creating Stripe checkout session...");
                 try {
                     // Create checkout session
                     const checkoutSession = await stripeService.createCheckoutSession(
@@ -300,6 +303,7 @@ app.post(prefix + "/accept-eula", checkAuthenticated, async (req, res) => {
                         trialDays
                     );
                     
+                    console.log("Redirecting to Stripe checkout:", checkoutSession.url);
                     // Redirect to Stripe checkout
                     return res.redirect(checkoutSession.url);
                 } catch (stripeErr) {
@@ -307,6 +311,7 @@ app.post(prefix + "/accept-eula", checkAuthenticated, async (req, res) => {
                     return res.redirect(prefix + "/main");
                 }
             } else {
+                console.log("No payment needed or missing stripeCustomerId, redirecting to main");
                 // No payment needed, redirect to main page
                 return res.redirect(prefix + "/main");
             }
@@ -685,28 +690,19 @@ app.post(prefix + '/register', (req, res) => {
                     req.body.referralCode
                 );
                 
-                // If user has unlimited access or doesn't need payment method, redirect to main page
-                if (!stripeResult.needsPaymentMethod) {
-                    // Log them in
-                    req.login({ id: userId }, (loginErr) => {
-                        if (loginErr) {
-                            console.log("Error logging in after registration:", loginErr);
-                            return res.redirect(prefix + "/login");
-                        }
-                        
-                        return res.redirect(prefix + "/main");
-                    });
-                } else {
-                    // Create checkout session for payment method
-                    const checkoutSession = await stripeService.createCheckoutSession(
-                        stripeResult.stripeCustomerId,
-                        userId,
-                        stripeResult.trialDays
-                    );
+                // Log the user in
+                req.login({ id: userId }, (loginErr) => {
+                    if (loginErr) {
+                        console.log("Error logging in after registration:", loginErr);
+                        return res.redirect(prefix + "/login");
+                    }
                     
-                    // Redirect to Stripe checkout
-                    return res.redirect(checkoutSession.url);
-                }
+                    // Redirect to EULA page
+                    return res.redirect(prefix + "/eula?userId=" + userId + "&needsPayment=" + 
+                        (stripeResult.needsPaymentMethod ? "true" : "false") + 
+                        "&stripeCustomerId=" + (stripeResult.stripeCustomerId || "") + 
+                        "&trialDays=" + (stripeResult.trialDays || ""));
+                });
             } catch (stripeErr) {
                 console.error("Error processing Stripe registration:", stripeErr);
                 // If Stripe fails, still consider registration successful but redirect to login
