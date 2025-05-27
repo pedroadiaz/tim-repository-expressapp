@@ -276,6 +276,10 @@
             padding-top: 40px;
             padding-bottom: 40px;
             border-radius: 10px 10px 0px 0px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .header a {
@@ -297,7 +301,119 @@
 
         .header a:hover {
             background-color: #ddd;
-            color: black;
+        }
+
+        .save-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .save-button {
+            background-color: #7f578f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .save-button:hover {
+            background-color: #6a4478;
+        }
+
+        .save-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .close-button {
+            background-color: #dc3545 !important;
+        }
+
+        .close-button:hover {
+            background-color: #c82333 !important;
+        }
+
+        .close-button:disabled {
+            background-color: #cccccc !important;
+        }
+
+        .save-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .save-status.success {
+            color: #28a745;
+        }
+
+        .save-status.error {
+            color: #dc3545;
+        }
+
+        /* Ensure editable titles look consistent */
+        .editableTitle {
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .editableTitle:focus {
+            border-color: #7f578f;
+            outline: none;
+        }
+
+        .editableTitle:hover {
+            border-color: #cccccc;
+        }
+
+        /* Hide or minimize floating labels when fields have values */
+        .mdc-text-field--filled .mdc-floating-label--float-above {
+            opacity: 0.2 !important;
+            font-size: 0.75rem !important;
+        }
+
+        /* Hide floating label completely when input is focused and has value */
+        .mdc-text-field--focused .mdc-floating-label--float-above {
+            opacity: 0.1 !important;
+        }
+
+        /* Hide floating labels for date/time inputs which always show values */
+        .mdc-text-field input[type="date"] + .mdc-floating-label,
+        .mdc-text-field input[type="time"] + .mdc-floating-label,
+        .mdc-text-field input[type="datetime-local"] + .mdc-floating-label {
+            opacity: 0.15 !important;
+        }
+
+        /* Reduce floating label opacity for select elements with values */
+        .mdc-select--filled .mdc-floating-label {
+            opacity: 0.2 !important;
+        }
+
+        /* Override MDC floating label animations to keep them minimal */
+        .mdc-floating-label--float-above {
+            transform: translateY(-106%) scale(0.75) !important;
+            opacity: 0.2 !important;
+        }
+
+        /* Logo hover effect to indicate it's clickable */
+        #customUserLogo {
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        #customUserLogo:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
+            border-color: #7f578f;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .header a.active {
@@ -628,15 +744,24 @@
                     <!--
       <a href="#default" class="logo">CompanyLogo</a>
       -->
-                    <div style="display: flex;">
+                    <div style="width: 100%;">
                         <div class="header-right">
                             <a class="active" href="#">Home</a>
                             <a href="#demographicsSectionNav">Demographics</a>
                             <a href="#recordsReviewSectionNav">Records</a>
                             <a href="#interviewsSectionNav">Interviews</a>
-                            <a href="#">Observations</a>
-                            <a href="#">Testing</a>
-                            <a href="#">Summary</a>
+                            <a href="#observationsSectionNav">Observations</a>
+                            <a href="#testingSectionNav">Testing</a>
+                            <a href="#summarySectionNav">Summary</a>
+                        </div>
+                        <div class="save-section" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 15px;">
+                            <button id="saveReportBtn" class="save-button" onclick="saveReport()">
+                                <i class="fa fa-save"></i> Save Report
+                            </button>
+                            <button id="closeReportBtn" class="save-button close-button" onclick="saveAndCloseReport()">
+                                <i class="fa fa-times-circle"></i> Close Report
+                            </button>
+                            <span id="saveStatus" class="save-status"></span>
                         </div>
                     </div>
                 </div>
@@ -1453,7 +1578,7 @@
                                         <span class="shiny__label">
                                             <input style="z-index: 3; position: relative;" class="editableTitle w-100"
                                                 id="reasonForReferralTitle" type="text" name="reasonForReferralTitle"
-                                                value="Reason for Referral">
+                                                value="" placeholder="Reason for Referral">
                                             <span class="shiny__label__background"></span>
                                         </span>
                                     </span>
@@ -1582,7 +1707,9 @@
 
                             <div
                                 class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
-                                <h2>Psychoeducational Procedures</h2>
+                                <input class="editableTitle w-100" id="psychoeducationalProceduresTitle" type="text" 
+                                       name="psychoeducationalProceduresTitle" value="Psychoeducational Procedures"
+                                       style="text-align: center; font-size: 1.5em; font-weight: bold;">
                             </div>
 
                             <div id="psychoeducational_procedures"
@@ -2364,7 +2491,10 @@
                                         <thead>
                                             <tr class="mdc-data-table__header-row">
                                                 <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Developmental Milestones</th>
+                                                    <input class="editableTitle w-100" id="developmentalMilestonesTitle" type="text" 
+                                                           name="developmentalMilestonesTitle" value="Developmental Milestones"
+                                                           style="border: none; background: transparent; font-weight: bold; text-align: center;">
+                                                </th>
                                                 <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
                                                     Year(s)
                                                 </th>
@@ -3014,6 +3144,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div id="summarySectionNav"></div>
                             <h2 class="staticTitle" style="margin-bottom: -15px;">Summary</h2>
                             <div id="medical_summary"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop shiny">
@@ -3024,8 +3155,10 @@
                                             class="w-100">
                                             <div id="summary_healthDevelopment" class="staticLabel summaryTitle"
                                                 onclick="copyTextFromElement('summary_healthDevelopment_description')">
-                                                Health and Developmental Information <i style="cursor: pointer;"
-                                                    class="fa-solid fa-copy"></i></div>
+                                                <input class="editableTitle w-100" id="healthDevelopmentalTitle" type="text" 
+                                                       name="healthDevelopmentalTitle" value="Health and Developmental Information"
+                                                       style="border: none; background: transparent; font-weight: bold;">
+                                                <i style="cursor: pointer;" class="fa-solid fa-copy"></i></div>
                                             <div>
                                                 <textarea class="editableTextarea"
                                                     id="summary_healthDevelopment_description"
@@ -3123,7 +3256,10 @@
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <hr />
                                 <br />
-                                <h2 class="staticTitle">Standardized Test Performance History</h2>
+                                <div id="testingSectionNav"></div>
+                                <input class="editableTitle w-100" id="standardizedTestTitle" type="text" 
+                                       name="standardizedTestTitle" value="Standardized Test Performance History"
+                                       style="text-align: center; font-size: 1.5em; font-weight: bold; margin-bottom: 10px;">
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     style="min-width: 90%; text-align: left;"
                                     id="histories_testPerformanceHistoryPreInformation" class="descriptionInput"
@@ -3218,7 +3354,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="5">
-                                                Attendance History
+                                                <input class="editableTitle w-100" id="attendanceHistoryTitle" type="text" 
+                                                       name="attendanceHistoryTitle" value="Attendance History"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                         <tr class="mdc-data-table__header-row">
@@ -3300,7 +3438,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="6">
-                                                Special Education History
+                                                <input class="editableTitle w-100" id="specialEducationTitle" type="text" 
+                                                       name="specialEducationTitle" value="Special Education History"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -3538,7 +3678,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
-                                                Drug and Alcohol History
+                                                <input class="editableTitle w-100" id="drugAlcoholTitle" type="text" 
+                                                       name="drugAlcoholTitle" value="Drug and Alcohol History"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -3969,7 +4111,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
-                                                Probation and Court Involvement
+                                                <input class="editableTitle w-100" id="probationCourtTitle" type="text" 
+                                                       name="probationCourtTitle" value="Probation and Court Involvement"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -4266,7 +4410,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
-                                                <span style="font-style: italic;">Student Interview Questions</span>
+                                                <input class="editableTitle w-100" id="studentInterviewTitle" type="text" 
+                                                       name="studentInterviewTitle" value="Student Interview Questions"
+                                                       style="text-align: center; font-style: italic; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -4529,7 +4675,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
-                                                <span style="font-style: italic;">Parent Interview Questions</span>
+                                                <input class="editableTitle w-100" id="parentInterviewTitle" type="text" 
+                                                       name="parentInterviewTitle" value="Parent Interview Questions"
+                                                       style="text-align: center; font-style: italic; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -5525,7 +5673,8 @@
                                     id="interviews_otherProviderMoreInformation" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                             </div>
-
+                            
+                            <div id="observationsSectionNav"></div>
                             <div id="observations"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
 
@@ -7384,6 +7533,457 @@
     <script src="../js/material-components700.min.js.js"></script>
     <script src="../js/reportdetails.js"></script>
     <script src="../js/reportdetails_.js"></script>
+    
+    <script>
+        // Get report UUID from template variable or URL
+        function getReportUuid() {
+            // First try to get from template variable
+            const reportUuid = '<%= reportUuid %>';
+            if (reportUuid && reportUuid !== 'undefined') {
+                return reportUuid;
+            }
+            
+            // Fallback to URL parsing
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[pathParts.length - 1];
+        }
+
+        // Collect all form data and layout information
+        function collectReportData() {
+            const reportData = {
+                metadata: {
+                    title: document.getElementById('reportTitle')?.value || '',
+                    description: document.getElementById('description')?.value || '',
+                    schoolName: document.getElementById('schoolInformationName')?.value || '',
+                    schoolAddress: document.getElementById('schoolInformationAddress')?.value || '',
+                    logoSrc: document.getElementById('customUserLogo')?.src || null,
+                    lastSaved: new Date().toISOString()
+                },
+                fields: []
+            };
+
+            // Collect all input fields, textareas, and select elements
+            const inputs = document.querySelectorAll('input, textarea, select');
+            inputs.forEach((element, index) => {
+                if (element.id && element.type !== 'file') {
+                    reportData.fields.push({
+                        id: element.id,
+                        type: element.tagName.toLowerCase(),
+                        inputType: element.type || null,
+                        value: element.value || '',
+                        placeholder: element.placeholder || '',
+                        position: index,
+                        className: element.className || '',
+                        selectBoxOptions: element.getAttribute('selectBoxOptions') || null
+                    });
+                }
+            });
+
+            // Collect checkboxes and radio buttons
+            const checkboxes = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+            checkboxes.forEach((element, index) => {
+                if (element.id || element.name) {
+                    reportData.fields.push({
+                        id: element.id || element.name + '_' + index,
+                        type: element.tagName.toLowerCase(),
+                        inputType: element.type,
+                        checked: element.checked,
+                        value: element.value || '',
+                        name: element.name || '',
+                        position: reportData.fields.length + index
+                    });
+                }
+            });
+
+            // Collect MDC Select components
+            const mdcSelects = document.querySelectorAll('.mdc-select');
+            mdcSelects.forEach((selectElement, index) => {
+                const selectedTextElement = selectElement.querySelector('.mdc-select__selected-text');
+                const labelElement = selectElement.querySelector('.mdc-floating-label');
+                
+                if (selectedTextElement) {
+                    const selectId = selectElement.id || `mdc-select-${index}`;
+                    const selectedValue = selectedTextElement.textContent || '';
+                    const label = labelElement ? labelElement.textContent : '';
+                    
+                    reportData.fields.push({
+                        id: selectId,
+                        type: 'mdc-select',
+                        selectedText: selectedValue,
+                        label: label,
+                        position: reportData.fields.length,
+                        className: selectElement.className || ''
+                    });
+                }
+            });
+
+            return reportData;
+        }
+
+        // Save and close report function
+        async function saveAndCloseReport() {
+            const closeBtn = document.getElementById('closeReportBtn');
+            const saveStatus = document.getElementById('saveStatus');
+            
+            try {
+                // Disable close button and show saving status
+                closeBtn.disabled = true;
+                closeBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving & Closing...';
+                showSaveStatus('Saving before closing...', '');
+
+                // Save the report first
+                const saveResult = await performSave();
+                
+                if (saveResult.success) {
+                    showSaveStatus('Saved! Closing...', 'success');
+                    
+                    // Wait a moment for user to see the success message
+                    setTimeout(() => {
+                        // Close the current tab
+                        window.close();
+                        
+                        // Fallback: if window.close() doesn't work (some browsers block it),
+                        // try to navigate back or show a message
+                        setTimeout(() => {
+                            if (!window.closed) {
+                                showSaveStatus('Please close this tab manually', '');
+                                closeBtn.innerHTML = '<i class="fa fa-times-circle"></i> Close Tab Manually';
+                                closeBtn.onclick = function() { window.close(); };
+                            }
+                        }, 500);
+                    }, 1000);
+                } else {
+                    showSaveStatus('Error: ' + saveResult.message, 'error');
+                    closeBtn.disabled = false;
+                    closeBtn.innerHTML = '<i class="fa fa-times-circle"></i> Close Report';
+                }
+            } catch (error) {
+                console.error('Save and close error:', error);
+                showSaveStatus('Error: Failed to save report', 'error');
+                closeBtn.disabled = false;
+                closeBtn.innerHTML = '<i class="fa fa-times-circle"></i> Close Report';
+            }
+        }
+
+        // Helper function to perform the save operation
+        async function performSave() {
+            const uuid = getReportUuid();
+
+            if (!uuid) {
+                return { success: false, message: 'Could not determine report ID' };
+            }
+
+            try {
+                const reportData = collectReportData();
+                
+                const response = await fetch('/app/saveReportLayout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        uuid: uuid,
+                        layoutData: reportData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    return { success: true, message: 'Saved successfully' };
+                } else {
+                    return { success: false, message: result.message || result.status };
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                return { success: false, message: 'Failed to save report' };
+            }
+        }
+
+        // Save report function
+        async function saveReport() {
+            const saveBtn = document.getElementById('saveReportBtn');
+
+            console.log('Attempting to save report...');
+
+            try {
+                // Disable button and show loading
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+                showSaveStatus('Saving...', '');
+
+                // Use the helper function
+                const saveResult = await performSave();
+                
+                if (saveResult.success) {
+                    showSaveStatus('Saved successfully!', 'success');
+                } else {
+                    showSaveStatus('Error: ' + saveResult.message, 'error');
+                }
+
+            } catch (error) {
+                console.error('Save error:', error);
+                showSaveStatus('Error: Failed to save report', 'error');
+            } finally {
+                // Re-enable button
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fa fa-save"></i> Save Report';
+                
+                // Clear status after 3 seconds
+                setTimeout(() => {
+                    showSaveStatus('', '');
+                }, 3000);
+            }
+        }
+
+        // Load report function
+        async function loadReport() {
+            const uuid = getReportUuid();
+            
+            if (!uuid) {
+                console.log('No report UUID found, skipping load');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/app/getReportLayout?uuid=${uuid}`);
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success' && result.layoutData) {
+                    const data = result.layoutData;
+                    
+                    // Restore metadata
+                    if (data.metadata) {
+                        if (data.metadata.title) {
+                            const titleField = document.getElementById('reportTitle');
+                            if (titleField) titleField.value = data.metadata.title;
+                        }
+                        if (data.metadata.description) {
+                            const descField = document.getElementById('description');
+                            if (descField) descField.value = data.metadata.description;
+                        }
+                        if (data.metadata.schoolName) {
+                            const schoolField = document.getElementById('schoolInformationName');
+                            if (schoolField) schoolField.value = data.metadata.schoolName;
+                        }
+                        if (data.metadata.schoolAddress) {
+                            const addressField = document.getElementById('schoolInformationAddress');
+                            if (addressField) addressField.value = data.metadata.schoolAddress;
+                        }
+                        if (data.metadata.logoSrc) {
+                            restoreLogo(data.metadata.logoSrc);
+                        }
+                    }
+
+                    // Restore field data
+                    if (data.fields) {
+                        data.fields.forEach(fieldData => {
+                            if (fieldData.type === 'mdc-select') {
+                                // Handle MDC Select components
+                                const selectElement = document.getElementById(fieldData.id) || 
+                                                    document.querySelectorAll('.mdc-select')[parseInt(fieldData.id.replace('mdc-select-', ''))];
+                                
+                                if (selectElement) {
+                                    const selectedTextElement = selectElement.querySelector('.mdc-select__selected-text');
+                                    if (selectedTextElement && fieldData.selectedText) {
+                                        selectedTextElement.textContent = fieldData.selectedText;
+                                        
+                                        // Also try to find and select the corresponding list item
+                                        const listItems = selectElement.querySelectorAll('.mdc-list-item');
+                                        listItems.forEach(item => {
+                                            const itemText = item.querySelector('.mdc-list-item__text');
+                                            if (itemText && itemText.textContent === fieldData.selectedText) {
+                                                // Add selected class or trigger selection
+                                                item.classList.add('mdc-list-item--selected');
+                                            } else {
+                                                item.classList.remove('mdc-list-item--selected');
+                                            }
+                                        });
+                                    }
+                                }
+                            } else {
+                                // Handle regular form elements
+                                const element = document.getElementById(fieldData.id);
+                                if (element) {
+                                    if (fieldData.type === 'input' && (fieldData.inputType === 'checkbox' || fieldData.inputType === 'radio')) {
+                                        element.checked = fieldData.checked || false;
+                                    } else {
+                                        element.value = fieldData.value || '';
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    console.log('Report loaded successfully');
+                    
+                    // Update MDC text fields to properly handle loaded values
+                    updateMDCTextFields();
+                } else {
+                    console.log('No saved data found for this report');
+                }
+            } catch (error) {
+                console.error('Load error:', error);
+            }
+        }
+
+        // Show save status
+        function showSaveStatus(message, type) {
+            const saveStatus = document.getElementById('saveStatus');
+            saveStatus.textContent = message;
+            saveStatus.className = 'save-status' + (type ? ' ' + type : '');
+        }
+
+        // Update MDC text fields to properly handle pre-filled values
+        function updateMDCTextFields() {
+            console.log('Updating MDC text field states...');
+            
+            // Find all MDC text fields
+            const textFields = document.querySelectorAll('.mdc-text-field');
+            
+            textFields.forEach(textField => {
+                const input = textField.querySelector('.mdc-text-field__input');
+                const label = textField.querySelector('.mdc-floating-label');
+                
+                if (input && label) {
+                    // Check if input has a value
+                    if (input.value && input.value.trim() !== '') {
+                        // Add the float-above class to make label float
+                        label.classList.add('mdc-floating-label--float-above');
+                        textField.classList.add('mdc-text-field--label-floating');
+                        
+                        console.log('Updated field:', input.id, 'value:', input.value);
+                    } else {
+                        // Remove float classes if no value
+                        label.classList.remove('mdc-floating-label--float-above');
+                        textField.classList.remove('mdc-text-field--label-floating');
+                    }
+                }
+            });
+
+            // Also handle select elements
+            const selectElements = document.querySelectorAll('.mdc-select');
+            selectElements.forEach(selectElement => {
+                const selectedText = selectElement.querySelector('.mdc-select__selected-text');
+                const label = selectElement.querySelector('.mdc-floating-label');
+                
+                if (selectedText && label && selectedText.textContent.trim() !== '') {
+                    label.classList.add('mdc-floating-label--float-above');
+                    selectElement.classList.add('mdc-select--label-floating');
+                }
+            });
+        }
+
+        // Restore logo from saved data
+        function restoreLogo(logoSrc) {
+            console.log('Restoring logo:', logoSrc);
+            
+            // Check if logo image already exists
+            const existingLogo = document.getElementById('customUserLogo');
+            if (existingLogo) {
+                existingLogo.remove();
+            }
+            
+            // Create and display the saved logo
+            const img = document.createElement('img');
+            img.id = 'customUserLogo';
+            img.src = logoSrc;
+            img.style.width = '150px';
+            img.style.cursor = 'pointer';
+            img.title = 'Click to change logo';
+            
+            // Add click handler to allow editing the logo
+            img.onclick = function() {
+                // Show the upload form again
+                document.getElementById('customLogo').style.display = 'block';
+                // Remove the current image
+                img.remove();
+                // Reset the file input
+                const fileInput = document.querySelector('input[name="logo"]');
+                if (fileInput) fileInput.value = '';
+            };
+            
+            // Hide the upload form and show the image
+            document.getElementById('customLogo').style.display = 'none';
+            document.getElementById('customLogo').insertAdjacentElement('afterend', img);
+        }
+
+        // Auto-save when user tries to leave the page
+        let isCurrentlySaving = false;
+        
+        // Function to perform quick save when leaving
+        async function autoSaveOnExit() {
+            if (isCurrentlySaving) return; // Avoid multiple simultaneous saves
+            
+            console.log('Auto-saving before page exit...');
+            isCurrentlySaving = true;
+            
+            try {
+                const uuid = getReportUuid();
+                if (!uuid) return;
+
+                const reportData = collectReportData();
+                const payload = JSON.stringify({
+                    uuid: uuid,
+                    layoutData: reportData
+                });
+
+                // Use sendBeacon for reliability when page is unloading
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([payload], { type: 'application/json' });
+                    navigator.sendBeacon('/app/saveReportLayout', blob);
+                    console.log('Auto-save sent via sendBeacon');
+                } else {
+                    // Fallback for browsers without sendBeacon
+                    fetch('/app/saveReportLayout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: payload,
+                        keepalive: true
+                    });
+                    console.log('Auto-save sent via fetch with keepalive');
+                }
+            } catch (error) {
+                console.error('Auto-save error:', error);
+            } finally {
+                isCurrentlySaving = false;
+            }
+        }
+
+        // Listen for various page exit events
+        window.addEventListener('beforeunload', function(event) {
+            autoSaveOnExit();
+            // Don't show "Are you sure?" dialog unless there's a specific reason
+            // event.returnValue = 'Your report will be auto-saved.';
+        });
+
+        // Additional fallback for when page becomes hidden
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                autoSaveOnExit();
+            }
+        });
+
+        // Fallback for page hide event (mobile Safari, etc.)
+        window.addEventListener('pagehide', function(event) {
+            autoSaveOnExit();
+        });
+
+        // Save before page unload (another fallback)
+        window.addEventListener('unload', function(event) {
+            autoSaveOnExit();
+        });
+
+        // Auto-load report data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for other scripts to initialize
+            setTimeout(() => {
+                loadReport();
+                // Also update MDC fields that might have default values
+                setTimeout(updateMDCTextFields, 500);
+            }, 1000);
+        });
+    </script>
 </body>
 
 </html>

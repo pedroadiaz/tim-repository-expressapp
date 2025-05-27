@@ -42,6 +42,18 @@ document.getElementById('customLogo').addEventListener('change', function (event
                 img.setAttribute('data-width', width);
                 img.setAttribute('data-height', height);
                 img.style.width = '150px';
+                img.style.cursor = 'pointer';
+                img.title = 'Click to change logo';
+                
+                // Add click handler to allow editing the logo
+                img.onclick = function() {
+                    // Show the upload form again
+                    document.getElementById('customLogo').style.display = 'block';
+                    // Remove the current image
+                    img.remove();
+                    // Reset the file input
+                    document.querySelector('input[name="logo"]').value = '';
+                };
             }
             document.getElementById('customLogo').style.display = 'none';
             document.getElementById('customLogo').insertAdjacentElement('afterend', img);

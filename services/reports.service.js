@@ -330,5 +330,128 @@ module.exports = {
 
             return res.status(200).json({status: "success"});
         });
+    },
+    saveReportLayout: (req, res) => {
+        console.log("Saving report layout and data");
+        console.log("Request body type:", typeof req.body);
+        console.log("Request headers:", req.headers['content-type']);
+        console.log("User ID:", req.user.id);
+        
+        const { uuid, layoutData } = req.body;
+
+        if (!uuid || !layoutData) {
+            console.log("Missing data - uuid:", !!uuid, "layoutData:", !!layoutData);
+            return res.status(400).json({status: "Missing uuid or layoutData"});
+        }
+
+        // First verify the report belongs to the user
+        console.log("Looking for report with UUID:", uuid, "User ID:", req.user.id);
+        connectionPool.query("SELECT * FROM " + tableName + ".report_entry WHERE uuid = ? AND userId = ? AND deleted = 0", [uuid, req.user.id], (err, rows) => {
+            if (err) {
+                console.error("Error checking report ownership:", err);
+                return res.status(500).json({status: "Database error"});
+            }
+
+            console.log("Report query results:", rows);
+            if (rows.length === 0) {
+                console.log("No report found with UUID:", uuid, "for user:", req.user.id);
+                return res.status(404).json({status: "Report not found or access denied"});
+            }
+
+            const reportEntryId = rows[0].id;
+
+            // Extract title from layoutData for updating cachedTitle
+            const reportTitle = layoutData.metadata && layoutData.metadata.title ? layoutData.metadata.title : rows[0].cachedTitle;
+
+            // Update both the report layout data and the cached title
+            connectionPool.query(
+                "UPDATE " + tableName + ".report SET layout_data = ?, last_modified = CURRENT_TIMESTAMP WHERE ownerId = ?",
+                [JSON.stringify(layoutData), reportEntryId],
+                (updateErr) => {
+                    if (updateErr) {
+                        console.error("Error saving layout data:", updateErr);
+                        return res.status(500).json({status: "Failed to save layout data"});
+                    }
+
+                    // Also update the cached title in report_entry
+                    connectionPool.query(
+                        "UPDATE " + tableName + ".report_entry SET cachedTitle = ? WHERE id = ?",
+                        [reportTitle, reportEntryId],
+                        (titleUpdateErr) => {
+                            if (titleUpdateErr) {
+                                console.error("Error updating cached title:", titleUpdateErr);
+                                // Don't fail the whole operation for this
+                            }
+
+                            console.log("Report layout saved successfully for UUID:", uuid);
+                            return res.status(200).json({status: "success", message: "Report saved successfully"});
+                        }
+                    );
+                });
+        });
+    },
+    getReportLayout: (req, res) => {
+        console.log("Getting report layout and data");
+        const { uuid } = req.query;
+
+        if (!uuid) {
+            return res.status(400).json({status: "Missing uuid parameter"});
+        }
+
+        // First verify the report belongs to the user
+        connectionPool.query("SELECT * FROM " + tableName + ".report_entry WHERE uuid = ? AND userId = ? AND deleted = 0", [uuid, req.user.id], (err, rows) => {
+            if (err) {
+                console.error("Error checking report ownership:", err);
+                return res.status(500).json({status: "Database error"});
+            }
+
+            if (rows.length === 0) {
+                return res.status(404).json({status: "Report not found or access denied"});
+            }
+
+            const reportEntryId = rows[0].id;
+            const reportTitle = rows[0].cachedTitle;
+
+            console.log("Report found for UUID:", uuid, "with entry ID:", reportEntryId);
+            // Get the report layout data
+            connectionPool.query(
+                "SELECT layout_data, last_modified FROM " + tableName + ".report WHERE ownerId = ?",
+                [reportEntryId],
+                (layoutErr, layoutRows) => {
+                    if (layoutErr) {
+                        console.error("Error fetching layout data:", layoutErr);
+                        return res.status(500).json({status: "Failed to fetch layout data"});
+                    }
+
+                    if (layoutRows.length === 0) {
+                        return res.status(404).json({status: "Report data not found"});
+                    }
+
+                    const layoutData = layoutRows[0].layout_data;
+                    const lastModified = layoutRows[0].last_modified;
+
+                    console.log("Layout data retrieved successfully for UUID:", uuid);
+                    console.log("Layout data type:", typeof layoutData);
+                    
+                    // Handle both string and object cases for layoutData
+                    let parsedLayoutData = null;
+                    if (layoutData) {
+                        if (typeof layoutData === 'string') {
+                            parsedLayoutData = JSON.parse(layoutData);
+                        } else {
+                            parsedLayoutData = layoutData; // Already an object
+                        }
+                    }
+                    
+                    return res.status(200).json({
+                        status: "success",
+                        uuid: uuid,
+                        title: reportTitle,
+                        layoutData: parsedLayoutData,
+                        lastModified: lastModified
+                    });
+                }
+            );
+        });
     }
 }
