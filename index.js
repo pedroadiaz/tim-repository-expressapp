@@ -256,6 +256,30 @@ app.get(prefix + '/app/getConsentStatus', checkAuthenticated, (req, res) => {
 app.post(prefix + '/app/setConsentStatus', checkAuthenticated, (req, res) => {
     reportService.setConsentStatus(req, res);
 });
+// Special middleware for saveReportLayout to handle sendBeacon requests
+app.post(prefix + '/app/saveReportLayout', 
+    express.raw({type: 'application/octet-stream', limit: '10mb'}),
+    express.json(),
+    checkAuthenticated, 
+    (req, res) => {
+        // Parse the body if it's raw (from sendBeacon)
+        if (Buffer.isBuffer(req.body)) {
+            try {
+                const bodyString = req.body.toString();
+                req.body = JSON.parse(bodyString);
+                console.log("Parsed sendBeacon request body");
+            } catch (parseError) {
+                console.error("Error parsing raw body:", parseError);
+                return res.status(400).json({status: "Invalid request format"});
+            }
+        }
+        
+        reportService.saveReportLayout(req, res);
+    }
+);
+app.get(prefix + '/app/getReportLayout', checkAuthenticated, (req, res) => {
+    reportService.getReportLayout(req, res);
+});
 // EULA page and handling
 app.get(prefix + "/eula", checkAuthenticated, (req, res) => {
     // Get params from URL
