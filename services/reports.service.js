@@ -2,19 +2,18 @@ const express = require('express')
 const path = require('path');
 const absPath = path.join(__dirname, './views');
 
-const mysql = require('mysql2');
 const url = require('url');
 const fetch = require('node-fetch');
 const uuidv4 = require('uuid').v4;
+const dbService = require('./database.service.js');
 
 const admin = "[user]";
 const tableName = "gmrgfeoc_simplereports";
-const connectionPool = mysql.createPool({
-    host: process.env.DATABASE_ENDPOINT,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    connectionLimit: 5
-});
+
+// Use database service for all queries
+const connectionPool = {
+    query: (query, params, callback) => dbService.query(query, params, callback)
+};
 
 module.exports = {
 

@@ -33,7 +33,12 @@ document.getElementById('customLogo').addEventListener('change', function (event
             console.log('Success:', result);
             var img = document.createElement('img');
             img.id = 'customUserLogo';
-            img.src = ".." + result.filename;
+            // Handle both S3 URLs (absolute) and local paths (relative)
+            if (result.filename.startsWith('http://') || result.filename.startsWith('https://')) {
+                img.src = result.filename; // S3 URL - use as-is
+            } else {
+                img.src = ".." + result.filename; // Local path - add relative prefix
+            }
 
             img.onload = function () {
                 var width = this.width;

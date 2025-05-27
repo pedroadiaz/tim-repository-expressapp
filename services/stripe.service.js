@@ -1,14 +1,21 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const mysql = require('mysql2');
+// Lazy initialization for Stripe
+let stripe = null;
+function getStripe() {
+    if (!stripe) {
+        stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    }
+    return stripe;
+}
+
 const path = require('path');
+const dbService = require('./database.service.js');
 
 const tableName = "gmrgfeoc_simplereports";
-const connectionPool = mysql.createPool({
-    host: process.env.DATABASE_ENDPOINT,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    connectionLimit: 5
-});
+
+// Use database service for all queries
+const connectionPool = {
+    query: (query, params, callback) => dbService.query(query, params, callback)
+};
 
 // Define referral codes and their corresponding trial days
 const REFERRAL_CODES = {
@@ -68,7 +75,7 @@ exports.processNewUserRegistration = async (userId, email, referralCode) => {
                 
                 try {
                     // Create Stripe customer
-                    const customer = await stripe.customers.create({
+                    const customer = await getStripe().customers.create({
                         email: email,
                         metadata: {
                             userId: userId
@@ -119,7 +126,7 @@ exports.createCheckoutSession = async (customerId, userId, trialDays) => {
     const trialEnd = Math.floor(trialEndDate.getTime() / 1000);
     
     // Create checkout session
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'subscription',
         customer: customerId,
@@ -151,7 +158,7 @@ exports.processCheckoutSuccess = async (sessionId) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Retrieve checkout session
-            const session = await stripe.checkout.sessions.retrieve(sessionId, {
+            const session = await getStripe().checkout.sessions.retrieve(sessionId, {
                 expand: ['subscription']
             });
             
@@ -432,7 +439,7 @@ exports.checkTrialWarning = async (user) => {
  * @returns {Promise<Object>} - Portal session
  */
 exports.createCustomerPortalSession = async (customerId) => {
-    const session = await stripe.billingPortal.sessions.create({
+    const session = await getStripe().billingPortal.sessions.create({
         customer: customerId,
         return_url: `${process.env.APP_URL}/settings`,
     });

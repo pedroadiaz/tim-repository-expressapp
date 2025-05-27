@@ -1,32 +1,34 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const mysql = require('mysql2');
+const dbService = require('./database.service.js');
 const path = require('path');
 
 // Nodemailer for sending emails
 const nodemailer = require('nodemailer');
 
-// Configure Nodemailer with Gmail
-console.log("Configuring Nodemailer with Gmail...");
-console.log("username: ", process.env.EMAIL_USER);
-console.log("password: ", process.env.EMAIL_PASSWORD);
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // true for 465, false for other ports
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
+// Lazy initialization for email transporter
+let transporter = null;
+
+function getTransporter() {
+    if (!transporter) {
+        transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, // true for 465, false for other ports
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
     }
-});
+    return transporter;
+}
 
 const tableName = "gmrgfeoc_simplereports";
-const connectionPool = mysql.createPool({
-    host: process.env.DATABASE_ENDPOINT,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    connectionLimit: 5
-});
+// Use database service for all queries
+const connectionPool = {
+    query: (query, params, callback) => dbService.query(query, params, callback)
+};
 
 // Generate a temporary password
 const generateTempPassword = () => {
@@ -112,7 +114,7 @@ exports.requestPasswordReset = (req, res) => {
                             `
                         };
                         
-                        await transporter.sendMail(mailOptions);
+                        await getTransporter().sendMail(mailOptions);
                         
                         return res.redirect('/forgot-password?success=' + encodeURIComponent("Password reset instructions have been sent to your email."));
                     } catch (emailErr) {

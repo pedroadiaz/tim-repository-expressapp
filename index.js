@@ -1,8 +1,3 @@
-global.CONSTANTS = Object.freeze({
-    paypal_clientId: process.env.PAYPAL_CLIENT_ID,
-    paypal_secret: process.env.PAYPAL_SECRET
-});
-
 const prefix = "";
 const express = require('express')
 const router = express.Router()
@@ -30,14 +25,33 @@ const url = require('url');
 const fetch = require('node-fetch');
 
 require('dotenv').config();
+
+// Load secrets from AWS Secrets Manager synchronously before anything else
+const secretsService = require('./services/secrets.service.js');
+
+// Block startup until secrets are loaded
+async function initializeApp() {
+    try {
+        await secretsService.loadSecrets();
+        console.log('Secrets loaded successfully from AWS Secrets Manager');
+    } catch (err) {
+        console.error('Warning: Could not load secrets from AWS, using local .env:', err.message);
+    }
+}
+
 const admin = "[user]";
 const tableName = "gmrgfeoc_simplereports";
-const connectionPool = mysql.createPool({
-    host: process.env.DATABASE_ENDPOINT,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    connectionLimit: 5
-});
+
+// Use the shared database service
+const dbService = require('./services/database.service.js');
+
+// Create a connection pool interface that uses the database service
+const connectionPool = {
+    query: (query, params, callback) => dbService.query(query, params, callback)
+};
+
+// Export the initialization promise so server.js can wait for it
+module.exports.initPromise = initializeApp();
 
 
 app.use(helmet({
@@ -208,7 +222,6 @@ app.use(printData)
 
 
 const reportService = require('./services/reports.service.js');
-const reportsService = require('./services/reports.service.js');
 const passwordService = require('./services/password.service.js');
 const stripeService = require('./services/stripe.service.js');
 
@@ -233,7 +246,7 @@ app.get(prefix + "/api/isloggedin", (req, res, next) => {
 
 
 app.get(prefix + "/app/getUser", checkAuthenticated, (req, res) => {
-    reportsService.getUser(req, res);
+    reportService.getUser(req, res);
 });
 app.get(prefix + "/app/getReportEntriesByUser", checkAuthenticated, (req, res) => {
     reportService.getReportEntriesByUser(req, res)
@@ -740,26 +753,37 @@ app.get(prefix + '/report/:guid', checkAuthenticated, (req, res) => {
     res.render('reportdetails.html', {reportUuid: req.params.guid, user: req.user})
 });
 
-const uploadLogos = multer({dest: './public/user-uploaded/logos/'});
-app.post(prefix + '/app/uploadLogo', uploadLogos.single('logo'), (req, res) => {
+const s3Service = require('./services/s3.service.js');
 
-
-    if (!req.file.mimetype.startsWith("image")) {
-        return res.status(400).json({success: false, message: "Only image files are allowed!"})
+const uploadLogos = multer({
+    storage: multer.memoryStorage(), // Store in memory instead of disk
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
     }
+});
 
-
-    const ext = path.extname(req.file.originalname);
-    const newFilenamePath = req.file.path + ext;
-    const newPublicFilenamePath = "/user-uploaded/logos/" + req.file.filename + ext;
-    console.log(newFilenamePath);
-    fs.rename(req.file.path, newFilenamePath, (err) => {
-        if (err) {
-            console.log(err)
-            return res.status(500).json({success: false, message: "Error saving file"})
+app.post(prefix + '/app/uploadLogo', uploadLogos.single('logo'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({success: false, message: "No file uploaded"});
         }
-        res.status(200).json({success: true, filename: newPublicFilenamePath})
-    });
+
+        if (!req.file.mimetype.startsWith("image")) {
+            return res.status(400).json({success: false, message: "Only image files are allowed!"});
+        }
+
+        // Upload to S3
+        const s3Url = await s3Service.uploadLogo(
+            req.file.buffer,
+            req.file.originalname,
+            req.file.mimetype
+        );
+
+        res.status(200).json({success: true, filename: s3Url});
+    } catch (error) {
+        console.error('Error uploading logo:', error);
+        res.status(500).json({success: false, message: "Error uploading file to S3"});
+    }
 });
 
 app.use(prefix + '/user-uploaded', express.static('public/user-uploaded'));
@@ -787,4 +811,6 @@ app.post(prefix + '/admin/saveNotes', checkAuthenticated, (req, res) => {
 });
 
 
+// Export both app and initPromise
+app.initPromise = module.exports.initPromise;
 module.exports = app;
