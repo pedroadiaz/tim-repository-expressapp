@@ -10,7 +10,7 @@ const secretsManager = new AWS.SecretsManager({
     region: process.env.AWS_REGION
 });
 
-const SECRET_NAME = 'simple_reports_development';
+const SECRET_NAME = process.env.AWS_SECRET_NAME;
 
 /**
  * Load secrets from AWS Secrets Manager and set them as environment variables
