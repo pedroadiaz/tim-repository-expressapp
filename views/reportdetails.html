@@ -761,6 +761,9 @@
                             <button id="closeReportBtn" class="save-button close-button" onclick="saveAndCloseReport()">
                                 <i class="fa fa-times-circle"></i> Close Report
                             </button>
+                            <button id="exportWordBtn" class="save-button" style="background-color: #2196F3;" onclick="exportToWord()">
+                                <i class="fa fa-file-word"></i> Export to Word
+                            </button>
                             <span id="saveStatus" class="save-status"></span>
                         </div>
                     </div>
@@ -3255,6 +3258,16 @@
                                     rows="2"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <hr />
+                                
+                                <!-- AI Summary for Observations -->
+                                <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white;"
+                                            onclick="generateAISummary('observations')">
+                                        <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                    </button>
+                                </div>
+                                
                                 <br />
                                 <div id="testingSectionNav"></div>
                                 <input class="editableTitle w-100" id="standardizedTestTitle" type="text" 
@@ -4388,6 +4401,15 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_cfsInvolvementMoreInformation" rows="3"
                                     placeholder="Other additional information">There has been no reported history of child protective services involvement.</textarea>
+                            </div>
+                            
+                            <!-- AI Summary for Records Review -->
+                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                <button class="mdc-button mdc-button--raised" 
+                                        style="background-color: #4CAF50; color: white;"
+                                        onclick="generateAISummary('recordsReview')">
+                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                </button>
                             </div>
 
                             <div id="interviewsSectionNav"></div>
@@ -5672,6 +5694,15 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="interviews_otherProviderMoreInformation" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
+                            </div>
+                            
+                            <!-- AI Summary for Interviews -->
+                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                <button class="mdc-button mdc-button--raised" 
+                                        style="background-color: #4CAF50; color: white;"
+                                        onclick="generateAISummary('interviews')">
+                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                </button>
                             </div>
                             
                             <div id="observationsSectionNav"></div>
@@ -7270,6 +7301,16 @@
                                     id="academicTestingBehaviorMoreInformation" rows="3"
                                     placeholder="Other additional information">todo</textarea>
                             </div>
+                            
+                            <!-- AI Summary for Testing -->
+                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                <button class="mdc-button mdc-button--raised" 
+                                        style="background-color: #4CAF50; color: white;"
+                                        onclick="generateAISummary('testing')">
+                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                </button>
+                            </div>
+                            
                             <div class="sectionSpacer"></div>
                             <div id="testing"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
@@ -7662,6 +7703,277 @@
                 showSaveStatus('Error: Failed to save report', 'error');
                 closeBtn.disabled = false;
                 closeBtn.innerHTML = '<i class="fa fa-times-circle"></i> Close Report';
+            }
+        }
+
+        // Export to Word function
+        async function exportToWord() {
+            const exportBtn = document.getElementById('exportWordBtn');
+            
+            try {
+                // Disable button and show loading
+                exportBtn.disabled = true;
+                exportBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Exporting...';
+                showSaveStatus('Preparing Word document...', '');
+
+                // Get all the report content
+                const reportContent = document.getElementById('survey-form');
+                
+                // Create document sections
+                const docSections = [];
+                
+                // Add title
+                const reportTitle = document.querySelector('.editableTitle')?.textContent || 'Assessment Report';
+                docSections.push(
+                    new docx.Paragraph({
+                        text: reportTitle,
+                        heading: docx.HeadingLevel.TITLE,
+                        alignment: docx.AlignmentType.CENTER,
+                        spacing: { after: 400 }
+                    })
+                );
+
+                // Process each section
+                const sections = reportContent.querySelectorAll('.editableSection');
+                sections.forEach(section => {
+                    // Skip hidden sections
+                    if (section.style.display === 'none') return;
+                    
+                    // Get section title
+                    const sectionTitle = section.querySelector('.editableSubtitle, h2, h3');
+                    if (sectionTitle && sectionTitle.textContent.trim()) {
+                        docSections.push(
+                            new docx.Paragraph({
+                                text: sectionTitle.textContent.trim(),
+                                heading: docx.HeadingLevel.HEADING_1,
+                                spacing: { before: 400, after: 200 }
+                            })
+                        );
+                    }
+                    
+                    // Get all text content in the section
+                    const labels = section.querySelectorAll('.editableLabel');
+                    const textareas = section.querySelectorAll('.editableTextarea, textarea');
+                    const inputs = section.querySelectorAll('input[type="text"]:not(.editableTitle):not(.editableSubtitle)');
+                    const selects = section.querySelectorAll('.mdc-select__selected-text');
+                    
+                    // Process labels and their associated content
+                    labels.forEach(label => {
+                        const labelText = label.textContent.trim();
+                        if (labelText) {
+                            docSections.push(
+                                new docx.Paragraph({
+                                    text: labelText,
+                                    heading: docx.HeadingLevel.HEADING_2,
+                                    spacing: { before: 200, after: 100 }
+                                })
+                            );
+                            
+                            // Find associated textarea or input
+                            const nextElement = label.nextElementSibling;
+                            if (nextElement) {
+                                let content = '';
+                                if (nextElement.classList.contains('editableTextarea') || nextElement.tagName === 'TEXTAREA') {
+                                    content = nextElement.value || nextElement.textContent || '';
+                                } else if (nextElement.tagName === 'INPUT') {
+                                    content = nextElement.value || '';
+                                }
+                                
+                                if (content.trim()) {
+                                    docSections.push(
+                                        new docx.Paragraph({
+                                            text: content.trim(),
+                                            spacing: { after: 200 }
+                                        })
+                                    );
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Process any standalone textareas
+                    textareas.forEach(textarea => {
+                        // Skip if already processed
+                        if (textarea.previousElementSibling && textarea.previousElementSibling.classList.contains('editableLabel')) {
+                            return;
+                        }
+                        
+                        const content = textarea.value || textarea.textContent || '';
+                        if (content.trim()) {
+                            docSections.push(
+                                new docx.Paragraph({
+                                    text: content.trim(),
+                                    spacing: { after: 200 }
+                                })
+                            );
+                        }
+                    });
+                });
+
+                // Create the document
+                const doc = new docx.Document({
+                    sections: [{
+                        properties: {},
+                        children: docSections
+                    }]
+                });
+
+                // Generate and save the document
+                docx.Packer.toBlob(doc).then(blob => {
+                    const fileName = `Assessment_Report_${new Date().toISOString().split('T')[0]}.docx`;
+                    saveAs(blob, fileName);
+                    
+                    showSaveStatus('Word document exported successfully!', 'success');
+                    
+                    // Re-enable button
+                    exportBtn.disabled = false;
+                    exportBtn.innerHTML = '<i class="fa fa-file-word"></i> Export to Word';
+                    
+                    // Clear status after 3 seconds
+                    setTimeout(() => {
+                        showSaveStatus('', '');
+                    }, 3000);
+                });
+
+            } catch (error) {
+                console.error('Export error:', error);
+                showSaveStatus('Error: Failed to export to Word', 'error');
+                
+                // Re-enable button
+                exportBtn.disabled = false;
+                exportBtn.innerHTML = '<i class="fa fa-file-word"></i> Export to Word';
+                
+                // Clear status after 3 seconds
+                setTimeout(() => {
+                    showSaveStatus('', '');
+                }, 3000);
+            }
+        }
+
+        // Copy section content for AI Summary
+        async function generateAISummary(section) {
+            const button = event.target.closest('button');
+            
+            try {
+                // Disable button and show loading
+                button.disabled = true;
+                button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Copying...';
+                showSaveStatus('Collecting section content...', '');
+
+                // Collect section content
+                let sectionContent = '';
+                let sectionElement;
+                
+                switch(section) {
+                    case 'recordsReview':
+                        // Get all content from Records Review section
+                        const recordsStart = document.getElementById('recordsReviewSectionNav');
+                        const recordsEnd = document.getElementById('interviewsSectionNav');
+                        sectionElement = recordsStart.parentElement;
+                        
+                        // Collect all text content between these sections
+                        let currentElement = recordsStart.nextElementSibling;
+                        while (currentElement && currentElement !== recordsEnd && !currentElement.classList.contains('ai-summary-section')) {
+                            const textElements = currentElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
+                            textElements.forEach(elem => {
+                                const value = elem.value || elem.textContent || '';
+                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                    sectionContent += value.trim() + '\n';
+                                }
+                            });
+                            currentElement = currentElement.nextElementSibling;
+                        }
+                        break;
+                        
+                    case 'interviews':
+                        // Get content from Interviews section
+                        const interviewsElement = document.getElementById('clinical_interviews');
+                        if (interviewsElement) {
+                            const textElements = interviewsElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
+                            textElements.forEach(elem => {
+                                const value = elem.value || elem.textContent || '';
+                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                    sectionContent += value.trim() + '\n';
+                                }
+                            });
+                        }
+                        break;
+                        
+                    case 'observations':
+                        // Get content from Observations section
+                        const observationsElement = document.getElementById('observations');
+                        if (observationsElement) {
+                            const textElements = observationsElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
+                            textElements.forEach(elem => {
+                                const value = elem.value || elem.textContent || '';
+                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                    sectionContent += value.trim() + '\n';
+                                }
+                            });
+                        }
+                        break;
+                        
+                    case 'testing':
+                        // Get content from Testing section
+                        const testingStart = document.getElementById('testingSectionNav');
+                        
+                        // Collect all text content for testing section
+                        let testElement = testingStart;
+                        while (testElement && testElement.nextElementSibling && !testElement.nextElementSibling.classList.contains('ai-summary-section')) {
+                            testElement = testElement.nextElementSibling;
+                            const textElements = testElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
+                            textElements.forEach(elem => {
+                                const value = elem.value || elem.textContent || '';
+                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                    sectionContent += value.trim() + '\n';
+                                }
+                            });
+                        }
+                        break;
+                }
+
+                if (!sectionContent.trim()) {
+                    throw new Error('No content found in this section to copy');
+                }
+
+                // Create appropriate prompt based on section
+                let prompt = "";
+                switch(section) {
+                    case 'recordsReview':
+                        prompt = "Please provide a concise summary of the following records review information, highlighting key findings and relevant background information:";
+                        break;
+                    case 'interviews':
+                        prompt = "Please summarize the following clinical interview information, focusing on key observations and insights from the interviews:";
+                        break;
+                    case 'observations':
+                        prompt = "Please summarize the following behavioral observations, highlighting significant patterns and notable behaviors:";
+                        break;
+                    case 'testing':
+                        prompt = "Please provide a summary of the following testing data and results, emphasizing key findings and performance patterns:";
+                        break;
+                    default:
+                        prompt = "Please provide a concise summary of the following information:";
+                }
+
+                // Combine prompt and content for clipboard
+                const clipboardContent = `${prompt}\n\n${sectionContent}`;
+
+                // Copy to clipboard
+                await navigator.clipboard.writeText(clipboardContent);
+                showSaveStatus('Content copied to clipboard! Paste into your preferred AI tool.', 'success');
+
+            } catch (error) {
+                console.error('Copy error:', error);
+                showSaveStatus('Error: ' + error.message, 'error');
+            } finally {
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = '<i class="fa fa-copy"></i> Copy Section for AI Summary';
+                
+                // Clear status after 5 seconds
+                setTimeout(() => {
+                    showSaveStatus('', '');
+                }, 5000);
             }
         }
 

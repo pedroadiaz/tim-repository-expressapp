@@ -54,24 +54,50 @@ module.exports = {
         });
     },
     addReportEntry: (req, res) => {
-        console.log("TODO: RATE LIMITING AND CREATION LIMITS");
         console.log("Adding report entry");
         console.log(req.body);
-        uuid = uuidv4();
-
-        connectionPool.query("INSERT INTO `" + tableName + "`.`report_entry` (`id`, `uuid`, `userId`, `title`, `cachedTitle`, `createdOn`) VALUES (NULL, ?, ?, ?, ?, CURRENT_TIMESTAMP);", [uuid, req.user.id, req.body.title, req.body.cachedTitle], (err, rows) => {
+        
+        // First check how many reports the user currently has
+        connectionPool.query("SELECT COUNT(*) as reportCount FROM " + tableName + ".report_entry WHERE userId = ? AND deleted = 0", [req.user.id], (err, countResult) => {
             if (err) {
-                return res.status(500).json({status: err});
+                return res.status(500).json({status: "Database error", error: err});
             }
+            
+            const currentReportCount = countResult[0].reportCount;
+            const REPORT_LIMIT = 5;
+            
+            // Check if user has reached the limit
+            if (currentReportCount >= REPORT_LIMIT) {
+                return res.status(403).json({
+                    status: "limit_reached",
+                    message: `You have reached the maximum limit of ${REPORT_LIMIT} reports. Please delete an existing report to create a new one.`,
+                    currentCount: currentReportCount,
+                    limit: REPORT_LIMIT
+                });
+            }
+            
+            // Proceed with creating the report
+            const uuid = uuidv4();
 
-            let ownerInsertedRowId = rows.insertId;
-
-            connectionPool.query("INSERT INTO `" + tableName + "`.`report` (`id`, `ownerId`) VALUES (NULL, ?);", [ownerInsertedRowId], (err, rows) => {
+            connectionPool.query("INSERT INTO `" + tableName + "`.`report_entry` (`id`, `uuid`, `userId`, `title`, `cachedTitle`, `createdOn`) VALUES (NULL, ?, ?, ?, ?, CURRENT_TIMESTAMP);", [uuid, req.user.id, req.body.title, req.body.cachedTitle], (err, rows) => {
                 if (err) {
                     return res.status(500).json({status: err});
                 }
 
-                return res.status(200).json({uuid: uuid, cachedTitle: req.body.cachedTitle});
+                let ownerInsertedRowId = rows.insertId;
+
+                connectionPool.query("INSERT INTO `" + tableName + "`.`report` (`id`, `ownerId`) VALUES (NULL, ?);", [ownerInsertedRowId], (err, rows) => {
+                    if (err) {
+                        return res.status(500).json({status: err});
+                    }
+
+                    return res.status(200).json({
+                        uuid: uuid, 
+                        cachedTitle: req.body.cachedTitle,
+                        currentCount: currentReportCount + 1,
+                        limit: REPORT_LIMIT
+                    });
+                });
             });
         });
     },

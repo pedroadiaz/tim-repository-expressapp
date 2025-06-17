@@ -307,6 +307,18 @@
             }
             element.parentElement.remove();
             modal.style.display = "none";
+            
+            // Update report count indicator
+            const reportCountDiv = document.getElementById('reportCountIndicator');
+            if (reportCountDiv) {
+              const currentReports = document.querySelectorAll('.ffolder').length - 1; // -1 for the add button
+              const REPORT_LIMIT = 5;
+              reportCountDiv.innerHTML = `Reports: ${currentReports} / ${REPORT_LIMIT}`;
+              reportCountDiv.style.color = currentReports >= REPORT_LIMIT ? '#ff0000' : '#666';
+              if (currentReports >= REPORT_LIMIT) {
+                reportCountDiv.innerHTML += ' <span style="font-weight: bold;">(Limit Reached)</span>';
+              }
+            }
           })
           .catch(error => console.error('Error fetching data:', error));
       }
@@ -335,10 +347,27 @@
         }).catch(error => {console.error('Error:', error); throw error;}).then(() => {
 
           const reportContents = document.getElementById('reportContents');
+          
+          // Add report count indicator
+          const reportCountDiv = document.createElement('div');
+          reportCountDiv.id = 'reportCountIndicator';
+          reportCountDiv.style.cssText = 'text-align: center; margin-bottom: 20px; font-size: 16px; color: #666;';
+          reportContents.appendChild(reportCountDiv);
+          
           fetch('/app/getReportEntriesByUser')
             .then(response => response.json())
             .then(result => {
               const data = result.data;
+              const reportCount = data.length;
+              const REPORT_LIMIT = 5;
+              
+              // Update report count indicator
+              reportCountDiv.innerHTML = `Reports: ${reportCount} / ${REPORT_LIMIT}`;
+              if (reportCount >= REPORT_LIMIT) {
+                reportCountDiv.style.color = '#ff0000';
+                reportCountDiv.innerHTML += ' <span style="font-weight: bold;">(Limit Reached)</span>';
+              }
+              
               let defaultColor = 'cyan';
               data.forEach(report => {
 
@@ -375,7 +404,12 @@
                     cachedTitle: 'Untitled'
                   })
                 })
-                  .then(response => response.json())
+                  .then(response => {
+                    if (!response.ok) {
+                      return response.json().then(err => Promise.reject(err));
+                    }
+                    return response.json();
+                  })
                   .then(result => {
                     console.log(result);
                     console.log(result["uuid"]);
@@ -390,10 +424,29 @@
               <div class="deleteIcon" onclick="deleteReport(event, this)"><i class="fa fa-times"></i></div>`;
                     ffolder.style.background = `linear-gradient(0deg, rgba(35, 203, 244, 1) 100%, rgba(0, 0, 0, 0) 100%)`;
                     reportContents.appendChild(ffolder);
+                    
+                    // Update report count indicator
+                    const reportCountDiv = document.getElementById('reportCountIndicator');
+                    if (reportCountDiv) {
+                      const currentReports = document.querySelectorAll('.ffolder').length - 1; // -1 for the add button
+                      const REPORT_LIMIT = 5;
+                      reportCountDiv.innerHTML = `Reports: ${currentReports} / ${REPORT_LIMIT}`;
+                      reportCountDiv.style.color = currentReports >= REPORT_LIMIT ? '#ff0000' : '#666';
+                      if (currentReports >= REPORT_LIMIT) {
+                        reportCountDiv.innerHTML += ' <span style="font-weight: bold;">(Limit Reached)</span>';
+                      }
+                    }
 
                     window.open(`/report/${result["uuid"]}`, '_blank');
                   })
-                  .catch(error => console.error('Error fetching data:', error));
+                  .catch(error => {
+                    console.error('Error:', error);
+                    if (error.status === 'limit_reached') {
+                      alert(error.message);
+                    } else {
+                      alert('Error creating report. Please try again.');
+                    }
+                  });
               });
             })
             .catch(error => console.error('Error fetching data:', error));
