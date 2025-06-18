@@ -747,7 +747,7 @@
                     <div style="width: 100%;">
                         <div class="header-right">
                             <a class="active" href="#">Home</a>
-                            <a href="#demographicsSectionNav">Demographics</a>
+                            <a href="#demographicsSectionNav" style="display: none;">Demographics</a>
                             <a href="#recordsReviewSectionNav">Records</a>
                             <a href="#interviewsSectionNav">Interviews</a>
                             <a href="#observationsSectionNav">Observations</a>
@@ -772,7 +772,10 @@
                     <div class="mdc-layout-grid">
 
                         <div id="demographicsSectionNav"></div>
-
+                        
+                        <!-- Demographics Section Wrapper -->
+                        <div id="demographicsSection" style="display: none;">
+                        
                         <div class="mdc-layout-grid__inner">
                             <div class="customLogos"
                                 style="display: flex; width: 812px; justify-content: space-between;">
@@ -800,10 +803,19 @@
                                 <p style="text-align: center;"><input id="description" class="descriptionInput"
                                         value="Confidential"></input>
                                 </p>
-                                <h2 id="title" style="text-align: center; width: 100%"> <input id="reportTitle"
-                                        type="text" name="reportTitle" value="TRIENNIAL PSYCHOEDUCATIONAL REPORT"
-                                        selectBoxOptions="ELIGIBILITY EVALUATION REPORT;INITIAL PSYCHOEDUCATIONAL REPORT;MULTIDISCIPLINARY INITIAL PSYCHOEDUCATIONAL ASSESSMENT REPORT;PSYCHOEDUCATIONAL ASSESSMENT REPORT;MULTIDISCIPLINARY TRIENNIAL PSYCHOEDUCATIONAL ASSESSMENT REPORT;TRIENNIAL PSYCHOEDUCATIONAL REPORT"
-                                        selectBoxOptionsCustom="My Custom Title">
+                                <h2 id="title" style="text-align: center; width: 100%">
+                                    <div class="shiny w-100">
+                                        <span class="shiny__inner">
+                                            <span class="shiny__label">
+                                                <input id="reportTitle" style="z-index: 3; position: relative; text-align: center; font-size: 1.5em; font-weight: bold;"
+                                                        type="text" name="reportTitle" value="TRIENNIAL PSYCHOEDUCATIONAL REPORT"
+                                                        selectBoxOptions="ELIGIBILITY EVALUATION REPORT;INITIAL PSYCHOEDUCATIONAL REPORT;MULTIDISCIPLINARY INITIAL PSYCHOEDUCATIONAL ASSESSMENT REPORT;PSYCHOEDUCATIONAL ASSESSMENT REPORT;MULTIDISCIPLINARY TRIENNIAL PSYCHOEDUCATIONAL ASSESSMENT REPORT;TRIENNIAL PSYCHOEDUCATIONAL REPORT"
+                                                        selectBoxOptionsCustom="My Custom Title">
+                                                <span class="shiny__label__background"></span>
+                                            </span>
+                                        </span>
+                                        <span class="shiny__background"></span>
+                                    </div>
                                 </h2>
                             </div>
                             <div
@@ -1124,18 +1136,7 @@
                             </div>
 
 
-                            <div id="pronouns"
-                                class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-6-desktop shiftable">
-                                <div style="height: 100%;align-content: center;">
-                                    <button onclick="addPronouns(this.parentNode, this.parentNode.parentNode)"
-                                        class="mdc-button mdc-button--raised" type="button"
-                                        style="background-color: #A16DB6;">Add Pronouns <i style="margin-left:0.25rem"
-                                            class="fa-solid fa-plus"></i></button>
-
-                                </div>
-                            </div>
-
-                            <div id="ethnicity"
+<div id="ethnicity"
                                 class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-6-desktop shiftable">
                                 <!--<div class="report-widget-deletable">
                   <button onclick="removeField(event, this.parentNode.parentNode)"
@@ -1776,6 +1777,9 @@
                             class="descriptionInput">Student was assessed in all areas of suspected disability; all tests and materials include those tailored to assess specific areas of educational need; materials and procedures used for assessment, and educational planning are selected and administered so as not to be racially, culturally or sexually discriminatory and have been validated for the specific purposes for which they were used. As such, materials and procedures were provided in the student’s native language/mode of communication in a form most likely to yield accurate information on what the child knows and can do academically, developmentally, and functionally; each assessment was given in accordance with the test instructions provided by the producer and was administered by a trained and knowledgeable personnel; and all tests were selected and administered to best ensure that they produce results that accurately reflect the student’s abilities, not the student’s impairments, including impaired sensory, manual, or speaking skills. Assessment(s) administered in English.</textarea>
 
 
+                        </div>
+                        <!-- End Demographics Section Wrapper -->
+
                         <div id="recordsReviewSectionNav"></div>
                         <div class="sectionSpacer"></div>
                         <input class="editableTitle" id="recordsReviewTitle" type="text" name="reportTitle"
@@ -1788,9 +1792,6 @@
                         <input class="editableTitle" id="recordsReviewLabel" type="text" name="recordsReviewLabel"
                             value="RELEVANT BACKGROUND INFORMATION">
                         <div class="sectionSpacerSmall"></div>
-
-                        <input class="editableSubtitle" id="healthAndDevelopmentSubtitle" type="text"
-                            name="healthAndDevelopmentSubtitle" value="Health and Developmental Information">
                         <hr />
                         <div class="sectionSpacerSmall"></div>
                         <div class="mdc-layout-grid__inner">
@@ -7706,8 +7707,63 @@
             }
         }
 
+        // Modal functions for demographics
+        function closeDemographicsModal() {
+            document.getElementById('demographicsModal').style.display = 'none';
+        }
+        
+        function showDemographicsAndExport() {
+            // Close the modal
+            closeDemographicsModal();
+            
+            // Show demographics section
+            const demographicsSection = document.getElementById('demographicsSection');
+            demographicsSection.style.display = 'block';
+            
+            // Show demographics link in navigation
+            const demographicsLink = document.querySelector('a[href="#demographicsSectionNav"]');
+            if (demographicsLink) {
+                demographicsLink.style.display = 'inline';
+            }
+            
+            // Scroll to demographics section
+            document.getElementById('demographicsSectionNav').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Show a message
+            showSaveStatus('Please fill in the demographics information, then try exporting again.', 'info');
+            setTimeout(() => {
+                showSaveStatus('', '');
+            }, 5000);
+        }
+        
+        function checkDemographicsBeforeExport() {
+            // Check if demographics section is visible or if key fields are filled
+            const demographicsSection = document.getElementById('demographicsSection');
+            const isDemographicsVisible = demographicsSection.style.display !== 'none';
+            
+            if (!isDemographicsVisible) {
+                // Check if we have at least some basic demographic data
+                const firstName = document.getElementById('firstName')?.value;
+                const lastName = document.getElementById('lastName')?.value;
+                const grade = document.querySelector('#grade .mdc-select__selected-text')?.textContent;
+                
+                if (!firstName || !lastName || !grade || grade === 'Select' || grade === '') {
+                    // Show modal
+                    document.getElementById('demographicsModal').style.display = 'block';
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
         // Export to Word function
         async function exportToWord() {
+            // Check demographics first
+            if (!checkDemographicsBeforeExport()) {
+                return;
+            }
+            
             const exportBtn = document.getElementById('exportWordBtn');
             
             try {
@@ -7854,6 +7910,26 @@
         async function generateAISummary(section) {
             const button = event.target.closest('button');
             
+            // Helper function to check if a value should be filtered out
+            function shouldFilterValue(value) {
+                if (!value || !value.trim()) return true;
+                
+                const trimmedValue = value.trim().toLowerCase();
+                const filterPatterns = [
+                    'todo',
+                    'type here. delete if not needed.',
+                    'todo: generated.',
+                    'minutes: todo',
+                    'select',
+                    'placeholder'
+                ];
+                
+                return filterPatterns.some(pattern => 
+                    trimmedValue === pattern.toLowerCase() || 
+                    trimmedValue.includes(pattern.toLowerCase())
+                );
+            }
+            
             try {
                 // Disable button and show loading
                 button.disabled = true;
@@ -7877,7 +7953,7 @@
                             const textElements = currentElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
                             textElements.forEach(elem => {
                                 const value = elem.value || elem.textContent || '';
-                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                if (!shouldFilterValue(value)) {
                                     sectionContent += value.trim() + '\n';
                                 }
                             });
@@ -7892,7 +7968,7 @@
                             const textElements = interviewsElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
                             textElements.forEach(elem => {
                                 const value = elem.value || elem.textContent || '';
-                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                if (!shouldFilterValue(value)) {
                                     sectionContent += value.trim() + '\n';
                                 }
                             });
@@ -7906,7 +7982,7 @@
                             const textElements = observationsElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
                             textElements.forEach(elem => {
                                 const value = elem.value || elem.textContent || '';
-                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                if (!shouldFilterValue(value)) {
                                     sectionContent += value.trim() + '\n';
                                 }
                             });
@@ -7924,7 +8000,7 @@
                             const textElements = testElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
                             textElements.forEach(elem => {
                                 const value = elem.value || elem.textContent || '';
-                                if (value.trim() && value !== 'Select' && !value.includes('placeholder')) {
+                                if (!shouldFilterValue(value)) {
                                     sectionContent += value.trim() + '\n';
                                 }
                             });
@@ -7940,19 +8016,39 @@
                 let prompt = "";
                 switch(section) {
                     case 'recordsReview':
-                        prompt = "Please provide a concise summary of the following records review information, highlighting key findings and relevant background information:";
+                        prompt = `Please provide a concise summary of the following records review information, make each section grammatically correct, in full sentences, and free of spelling errors. Do not add any interpretation or speculation. Use clear, parent-friendly language while maintaining a professional tone. Preserve the original content and structure as pasted.
+                        Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
                         break;
                     case 'interviews':
-                        prompt = "Please summarize the following clinical interview information, focusing on key observations and insights from the interviews:";
+                        prompt = `Please summarize the following clinical interview information, make each section grammatically correct, in full sentences, and free of spelling errors. Do not add any interpretation or speculation. Use clear, parent-friendly language while maintaining a professional tone. Preserve the original content and structure as pasted.
+                        Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
                         break;
                     case 'observations':
-                        prompt = "Please summarize the following behavioral observations, highlighting significant patterns and notable behaviors:";
+                        prompt = `Please summarize the following behavioral observations, make each section grammatically correct, in full sentences, and free of spelling errors. Do not add any interpretation or speculation. Use clear, parent-friendly language while maintaining a professional tone. Preserve the original content and structure as pasted.
+                        Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
                         break;
                     case 'testing':
-                        prompt = "Please provide a summary of the following testing data and results, emphasizing key findings and performance patterns:";
-                        break;
+                        prompt = `Please provide a summary of the following testing data and results, write a psychological report section that includes the following in this exact order:
+                                1. The full name of the test (e.g., “Wechsler Intelligence Scale for Children, Fifth Edition (WISC-V)”).
+
+
+                                2. A brief, parent-friendly summary paragraph of what the test measures overall.
+
+
+                                3. A table listing each index and subtest with the following columns:
+                                Index/Subtest Name | Standard Score (SS) | Percentile Rank | Score Description (e.g., Average).
+
+
+                                4. Paragraph summaries for each index and its subtests.
+                                Briefly describe what each one measures and how the student performed, using full sentences. Include the score in parentheses — e.g., “The student scored in the Average range (SS=10) in their ability to recall a sequence of numbers from memory.”
+
+
+                                Use complete sentences with correct grammar and spelling. Do not speculate or include diagnoses. Keep the tone professional, objective, and easy for parents to understand. Use only the data provided — do not add or assume anything beyond what is given.`;
+                    break;
+                    
                     default:
-                        prompt = "Please provide a concise summary of the following information:";
+                        prompt = `Revise the following psychological report section, make each section grammatically correct, in full sentences, and free of spelling errors. Do not add any interpretation or speculation. Use clear, parent-friendly language while maintaining a professional tone. Preserve the original content and structure as pasted.
+                        Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
                 }
 
                 // Combine prompt and content for clipboard
@@ -8296,6 +8392,28 @@
             }, 1000);
         });
     </script>
+    
+    <!-- Demographics Modal -->
+    <div id="demographicsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 10px;">
+            <span class="close" onclick="closeDemographicsModal()" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">Demographics Information Required</h2>
+            <p style="text-align: center; margin-bottom: 20px;">Please fill in the demographics information before exporting the report.</p>
+            <div style="text-align: center;">
+                <button class="mdc-button mdc-button--raised" 
+                        style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                        onclick="showDemographicsAndExport()">
+                    <i class="fa fa-edit"></i> Fill Demographics
+                </button>
+                <button class="mdc-button mdc-button--raised" 
+                        style="background-color: #f44336; color: white;"
+                        onclick="closeDemographicsModal()">
+                    <i class="fa fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    
 </body>
 
 </html>
