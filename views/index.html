@@ -60,6 +60,32 @@
     .ffolder:hover .deleteIcon {
       display: flex;
     }
+    
+    /* Override the restrictive max-width from desktopstyle.css */
+    #chartpanel {
+      max-width: 75rem !important; /* Increase from 30rem to allow horizontal layout */
+    }
+    
+    /* Force horizontal layout for folders */
+    #reportContents {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    
+    /* Ensure folders stay inline */
+    .ffolder.spacingFolder {
+      display: inline-flex !important;
+      vertical-align: top;
+      margin: 0 !important; /* Remove margins since we're using gap */
+    }
+    
+    /* Keep the add button aligned */
+    #addReportBtn {
+      align-items: center;
+      justify-content: center;
+    }
 
     .modal {
       display: none;
