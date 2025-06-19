@@ -216,17 +216,16 @@
   <div id="chartpanel" class="row" data-equalizer>
     <div class="column small-12 left_panel">
       <header data-equalizer-watch>
-        <i class="fa fa-bars menu_top_icon" aria-hidden="true"></i>
+        <!-- Hamburger menu removed as it was not functional -->
 
         <div class="right_nav">
           <div class="welcome-profile-text"><span class="user-name">
               <span id="welcome-name-display"></span>
             </span></div>
           <a href="/settings"> <i class="fa fa-cog dashboard-icons dashboard-icons-next-to-another"
-              aria-hidden="true"></i></a>
+              aria-hidden="true" title="Settings"></i></a>
           <a href="/logout"> <i class="fa fa-sign-out-alt dashboard-icons dashboard-icons-next-to-another"
               aria-hidden="true" title="Logout"></i></a>
-          <i id="user_button" class="fa fa-user-circle dashboard-icons" aria-hidden="true"></i>
 
         </div>
         <div class="title">
@@ -510,16 +509,7 @@
     };
     InitialLoad();
 
-    if (isAdmin) {
-      
-      
-      const userButton = document.getElementById('user_button');
-      userButton.style.cursor = 'pointer';
-      userButton.onclick = () => {
-        window.location.href = '/admin';
-      };
-
-    }
+    // Admin user button functionality removed as person icon was removed
   </script>
   
   <!-- Trial Warning Modal -->

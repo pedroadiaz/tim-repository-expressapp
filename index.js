@@ -160,7 +160,21 @@ authUser = (user, password, done) => {
 
 
 checkAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {return next()}
+    if (req.isAuthenticated()) {
+        // Check if user is using a temp password
+        if (req.user && req.user.temp_password) {
+            // Allow access to password change endpoints
+            if (req.path === '/app/changePassword' || 
+                req.path === '/app/changePasswordFromTemp' || 
+                req.path === '/change-password-required' ||
+                req.path === '/logout') {
+                return next();
+            }
+            // Redirect to password change page
+            return res.redirect(prefix + "/change-password-required");
+        }
+        return next();
+    }
     res.redirect(prefix + "/login")
 }
 
@@ -205,8 +219,18 @@ passport.serializeUser((user, done) => {
 })
 
 
-passport.deserializeUser((user, done) => {
-    return done(null, user)
+passport.deserializeUser((userSession, done) => {
+    // Fetch full user data from database
+    connectionPool.query("SELECT * FROM " + tableName + ".users WHERE id = ?", [userSession.id], (err, rows) => {
+        if (err || rows.length === 0) {
+            return done(err, false);
+        }
+        
+        const user = rows[0];
+        user.admin = userSession.admin; // Preserve admin status from session
+        
+        return done(null, user);
+    });
 })
 
 
@@ -262,6 +286,12 @@ app.post(prefix + "/app/deleteReportByUuid", checkAuthenticated, (req, res) => {
 });
 app.post(prefix + "/app/restoreDeletion", checkAuthenticated, (req, res) => {
     reportService.restoreDeletionByUsersLastDeleted(req, res)
+});
+app.post(prefix + "/app/changePassword", checkAuthenticated, (req, res) => {
+    passwordService.changePassword(req, res);
+});
+app.post(prefix + "/app/changePasswordFromTemp", checkAuthenticated, (req, res) => {
+    passwordService.changePasswordFromTemp(req, res);
 });
 app.get(prefix + '/app/getConsentStatus', checkAuthenticated, (req, res) => {
     reportService.getConsentStatus(req, res);
@@ -571,10 +601,11 @@ app.get(prefix + '/reset-password', (req, res) => {
     
     // Check if token is valid
     connectionPool.query(
-        "SELECT * FROM " + tableName + ".users WHERE email = ? AND password_reset_token = ? AND password_reset_expires > NOW()",
+        "SELECT * FROM " + tableName + ".users WHERE email = ? AND password_reset_token = ? AND password_reset_expires > UTC_TIMESTAMP()",
         [email, token],
         (err, rows) => {
             if (err || rows.length === 0) {
+                console.log("Reset password validation failed. Error:", err, "Rows:", rows?.length);
                 return res.redirect('/forgot-password?error=' + encodeURIComponent("Invalid or expired reset link. Please request a new one."));
             }
             
@@ -582,6 +613,14 @@ app.get(prefix + '/reset-password', (req, res) => {
             return res.sendFile(path.join(__dirname + '/views', 'reset_password.html'));
         }
     );
+});
+
+app.get(prefix + '/change-password-required', checkAuthenticated, (req, res) => {
+    // Only show this page if user has a temp password
+    if (!req.user.temp_password) {
+        return res.redirect(prefix + '/main');
+    }
+    res.render('change_password_required.html', { user: req.user });
 });
 
 app.post(prefix + '/reset-password', (req, res) => {

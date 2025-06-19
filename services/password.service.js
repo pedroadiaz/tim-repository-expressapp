@@ -74,7 +74,8 @@ exports.requestPasswordReset = (req, res) => {
             const tempPassword = generateTempPassword();
             const hashedTempPassword = bcrypt.hashSync(tempPassword, 15);
             const resetToken = generateResetToken();
-            const resetExpires = new Date(Date.now() + 3600000); // 1 hour
+            // Use MySQL format for datetime
+            const resetExpires = new Date(Date.now() + 3600000).toISOString().slice(0, 19).replace('T', ' '); // 1 hour from now in MySQL format
             
             // Update user record
             connectionPool.query(
@@ -164,7 +165,7 @@ exports.processResetPassword = (req, res) => {
     
     // Verify token and temp password
     connectionPool.query(
-        "SELECT * FROM " + tableName + ".users WHERE email = ? AND password_reset_token = ? AND password_reset_expires > NOW()",
+        "SELECT * FROM " + tableName + ".users WHERE email = ? AND password_reset_token = ? AND password_reset_expires > UTC_TIMESTAMP()",
         [email, token],
         (err, rows) => {
             if (err) {
@@ -195,6 +196,146 @@ exports.processResetPassword = (req, res) => {
                     }
                     
                     return res.redirect('/login?success=' + encodeURIComponent("Your password has been reset successfully. You can now log in with your new password."));
+                }
+            );
+        }
+    );
+};
+
+// Change password for authenticated user
+exports.changePassword = (req, res) => {
+    const { current_password, new_password, confirm_password } = req.body;
+    const userId = req.user.id;
+    
+    console.log("Changing password for user ID:", userId);
+    console.log({ current_password, new_password, confirm_password })
+    // Validate passwords match
+    if (new_password !== confirm_password) {
+        return res.status(400).json({
+            status: "error",
+            message: "New passwords do not match."
+        });
+    }
+    
+    // Validate new password meets requirements
+    if (!isValidPassword(new_password)) {
+        return res.status(400).json({
+            status: "error",
+            message: "Password must contain at least one number, one special character, and be at least 9 characters long."
+        });
+    }
+    // Get current user password hash and temp password
+    connectionPool.query(
+        "SELECT password, temp_password, account_locked FROM " + tableName + ".users WHERE id = ?",
+        [userId],
+        (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.status(500).json({
+                    status: "error",
+                    message: "An error occurred. Please try again."
+                });
+            }
+            
+            const user = rows[0];
+            
+            // Check if account is locked (might be in password reset state)
+            if (user.account_locked && user.temp_password) {
+                return res.status(400).json({
+                    status: "error",
+                    message: "Please complete the password reset process from your email before changing your password."
+                });
+            }
+            
+            // Verify current password
+            if (!bcrypt.compareSync(current_password, user.password)) {
+                return res.status(401).json({
+                    status: "error",
+                    message: "Current password is incorrect."
+                });
+            }
+            
+            // Hash new password
+            const hashedPassword = bcrypt.hashSync(new_password, 15);
+            
+            // Update password
+            connectionPool.query(
+                "UPDATE " + tableName + ".users SET password = ? WHERE id = ?",
+                [hashedPassword, userId],
+                (updateErr) => {
+                    if (updateErr) {
+                        return res.status(500).json({
+                            status: "error",
+                            message: "Failed to update password. Please try again."
+                        });
+                    }
+                    
+                    return res.status(200).json({
+                        status: "success",
+                        message: "Password changed successfully."
+                    });
+                }
+            );
+        }
+    );
+};
+
+// Change password from temporary password (for users who logged in with temp password)
+exports.changePasswordFromTemp = (req, res) => {
+    const { new_password, confirm_password } = req.body;
+    const userId = req.user.id;
+    
+    console.log("Changing password from temp for user ID:", userId);
+    
+    // Validate passwords match
+    if (new_password !== confirm_password) {
+        return res.status(400).json({
+            status: "error",
+            message: "New passwords do not match."
+        });
+    }
+    
+    // Validate new password meets requirements
+    if (!isValidPassword(new_password)) {
+        return res.status(400).json({
+            status: "error",
+            message: "Password must contain at least one number, one special character, and be at least 9 characters long."
+        });
+    }
+    
+    // Verify user has a temp password
+    connectionPool.query(
+        "SELECT temp_password FROM " + tableName + ".users WHERE id = ? AND temp_password IS NOT NULL",
+        [userId],
+        (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.status(400).json({
+                    status: "error",
+                    message: "No temporary password found. Please use the regular password change option."
+                });
+            }
+            
+            // Hash new password
+            const hashedPassword = bcrypt.hashSync(new_password, 15);
+            
+            // Update password and clear temp password
+            connectionPool.query(
+                "UPDATE " + tableName + ".users SET password = ?, temp_password = NULL, account_locked = FALSE WHERE id = ?",
+                [hashedPassword, userId],
+                (updateErr) => {
+                    if (updateErr) {
+                        return res.status(500).json({
+                            status: "error",
+                            message: "Failed to update password. Please try again."
+                        });
+                    }
+                    
+                    // Update the session user object to remove temp_password
+                    req.user.temp_password = null;
+                    
+                    return res.status(200).json({
+                        status: "success",
+                        message: "Password changed successfully."
+                    });
                 }
             );
         }

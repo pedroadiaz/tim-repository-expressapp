@@ -75,6 +75,90 @@
     .subscription-button:hover {
       background-color: #6a4478;
     }
+    
+    /* Password change section styles */
+    .password-section {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .password-section h3 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    
+    .password-form {
+      margin-top: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #7f578f;
+    }
+    
+    .password-requirements {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    .password-submit {
+      background-color: #7f578f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    
+    .password-submit:hover {
+      background-color: #6a4478;
+    }
+    
+    .password-message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    
+    .password-message.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .password-message.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
   </style>
 </head>
 
@@ -84,16 +168,17 @@
   <div id="chartpanel" class="row" data-equalizer>
     <div class="column small-12 left_panel">
       <header data-equalizer-watch>
-        <i class="fa fa-bars menu_top_icon" aria-hidden="true"></i>
+        <!-- Hamburger menu removed as it was not functional -->
 
         <div class="right_nav">
           <div class="welcome-profile-text"><span class="user-name">
               <span id="welcome-name-display"></span>
             </span></div>
 
-          <a href="/main"><i class="fa fa-cog dashboard-icons dashboard-icons-next-to-another"
-              aria-hidden="true"></i></a>
-          <i class="fa fa-user-circle dashboard-icons" aria-hidden="true"></i>
+          <a href="/main"><i class="fa fa-home dashboard-icons dashboard-icons-next-to-another"
+              aria-hidden="true" title="Home"></i></a>
+          <a href="/logout"><i class="fa fa-sign-out-alt dashboard-icons dashboard-icons-next-to-another"
+              aria-hidden="true" title="Logout"></i></a>
 
         </div>
         <div class="title">
@@ -232,6 +317,154 @@
         
       reportContents.appendChild(div);
       reportContents.appendChild(subscriptionDiv);
+      
+      // Add password change section
+      const passwordDiv = document.createElement('div');
+      passwordDiv.className = 'password-section';
+      
+      const passwordTitle = document.createElement('h3');
+      passwordTitle.innerHTML = 'Change Password';
+      passwordDiv.appendChild(passwordTitle);
+      
+      const passwordForm = document.createElement('form');
+      passwordForm.className = 'password-form';
+      passwordForm.id = 'passwordChangeForm';
+      
+      // Current password field
+      const currentPasswordGroup = document.createElement('div');
+      currentPasswordGroup.className = 'form-group';
+      const currentPasswordLabel = document.createElement('label');
+      currentPasswordLabel.innerHTML = 'Current Password';
+      currentPasswordLabel.setAttribute('for', 'current_password');
+      const currentPasswordInput = document.createElement('input');
+      currentPasswordInput.type = 'password';
+      currentPasswordInput.id = 'current_password';
+      currentPasswordInput.name = 'current_password';
+      currentPasswordInput.required = true;
+      currentPasswordGroup.appendChild(currentPasswordLabel);
+      currentPasswordGroup.appendChild(currentPasswordInput);
+      
+      // Add forgot password link
+      const forgotLink = document.createElement('a');
+      forgotLink.href = '/forgot-password';
+      forgotLink.style.cssText = 'font-size: 12px; color: #7f578f; text-decoration: none; display: inline-block; margin-top: 5px;';
+      forgotLink.innerHTML = "Don't remember your current password?";
+      forgotLink.onmouseover = function() { this.style.textDecoration = 'underline'; };
+      forgotLink.onmouseout = function() { this.style.textDecoration = 'none'; };
+      currentPasswordGroup.appendChild(forgotLink);
+      
+      // New password field
+      const newPasswordGroup = document.createElement('div');
+      newPasswordGroup.className = 'form-group';
+      const newPasswordLabel = document.createElement('label');
+      newPasswordLabel.innerHTML = 'New Password';
+      newPasswordLabel.setAttribute('for', 'new_password');
+      const newPasswordInput = document.createElement('input');
+      newPasswordInput.type = 'password';
+      newPasswordInput.id = 'new_password';
+      newPasswordInput.name = 'new_password';
+      newPasswordInput.required = true;
+      newPasswordGroup.appendChild(newPasswordLabel);
+      newPasswordGroup.appendChild(newPasswordInput);
+      const passwordReq = document.createElement('div');
+      passwordReq.className = 'password-requirements';
+      passwordReq.innerHTML = 'Must contain at least 9 characters, including one number and one special character';
+      newPasswordGroup.appendChild(passwordReq);
+      
+      // Confirm password field
+      const confirmPasswordGroup = document.createElement('div');
+      confirmPasswordGroup.className = 'form-group';
+      const confirmPasswordLabel = document.createElement('label');
+      confirmPasswordLabel.innerHTML = 'Confirm New Password';
+      confirmPasswordLabel.setAttribute('for', 'confirm_password');
+      const confirmPasswordInput = document.createElement('input');
+      confirmPasswordInput.type = 'password';
+      confirmPasswordInput.id = 'confirm_password';
+      confirmPasswordInput.name = 'confirm_password';
+      confirmPasswordInput.required = true;
+      confirmPasswordGroup.appendChild(confirmPasswordLabel);
+      confirmPasswordGroup.appendChild(confirmPasswordInput);
+      
+      // Submit button
+      const submitButton = document.createElement('button');
+      submitButton.type = 'submit';
+      submitButton.className = 'password-submit';
+      submitButton.innerHTML = 'Change Password';
+      
+      // Message div
+      const messageDiv = document.createElement('div');
+      messageDiv.id = 'password-message';
+      messageDiv.className = 'password-message';
+      
+      passwordForm.appendChild(currentPasswordGroup);
+      passwordForm.appendChild(newPasswordGroup);
+      passwordForm.appendChild(confirmPasswordGroup);
+      passwordForm.appendChild(submitButton);
+      passwordForm.appendChild(messageDiv);
+      
+      // Add form submit handler
+      passwordForm.onsubmit = function(e) {
+        e.preventDefault();
+        
+        const currentPassword = document.getElementById('current_password').value;
+        const newPassword = document.getElementById('new_password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        // Client-side validation
+        if (newPassword !== confirmPassword) {
+          showPasswordMessage('New passwords do not match.', 'error');
+          return;
+        }
+        
+        // Password requirements check
+        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z]).{9,}$/;
+        if (!passwordRegex.test(newPassword)) {
+          showPasswordMessage('Password must contain at least 9 characters, including one number and one special character.', 'error');
+          return;
+        }
+        
+        // Submit to server
+        fetch('/app/changePassword', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'same-origin',  // Include cookies for session
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword
+          })
+        })
+        .then(response => response.json())
+        .then(result => {
+          if (result.status === 'success') {
+            showPasswordMessage('Password changed successfully!', 'success');
+            passwordForm.reset();
+          } else {
+            showPasswordMessage(result.message || 'Failed to change password.', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showPasswordMessage('An error occurred. Please try again.', 'error');
+        });
+      };
+      
+      function showPasswordMessage(message, type) {
+        const messageDiv = document.getElementById('password-message');
+        messageDiv.innerHTML = message;
+        messageDiv.className = 'password-message ' + type;
+        messageDiv.style.display = 'block';
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+          messageDiv.style.display = 'none';
+        }, 5000);
+      }
+      
+      passwordDiv.appendChild(passwordForm);
+      reportContents.appendChild(passwordDiv);
 
       const statusText = document.createElement('p');
       statusText.style.marginTop = "10px";
