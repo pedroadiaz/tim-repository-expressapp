@@ -15,6 +15,8 @@
     .spacingFolder {
       margin-right: 30px;
       margin-bottom: 30px;
+      display: inline-block;
+      position: relative;
     }
 
     .spacingFolder:last-child {
@@ -24,6 +26,39 @@
     #reportContents {
       margin-left: auto;
       margin-right: auto;
+      text-align: center;
+    }
+
+    /* Delete icon styling */
+    .deleteIcon {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 28px;
+      height: 28px;
+      background-color: #e74c3c;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+
+    .deleteIcon:hover {
+      background-color: #c0392b;
+      transform: scale(1.1);
+    }
+
+    .deleteIcon i {
+      color: white;
+      font-size: 16px;
+    }
+
+    .ffolder:hover .deleteIcon {
+      display: flex;
     }
 
     .modal {
@@ -169,10 +204,10 @@
   <div id="deletionModal" class="modal">
     <div id="innerModal" class="modal-content">
       <div class="close">&times;</div>
-      <p id="modalMessage">Delete: </p>
+      <p id="modalMessage">Are you sure you want to delete Report 1?</p>
       <div style="display: flex; margin-top: 20px; justify-content: space-between;">
-        <button class="modalButton danger" id="modalYes">Yes</button>
-        <button class="modalButton" id="modalNo">No</button>
+        <button class="modalButton danger" id="modalYes">OK</button>
+        <button class="modalButton" id="modalNo">Cancel</button>
       </div>
     </div>
   </div>
@@ -281,7 +316,8 @@
       span.onclick = function () {
         modal.style.display = "none";
       }
-      modalMessage.innerHTML = "Really delete report: " + element.parentElement.getAttribute("data-cached-title") + "?";
+      const reportName = element.parentElement.getAttribute("data-report-name") || "this report";
+      modalMessage.innerHTML = "Are you sure you want to delete " + reportName + "?";
 
       var modalYes = document.getElementById("modalYes");
       var modalNo = document.getElementById("modalNo");
@@ -325,6 +361,14 @@
       modalNo.onclick = function () {
         modal.style.display = "none";
       }
+      
+      // Handle ESC key to close modal
+      window.onkeydown = function(event) {
+        if (event.key === "Escape" || event.key === "Esc") {
+          modal.style.display = "none";
+          window.onkeydown = null; // Remove the event listener
+        }
+      }
     }
 
     function InitialLoad() {
@@ -358,6 +402,13 @@
             .then(response => response.json())
             .then(result => {
               const data = result.data;
+              
+              // Sort reports by createdOn date (newest first)
+              data.sort((a, b) => {
+                const dateA = new Date(a.createdOn || 0);
+                const dateB = new Date(b.createdOn || 0);
+                return dateA - dateB; // Oldest first to assign Report 1 to oldest
+              });
               const reportCount = data.length;
               const REPORT_LIMIT = 5;
               
@@ -369,7 +420,7 @@
               }
               
               let defaultColor = 'cyan';
-              data.forEach(report => {
+              data.forEach((report, index) => {
 
                 let folderColor = defaultColor;
                 const ffolder = document.createElement('div');
@@ -379,7 +430,9 @@
                 ffolder.id = report.uuid;
                 ffolder.setAttribute('data-cached-title', report.cachedTitle);
                 ffolder.classList.add('ffolder', 'small', folderColor, 'spacingFolder');
-                ffolder.innerHTML = `<span class="folder-title" title="${report.cachedTitle}">${truncateText(report.cachedTitle, 25)}</span>
+                const reportName = `Report ${index + 1}`;
+                ffolder.setAttribute('data-report-name', reportName);
+                ffolder.innerHTML = `<span class="folder-title" title="${reportName}">${reportName}</span>
           <div class="deleteIcon" onclick="deleteReport(event, this)"><i class="fa fa-times"></i></div>`;
                 ffolder.style.background = `linear-gradient(0deg, rgba(35, 203, 244, 1) 100%, rgba(0, 0, 0, 0) 100%)`;
                 reportContents.appendChild(ffolder);
@@ -420,7 +473,10 @@
                     ffolder.id = result["uuid"];
                     ffolder.setAttribute('data-cached-title', "Untitled");
                     ffolder.classList.add('ffolder', 'small', 'cyan', 'spacingFolder');
-                    ffolder.innerHTML = `<span class="folder-title" title="Untitled">${truncateText("Untitled", 25)}</span>
+                    const currentReportCount = document.querySelectorAll('.ffolder').length - 1; // -1 for add button
+                    const reportName = `Report ${currentReportCount + 1}`;
+                    ffolder.setAttribute('data-report-name', reportName);
+                    ffolder.innerHTML = `<span class="folder-title" title="${reportName}">${reportName}</span>
               <div class="deleteIcon" onclick="deleteReport(event, this)"><i class="fa fa-times"></i></div>`;
                     ffolder.style.background = `linear-gradient(0deg, rgba(35, 203, 244, 1) 100%, rgba(0, 0, 0, 0) 100%)`;
                     reportContents.appendChild(ffolder);
