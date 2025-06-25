@@ -7683,253 +7683,90 @@
                             <div class="sectionSpacer"></div>
                             <div id="testing"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
-
-                                <div id="wisc-v">
-
-                                    <h2>WISC-V</h2>
-                                    <div id="wiscDescription"><span class="fieldLabel"></span></div>
-                                    <br />
-                                    <br />
-                                    <canvas id="wisc-chart"></canvas>
-                                    <br /> <br />
-                                    <div id="wiscTableLabel"><span class="fieldLabel"></span></div>
-                                    <br />
-                                    <hr />
-                                    <table id="wiscTable" class="mdc-data-table__table" aria-label="WISC-V Scores">
-                                        <thead>
-                                            <tr class="mdc-data-table__header-row">
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Subtest</th>
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Scaled
-                                                    Score</th>
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Index</th>
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Composite Score</th>
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Qualitative Description</th>
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    %tile Rank</th>
-                                                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-                                                    Confidence
-                                                    Interval</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Similarities</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                                <td rowspan="2" class="mdc-data-table__cell">Verbal Comprehension</td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc_chart_composite_score1" class="wisc-v-score" value="">
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_description_1"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_percentile_1"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <input type="text" id="wisc-similarities" class="wisc-v-score"
-                                                        value="">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Vocabulary</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Block Design</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                                <td rowspan="2" class="mdc-data-table__cell">Visual Spatial</td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc_chart_composite_score2" class="wisc-v-score" value="">
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_description_2"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_percentile_2"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Visual Puzzles</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Matrix Reasoning</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                                <td rowspan="2" class="mdc-data-table__cell">Fluid Reasoning</td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc_chart_composite_score3" class="wisc-v-score" value="">
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_description_3"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_percentile_3"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Figure Weights</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Digit Span</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                                <td rowspan="2" class="mdc-data-table__cell">Working Memory</td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc_chart_composite_score4" class="wisc-v-score" value="">
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_description_4"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_percentile_4"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Picture Span</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Coding</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                                <td rowspan="2" class="mdc-data-table__cell">Processing Speed</td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc_chart_composite_score5" class="wisc-v-score" value="">
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_description_5"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell">
-                                                    <div id="wisc-chart_percentile_5"></div>
-                                                </td>
-                                                <td rowspan="2" class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="mdc-data-table__cell">Symbol Search</td>
-                                                <td class="mdc-data-table__cell"><input type="text"
-                                                        id="wisc-similarities" class="wisc-v-score" value=""></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Full Scale</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td><input type="text" id="wisc_chart_composite_score6"
-                                                        class="wisc-v-score" value=""></td>
-                                                <td>
-                                                    <div id="wisc-chart_description_6"></div>
-                                                </td>
-                                                <td>
-                                                    <div id="wisc-chart_percentile_6"></div>
-                                                </td>
-                                                <td><input type="text" id="wisc-similarities" class="wisc-v-score"
-                                                        value=""></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="sectionSpacer"></div>
-                                    <span class="fieldLabel">The FSIQ is derived from seven subtests and summarizes
-                                        ability across a diverse set of cognitive functions. This score is typically
-                                        considered the most representative indicator of general intellectual
-                                        functioning. Subtests are drawn from five areas of cognitive ability: verbal
-                                        comprehension, visual spatial, fluid reasoning, working memory, and processing
-                                        speed.</span>
-                                    <div class="sectionSpacer"></div>
-                                    <div class="wisc_description_text" id="wisc-table-analysis"><span
-                                            class="fieldLabel"></span></div>
-
-                                    <br />
-                                    <br />
-                                    <!--
-                                    <table id="wisc-subtable">
-                                        <thead>
-                                            <tr>
-                                                <th>Subtest</th>
-                                                <th>Significant Strength</th>
-                                                <th>Relative Strength</th>
-                                                <th>Significant Weakness</th>
-                                                <th>Relative Weakness</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Similarities</td>
-                                                <td>
-                                                    <div class="mdc-checkbox">
-                                                        <input type="checkbox" class="mdc-checkbox__native-control"
-                                                            id="checkbox-1" />
-                                                        <div class="mdc-checkbox__background">
-                                                            <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                                                                <path class="mdc-checkbox__checkmark-path" fill="none"
-                                                                    d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-                                                            </svg>
-                                                            <div class="mdc-checkbox__mixedmark"></div>
-                                                        </div>
-                                                    </div>
-
-                                                </td>
-                                                <td>
-                                                    <div class="mdc-checkbox">
-                                                        <input type="checkbox" class="mdc-checkbox__native-control"
-                                                            id="checkbox-1" />
-                                                        <div class="mdc-checkbox__background">
-                                                            <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                                                                <path class="mdc-checkbox__checkmark-path" fill="none"
-                                                                    d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-                                                            </svg>
-                                                            <div class="mdc-checkbox__mixedmark"></div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="mdc-checkbox">
-                                                        <input type="checkbox" class="mdc-checkbox__native-control"
-                                                            id="checkbox-1" />
-                                                        <div class="mdc-checkbox__background">
-                                                            <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                                                                <path class="mdc-checkbox__checkmark-path" fill="none"
-                                                                    d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-                                                            </svg>
-                                                            <div class="mdc-checkbox__mixedmark"></div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="mdc-checkbox">
-                                                        <input type="checkbox" class="mdc-checkbox__native-control"
-                                                            id="checkbox-1" />
-                                                        <div class="mdc-checkbox__background">
-                                                            <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                                                                <path class="mdc-checkbox__checkmark-path" fill="none"
-                                                                    d="M1.73,12.91 8.1,19.28 22.79,4.59" />
-                                                            </svg>
-                                                            <div class="mdc-checkbox__mixedmark"></div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>-->
+                                
+                                <div class="mdc-layout-grid__inner">
+                                    <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                                        
+                                        <div class="sectionSpacer"></div>
+                                        <div class="shiny w-100">
+                                            <span class="shiny__inner">
+                                                <span class="shiny__label">
+                                                    <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                                        id="testingTitle" type="text" name="testingTitle"
+                                                        value="TESTING">
+                                                    <span class="shiny__label__background"></span>
+                                                </span>
+                                            </span>
+                                            <span class="shiny__background"></span>
+                                        </div>
+                                        
+                                        <!-- AI Summary buttons for Testing -->
+                                        <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                            <button class="mdc-button mdc-button--raised" 
+                                                    style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                                    onclick="generateAISummary('testing')">
+                                                <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                            </button>
+                                            <button class="mdc-button mdc-button--raised" 
+                                                    style="background-color: #2196F3; color: white;"
+                                                    onclick="pasteFromAI('testing')">
+                                                <i class="fa fa-paste"></i> Paste from AI
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
+                                        <!-- Generated Text box for Testing -->
+                                        <div id="testing_generatedText" style="margin-bottom: 20px;">
+                                            <span class="fieldLabel">Generated Text</span>
+                                            <div style="display: flex; gap: 5px">
+                                                <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                    style="min-width: 90%; text-align: left;"
+                                                    id="testingGeneratedTextInput" class="descriptionInput" rows="3"
+                                                    placeholder="Generated text from AI summary will appear here"></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Container for test entries -->
+                                        <div id="testEntriesContainer">
+                                            <!-- First test entry -->
+                                            <div class="test-entry" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                                                <div style="margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Test Name</span>
+                                                    <input type="text" class="editableTextarea" style="width: 100%; padding: 8px;"
+                                                        placeholder="Enter test name" onclick="setTextboxDirty(event)" />
+                                                </div>
+                                                <div style="margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Test Description</span>
+                                                    <textarea class="editableTextarea" style="width: 100%; min-height: 60px; padding: 8px;"
+                                                        placeholder="Enter test description" onclick="setTextboxDirty(event)"></textarea>
+                                                </div>
+                                                <div style="margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Scores</span>
+                                                    <textarea class="editableTextarea" style="width: 100%; min-height: 60px; padding: 8px;"
+                                                        placeholder="Enter test scores" onclick="setTextboxDirty(event)"></textarea>
+                                                </div>
+                                                <div style="text-align: right;">
+                                                    <button class="mdc-button mdc-button--raised" 
+                                                            style="background-color: #f44336; color: white;"
+                                                            onclick="removeTestEntry(this)">
+                                                        <i class="fa fa-trash"></i> Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Add Field Button -->
+                                        <div style="text-align: center; margin-top: 20px;">
+                                            <button class="mdc-button mdc-button--raised" 
+                                                    style="background-color: #4CAF50; color: white;"
+                                                    onclick="addTestEntry()">
+                                                <i class="fa fa-plus"></i> Add Field
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -8209,6 +8046,10 @@
                             { title: 'Language Testing Behavior', id: 'languageTestingGeneratedText' },
                             { title: 'Academic Testing Behavior', id: 'academicTestingGeneratedText' }
                         ]
+                    },
+                    {
+                        title: 'TESTING',
+                        generatedTextIds: ['testingGeneratedTextInput']
                     }
                 ];
 
@@ -8387,17 +8228,33 @@
                         
                     case 'testing':
                         // Get content from Testing section
-                        const testingStart = document.getElementById('testingSectionNav');
-                        
-                        // Collect all text content for testing section
-                        let testElement = testingStart;
-                        while (testElement && testElement.nextElementSibling && !testElement.nextElementSibling.classList.contains('ai-summary-section')) {
-                            testElement = testElement.nextElementSibling;
-                            const textElements = testElement.querySelectorAll('input[type="text"], textarea, .mdc-select__selected-text');
-                            textElements.forEach(elem => {
-                                const value = elem.value || elem.textContent || '';
-                                if (!shouldFilterValue(value)) {
-                                    sectionContent += value.trim() + '\n';
+                        const testingSection = document.getElementById('testing');
+                        if (testingSection) {
+                            // Get the generated text area content
+                            const generatedText = document.getElementById('testingGeneratedTextInput');
+                            if (generatedText && generatedText.value && !shouldFilterValue(generatedText.value)) {
+                                sectionContent += 'Generated Text:\n' + generatedText.value.trim() + '\n\n';
+                            }
+                            
+                            // Get all test entries
+                            const testEntries = testingSection.querySelectorAll('.test-entry');
+                            testEntries.forEach((entry, index) => {
+                                const testName = entry.querySelector('input[type="text"]')?.value;
+                                const testDesc = entry.querySelectorAll('textarea')[0]?.value;
+                                const testScores = entry.querySelectorAll('textarea')[1]?.value;
+                                
+                                if (testName || testDesc || testScores) {
+                                    sectionContent += `Test ${index + 1}:\n`;
+                                    if (testName && !shouldFilterValue(testName)) {
+                                        sectionContent += `Name: ${testName.trim()}\n`;
+                                    }
+                                    if (testDesc && !shouldFilterValue(testDesc)) {
+                                        sectionContent += `Description: ${testDesc.trim()}\n`;
+                                    }
+                                    if (testScores && !shouldFilterValue(testScores)) {
+                                        sectionContent += `Scores: ${testScores.trim()}\n`;
+                                    }
+                                    sectionContent += '\n';
                                 }
                             });
                         }
@@ -8461,6 +8318,7 @@
                         break;
                     case 'reasonForReferral':
                     case 'psychoeducationalProcedures':
+                    case 'testing':
                         // No subsections, no delimiter instructions needed
                         delimiterInstructions = '';
                         break;
@@ -8531,7 +8389,8 @@
                         'academicTestingGeneratedText'
                     ],
                     'reasonForReferral': ['reasonForReferralGeneratedTextInput'],
-                    'psychoeducationalProcedures': ['psychoeducationalProceduresGeneratedTextInput']
+                    'psychoeducationalProcedures': ['psychoeducationalProceduresGeneratedTextInput'],
+                    'testing': ['testingGeneratedTextInput']
                 };
                 
                 const subsectionIds = subsectionMappings[section];
@@ -8766,6 +8625,59 @@
             const saveStatus = document.getElementById('saveStatus');
             saveStatus.textContent = message;
             saveStatus.className = 'save-status' + (type ? ' ' + type : '');
+        }
+
+        // Function to add new test entry
+        function addTestEntry() {
+            const container = document.getElementById('testEntriesContainer');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'test-entry';
+            newEntry.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;';
+            
+            newEntry.innerHTML = `
+                <div style="margin-bottom: 10px;">
+                    <span class="fieldLabel">Test Name</span>
+                    <input type="text" class="editableTextarea" style="width: 100%; padding: 8px;"
+                        placeholder="Enter test name" onclick="setTextboxDirty(event)" />
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span class="fieldLabel">Test Description</span>
+                    <textarea class="editableTextarea" style="width: 100%; min-height: 60px; padding: 8px;"
+                        placeholder="Enter test description" onclick="setTextboxDirty(event)"></textarea>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span class="fieldLabel">Scores</span>
+                    <textarea class="editableTextarea" style="width: 100%; min-height: 60px; padding: 8px;"
+                        placeholder="Enter test scores" onclick="setTextboxDirty(event)"></textarea>
+                </div>
+                <div style="text-align: right;">
+                    <button class="mdc-button mdc-button--raised" 
+                            style="background-color: #f44336; color: white;"
+                            onclick="removeTestEntry(this)">
+                        <i class="fa fa-trash"></i> Remove
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(newEntry);
+            showSaveStatus('Test entry added', 'success');
+            setTimeout(() => showSaveStatus('', ''), 2000);
+        }
+        
+        // Function to remove test entry
+        function removeTestEntry(button) {
+            const entry = button.closest('.test-entry');
+            const container = document.getElementById('testEntriesContainer');
+            
+            // Don't remove if it's the only entry
+            if (container.children.length > 1) {
+                entry.remove();
+                showSaveStatus('Test entry removed', 'success');
+                setTimeout(() => showSaveStatus('', ''), 2000);
+            } else {
+                showSaveStatus('Cannot remove the last test entry', 'error');
+                setTimeout(() => showSaveStatus('', ''), 2000);
+            }
         }
 
         // Update MDC text fields to properly handle pre-filled values
