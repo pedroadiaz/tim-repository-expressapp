@@ -1569,7 +1569,14 @@
                         <textarea class="editableTextarea" style="max-width:100%; min-width: 100%;" id="midDescription"
                             rows="3"
                             class="descriptionInput">CONFIDENTIALITY: The following assessment report may contain sensitive information subject to misinterpretation by untrained individuals. Nonconsensual disclosure by unauthorized individuals is prohibited by both the California State Education Code and the Welfare and Institutions Code.</textarea>
+                            
+                        <textarea class="editableTextarea" style="margin-top: 1.75rem; max-width:100%; min-width: 100%;"
+                            id="demographicsEndInfo1" rows="4"
+                        <textarea class="editableTextarea" style="margin-top: 1.75rem; max-width:100%; min-width: 100%;"
+                            id="demographicsEndInfo2" rows="10"
 
+                        </div>
+                        <!-- End Demographics Section Wrapper -->
 
                         <div class="mdc-layout-grid__inner">
 
@@ -1587,6 +1594,20 @@
                                         </span>
                                     </span>
                                     <span class="shiny__background"></span>
+                                </div>
+                                
+                                <!-- AI Summary buttons for Reason for Referral -->
+                                <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                            onclick="generateAISummary('reasonForReferral')">
+                                        <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                    </button>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #2196F3; color: white;"
+                                            onclick="pasteFromAI('reasonForReferral')">
+                                        <i class="fa fa-paste"></i> Paste from AI
+                                    </button>
                                 </div>
                             </div>
 
@@ -1651,6 +1672,18 @@
                                 </div>
                             </div>
 
+                            <!-- Generated Text box for Reason for Referral -->
+                            <div id="reasonForReferral_generatedText"
+                                class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop flex-column"
+                                style="width: 100%;">
+                                <span class="fieldLabel">Generated Text</span>
+                                <div style="display: flex; gap: 5px">
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="min-width: 90%; text-align: left;"
+                                        id="reasonForReferralGeneratedTextInput" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                            </div>
 
                             <div class="fieldLabel mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop flex-column"
                                 style="width:100%;">Areas of Concern</div>
@@ -1711,14 +1744,50 @@
 
                             <div
                                 class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
-                                <input class="editableTitle w-100" id="psychoeducationalProceduresTitle" type="text" 
-                                       name="psychoeducationalProceduresTitle" value="Psychoeducational Procedures"
-                                       style="text-align: center; font-size: 1.5em; font-weight: bold;">
+                                
+                                <div class="sectionSpacer"></div>
+                                <div class="shiny w-100">
+                                    <span class="shiny__inner">
+                                        <span class="shiny__label">
+                                            <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                                id="psychoeducationalProceduresTitle" type="text" 
+                                                name="psychoeducationalProceduresTitle" value="Psychoeducational Procedures">
+                                            <span class="shiny__label__background"></span>
+                                        </span>
+                                    </span>
+                                    <span class="shiny__background"></span>
+                                </div>
+                                       
+                                <!-- AI Summary buttons for Psychoeducational Procedures -->
+                                <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                            onclick="generateAISummary('psychoeducationalProcedures')">
+                                        <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                    </button>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #2196F3; color: white;"
+                                            onclick="pasteFromAI('psychoeducationalProcedures')">
+                                        <i class="fa fa-paste"></i> Paste from AI
+                                    </button>
+                                </div>
                             </div>
 
                             <div id="psychoeducational_procedures"
                                 class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop flex-column"
                                 style="width: 100%;">
+                                
+                                <!-- Generated Text box for Psychoeducational Procedures -->
+                                <div id="psychoeducationalProcedures_generatedText" style="margin-bottom: 20px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <div style="display: flex; gap: 5px">
+                                        <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                            style="min-width: 90%; text-align: left;"
+                                            id="psychoeducationalProceduresGeneratedTextInput" class="descriptionInput" rows="3"
+                                            placeholder="Generated text from AI summary will appear here"></textarea>
+                                    </div>
+                                </div>
+                                
                                 <ul id="psychoeducationalProceduresList" class="mdc-list proceduresList">
                                 </ul>
 
@@ -1769,30 +1838,67 @@
                             </div>
                         </div>
 
-                        <textarea class="editableTextarea" style="margin-top: 1.75rem; max-width:100%; min-width: 100%;"
-                            id="demographicsEndInfo" rows="4"
                             class="descriptionInput">Environmental, cultural, and economic information: It is important to note that before initiating this evaluation the effects of environmental, cultural, and economic disadvantage on this students’ learning was evaluated. From the available data it was concluded that the presenting concerns regarding student performance is not attributable to any economic or environmental disadvantages.</textarea>
-                        <textarea class="editableTextarea" style="margin-top: 1.75rem; max-width:100%; min-width: 100%;"
-                            id="demographicsEndInfo" rows="10"
                             class="descriptionInput">Student was assessed in all areas of suspected disability; all tests and materials include those tailored to assess specific areas of educational need; materials and procedures used for assessment, and educational planning are selected and administered so as not to be racially, culturally or sexually discriminatory and have been validated for the specific purposes for which they were used. As such, materials and procedures were provided in the student’s native language/mode of communication in a form most likely to yield accurate information on what the child knows and can do academically, developmentally, and functionally; each assessment was given in accordance with the test instructions provided by the producer and was administered by a trained and knowledgeable personnel; and all tests were selected and administered to best ensure that they produce results that accurately reflect the student’s abilities, not the student’s impairments, including impaired sensory, manual, or speaking skills. Assessment(s) administered in English.</textarea>
 
 
-                        </div>
-                        <!-- End Demographics Section Wrapper -->
-
                         <div id="recordsReviewSectionNav"></div>
-                        <div class="sectionSpacer"></div>
-                        <input class="editableTitle" id="recordsReviewTitle" type="text" name="reportTitle"
-                            value="INFORMAL ASSESSMENT DATA">
-                        <hr />
-                        <input class="editableTitle" id="recordsReviewSubtitle" type="text" name="reportTitle"
-                            value="CUMULATIVE RECORD REVIEW">
-                        <br />
-                        <div class="sectionSpacerSmall" style="margin-top:5px"></div>
-                        <input class="editableTitle" id="recordsReviewLabel" type="text" name="recordsReviewLabel"
-                            value="RELEVANT BACKGROUND INFORMATION">
-                        <div class="sectionSpacerSmall"></div>
-                        <hr />
+                        
+                        <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                            <div class="sectionSpacer"></div>
+                            <div class="shiny w-100">
+                                <span class="shiny__inner">
+                                    <span class="shiny__label">
+                                        <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                            id="recordsReviewTitle" type="text" name="reportTitle"
+                                            value="INFORMAL ASSESSMENT DATA">
+                                        <span class="shiny__label__background"></span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                            <div class="sectionSpacer"></div>
+                            <div class="shiny w-100">
+                                <span class="shiny__inner">
+                                    <span class="shiny__label">
+                                        <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                            id="recordsReviewSubtitle" type="text" name="reportTitle"
+                                            value="CUMULATIVE RECORD REVIEW">
+                                        <span class="shiny__label__background"></span>
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            <!-- AI Summary buttons for Cumulative Record Review -->
+                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                <button class="mdc-button mdc-button--raised" 
+                                        style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                        onclick="generateAISummary('recordsReview')">
+                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                </button>
+                                <button class="mdc-button mdc-button--raised" 
+                                        style="background-color: #2196F3; color: white;"
+                                        onclick="pasteFromAI('recordsReview')">
+                                    <i class="fa fa-paste"></i> Paste from AI
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                            <div class="sectionSpacer"></div>
+                            <div class="shiny w-100">
+                                <span class="shiny__inner">
+                                    <span class="shiny__label">
+                                        <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                            id="recordsReviewLabel" type="text" name="recordsReviewLabel"
+                                            value="RELEVANT BACKGROUND INFORMATION">
+                                        <span class="shiny__label__background"></span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
                         <div class="sectionSpacerSmall"></div>
                         <div class="mdc-layout-grid__inner">
                             <div id="family_information"
@@ -1808,6 +1914,16 @@
                                 <input class="editableLabel" id="familyInformationLabel" type="text"
                                     name="familyInformationLabel" value="Family Information">
                                 <br />
+                                
+                                <!-- Generated Text box for Family Information -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="familyInformationGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
                                 <br />
                                 <table class="mdc-data-table__table" aria-label="Family Information">
                                     <tbody class="mdc-data-table__content">
@@ -2256,6 +2372,15 @@
                                 <input class="editableLabel" id="healthAndDevelopmentalLabel" type="text"
                                     name="healthAndDevelopmentalLabel" value="Health and Developmental Information">
                                 <br />
+                                
+                                <!-- Generated Text box for Health and Developmental Information -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="healthDevelopmentalGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <br />
                                 <table class="mdc-data-table__table" aria-label="Health">
                                     <!--
@@ -2938,6 +3063,15 @@
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
                                 <div class="staticLabel">History of Medical/Psychiatric Diagnosis</div>
                                 <br />
+                                
+                                <!-- Generated Text box for History of Medical/Psychiatric Diagnosis -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="medicalPsychiatricGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <br />
                                 <table class="mdc-data-table__table" aria-label="Medical History">
                                     <tbody id="histories_medicalDiagnosisTable_body" class=" mdc-data-table__content">
@@ -3015,6 +3149,15 @@
                                 <div class="staticLabel">History of Surgeries, Accidents, Seizures, Ear Infections
                                 </div>
                                 <br />
+                                
+                                <!-- Generated Text box for History of Surgeries, Accidents, Seizures, Ear Infections -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="surgeriesAccidentsGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <br />
                                 <table class="mdc-data-table__table" aria-label="Medical History Cont">
                                     <tbody class="mdc-data-table__content">
@@ -3040,6 +3183,15 @@
                                 <div class="staticLabel">Hearing and Vision Screenings
                                 </div>
                                 <br />
+                                
+                                <!-- Generated Text box for Hearing and Vision Screenings -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="hearingVisionGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <br />
                                 <table class="mdc-data-table__table" aria-label="Medical History Cont">
                                     <tbody id="histories_hearingVisionTable_body" class=" mdc-data-table__content">
@@ -3217,6 +3369,20 @@
                                                 School Enrollment History
                                             </th>
                                         </tr>
+                                    </thead>
+                                </table>
+                                
+                                <!-- Generated Text box for School Enrollment History -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="schoolEnrollmentGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
+                                <table class="mdc-data-table__table">
+                                    <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
                                                 Grade
@@ -3260,20 +3426,21 @@
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <hr />
                                 
-                                <!-- AI Summary for Observations -->
-                                <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
-                                    <button class="mdc-button mdc-button--raised" 
-                                            style="background-color: #4CAF50; color: white;"
-                                            onclick="generateAISummary('observations')">
-                                        <i class="fa fa-copy"></i> Copy Section for AI Summary
-                                    </button>
-                                </div>
-                                
                                 <br />
                                 <div id="testingSectionNav"></div>
                                 <input class="editableTitle w-100" id="standardizedTestTitle" type="text" 
                                        name="standardizedTestTitle" value="Standardized Test Performance History"
                                        style="text-align: center; font-size: 1.5em; font-weight: bold; margin-bottom: 10px;">
+                                
+                                <!-- Generated Text box for Standardized Test Performance History -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="standardizedTestGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     style="min-width: 90%; text-align: left;"
                                     id="histories_testPerformanceHistoryPreInformation" class="descriptionInput"
@@ -3373,6 +3540,20 @@
                                                        style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
+                                    </thead>
+                                </table>
+                                
+                                <!-- Generated Text box for Attendance History -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="attendanceHistoryGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
+                                <table class="mdc-data-table__table">
+                                    <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
                                                 Grade
@@ -3662,11 +3843,31 @@
                                     placeholder="Other additional information">todo</textarea>
                                 <div class="sectionSpacerSmall"></div>
                                 <span class="fieldLabel">504 History</span>
+                                
+                                <!-- Generated Text box for 504 Plan History -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="plan504GeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_504History" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
                                 <span class="fieldLabel">Private Assessments</span>
+                                
+                                <!-- Generated Text box for Private Assessments -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="privateAssessmentsGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_privateAssessments" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
@@ -3677,6 +3878,16 @@
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
                                 <span class="fieldLabel">Regional Center History</span>
+                                
+                                <!-- Generated Text box for Regional Center History -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="regionalCenterGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_regionalCenterHistory" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
@@ -3698,6 +3909,18 @@
                                             </th>
                                         </tr>
                                     </thead>
+                                </table>
+                                
+                                <!-- Generated Text box for Drug and Alcohol History -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="drugAlcoholGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
+                                <table class="mdc-data-table__table">
                                     <tbody class="mdc-data-table__content" id="histories_drugAndAlcohol_body">
                                         <tr class="mdc-data-table__row">
                                             <td class="mdc-data-table__cell">
@@ -4131,6 +4354,18 @@
                                             </th>
                                         </tr>
                                     </thead>
+                                </table>
+                                
+                                <!-- Generated Text box for Probation and Court Involvement -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="probationCourtGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
+                                <table class="mdc-data-table__table">
                                     <tbody class="mdc-data-table__content"
                                         id="histories_probationCourtInvolvement_body">
                                         <tr class="mdc-data-table__row">
@@ -4353,6 +4588,18 @@
                                             </th>
                                         </tr>
                                     </thead>
+                                </table>
+                                
+                                <!-- Generated Text box for Child Protective Services Involvement -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="childProtectiveServicesGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
+                                
+                                <table class="mdc-data-table__table">
                                     <tbody class="mdc-data-table__content" id="histories_cfsInvolvement_body">
                                         <tr class="mdc-data-table__row">
                                             <td class="mdc-data-table__cell">
@@ -4403,23 +4650,39 @@
                                     id="histories_cfsInvolvementMoreInformation" rows="3"
                                     placeholder="Other additional information">There has been no reported history of child protective services involvement.</textarea>
                             </div>
-                            
-                            <!-- AI Summary for Records Review -->
-                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
-                                <button class="mdc-button mdc-button--raised" 
-                                        style="background-color: #4CAF50; color: white;"
-                                        onclick="generateAISummary('recordsReview')">
-                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
-                                </button>
-                            </div>
 
                             <div id="interviewsSectionNav"></div>
 
+                            <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                                <div class="sectionSpacer"></div>
+                                <div class="shiny w-100">
+                                    <span class="shiny__inner">
+                                        <span class="shiny__label">
+                                            <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                                id="clinicalInterviewsLabel" type="text"
+                                                name="clinicalInterviewsLabel" value="CLINICAL INTERVIEWS">
+                                            <span class="shiny__label__background"></span>
+                                        </span>
+                                    </span>
+                                </div>
+                                
+                                <!-- AI Summary buttons for Clinical Interviews -->
+                                <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                            onclick="generateAISummary('interviews')">
+                                        <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                    </button>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #2196F3; color: white;"
+                                            onclick="pasteFromAI('interviews')">
+                                        <i class="fa fa-paste"></i> Paste from AI
+                                    </button>
+                                </div>
+                            </div>
+                            
                             <div id="clinical_interviews"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
-
-                                <input class="editableLabel" id="clinicalInterviewsLabel" type="text"
-                                    name="clinicalInterviewsLabel" value="Clinical Interviews">
                                 <br />
                                 <table id="clinicalInterviewsStudentTable" class="mdc-data-table__table"
                                     aria-label="Clinical Interviews">
@@ -4429,6 +4692,18 @@
                                                 colspan="2">
                                                 Student Input
                                             </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <!-- Generated Text box for Student Input -->
+                                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Generated Text</span>
+                                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                        style="width: 100%; text-align: left;"
+                                                        id="studentInputGeneratedText" class="descriptionInput" rows="3"
+                                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
@@ -4694,6 +4969,18 @@
                                                 colspan="2">
                                                 Parent Input
                                             </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <!-- Generated Text box for Parent Input -->
+                                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Generated Text</span>
+                                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                        style="width: 100%; text-align: left;"
+                                                        id="parentInputGeneratedText" class="descriptionInput" rows="3"
+                                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
@@ -5059,6 +5346,18 @@
                                                 colspan="2">
                                                 Teacher Input
                                             </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <!-- Generated Text box for Teacher Input -->
+                                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Generated Text</span>
+                                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                        style="width: 100%; text-align: left;"
+                                                        id="teacherInputGeneratedText" class="descriptionInput" rows="3"
+                                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </thead>
                                     <tbody class="mdc-data-table__content">
@@ -5692,30 +5991,64 @@
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
                                 <span class="fieldLabel">Other Provider Input</span>
+                                <!-- Generated Text box for Other Provider Input -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="otherProviderInputGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="interviews_otherProviderMoreInformation" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                             </div>
                             
-                            <!-- AI Summary for Interviews -->
-                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
-                                <button class="mdc-button mdc-button--raised" 
-                                        style="background-color: #4CAF50; color: white;"
-                                        onclick="generateAISummary('interviews')">
-                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
-                                </button>
+                            <div id="observationsSectionNav"></div>
+                            
+                            <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                                <div class="sectionSpacer"></div>
+                                <div class="shiny w-100">
+                                    <span class="shiny__inner">
+                                        <span class="shiny__label">
+                                            <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                                id="observationsLabel" type="text"
+                                                name="clinicalInterviewsLabel" value="BEHAVIOR OBSERVATIONS">
+                                            <span class="shiny__label__background"></span>
+                                        </span>
+                                    </span>
+                                </div>
+                                
+                                <!-- AI Summary buttons for Behavior Observations -->
+                                <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                            onclick="generateAISummary('observations')">
+                                        <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                    </button>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #2196F3; color: white;"
+                                            onclick="pasteFromAI('observations')">
+                                        <i class="fa fa-paste"></i> Paste from AI
+                                    </button>
+                                </div>
                             </div>
                             
-                            <div id="observationsSectionNav"></div>
                             <div id="observations"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
-
-                                <input class="editableLabel" id="observationsLabel" type="text"
-                                    name="clinicalInterviewsLabel" value="BEHAVIOR OBSERVATIONS">
                                 <br />
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_probationCourtInvolvementMoreInformation" rows="3"
                                     placeholder="Other additional information">Observation in classroom and other appropriate settings, including relationship of behavior to student's academic and social functioning.</textarea>
+
+                                <!-- Generated Text box for Classroom Observation -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="classroomObservationGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
 
                                 <table id="classroomObservationTable" class="mdc-data-table__table">
                                     <thead class="mdc-data-table__header">
@@ -6315,6 +6648,20 @@
                                             </th>
                                         </tr>
                                     </thead>
+                                    <!-- Generated Text box for Lunchtime Observation -->
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3">
+                                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Generated Text</span>
+                                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                        style="width: 100%; text-align: left;"
+                                                        id="lunchtimeObservationGeneratedText" class="descriptionInput" rows="3"
+                                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                     <tbody>
                                         <tr>
                                             <td style="font-weight:500">
@@ -6453,6 +6800,20 @@
                                             </th>
                                         </tr>
                                     </thead>
+                                    <!-- Generated Text box for Psychoeducational Testing Behavior -->
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="3">
+                                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                                    <span class="fieldLabel">Generated Text</span>
+                                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                        style="width: 100%; text-align: left;"
+                                                        id="psychoeducationalTestingGeneratedText" class="descriptionInput" rows="3"
+                                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                     <tbody>
                                         <tr>
                                             <td style="font-weight: 500">
@@ -7294,22 +7655,29 @@
 
 
                                 <span class="fieldLabel">Language Testing Behavior</span>
+                                <!-- Generated Text box for Language Testing Behavior -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="languageTestingGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="languageTestingBehaviorMoreInformation" rows="3"
                                     placeholder="Other additional information">todo</textarea>
                                 <span class="fieldLabel">Academic Testing Behavior</span>
+                                <!-- Generated Text box for Academic Testing Behavior -->
+                                <div style="margin-top: 10px; margin-bottom: 10px;">
+                                    <span class="fieldLabel">Generated Text</span>
+                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                        style="width: 100%; text-align: left;"
+                                        id="academicTestingGeneratedText" class="descriptionInput" rows="3"
+                                        placeholder="Generated text from AI summary will appear here"></textarea>
+                                </div>
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="academicTestingBehaviorMoreInformation" rows="3"
                                     placeholder="Other additional information">todo</textarea>
-                            </div>
-                            
-                            <!-- AI Summary for Testing -->
-                            <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
-                                <button class="mdc-button mdc-button--raised" 
-                                        style="background-color: #4CAF50; color: white;"
-                                        onclick="generateAISummary('testing')">
-                                    <i class="fa fa-copy"></i> Copy Section for AI Summary
-                                </button>
                             </div>
                             
                             <div class="sectionSpacer"></div>
@@ -7736,6 +8104,14 @@
             }, 5000);
         }
         
+        function skipDemographicsAndExport() {
+            // Close the modal
+            closeDemographicsModal();
+            
+            // Call the export function with skip flag
+            exportToWord(true);
+        }
+        
         function checkDemographicsBeforeExport() {
             // Check if demographics section is visible or if key fields are filled
             const demographicsSection = document.getElementById('demographicsSection');
@@ -7758,9 +8134,9 @@
         }
 
         // Export to Word function
-        async function exportToWord() {
-            // Check demographics first
-            if (!checkDemographicsBeforeExport()) {
+        async function exportToWord(skipDemographics = false) {
+            // Check demographics first (unless skipping)
+            if (!skipDemographics && !checkDemographicsBeforeExport()) {
                 return;
             }
             
@@ -7772,14 +8148,11 @@
                 exportBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Exporting...';
                 showSaveStatus('Preparing Word document...', '');
 
-                // Get all the report content
-                const reportContent = document.getElementById('survey-form');
-                
                 // Create document sections
                 const docSections = [];
                 
                 // Add title
-                const reportTitle = document.querySelector('.editableTitle')?.textContent || 'Assessment Report';
+                const reportTitle = document.getElementById('reportTitle')?.value || 'Assessment Report';
                 docSections.push(
                     new docx.Paragraph({
                         text: reportTitle,
@@ -7789,81 +8162,104 @@
                     })
                 );
 
-                // Process each section
-                const sections = reportContent.querySelectorAll('.editableSection');
-                sections.forEach(section => {
-                    // Skip hidden sections
-                    if (section.style.display === 'none') return;
-                    
-                    // Get section title
-                    const sectionTitle = section.querySelector('.editableSubtitle, h2, h3');
-                    if (sectionTitle && sectionTitle.textContent.trim()) {
-                        docSections.push(
-                            new docx.Paragraph({
-                                text: sectionTitle.textContent.trim(),
-                                heading: docx.HeadingLevel.HEADING_1,
-                                spacing: { before: 400, after: 200 }
-                            })
-                        );
+                // Define section structure and order
+                const sectionStructure = [
+                    {
+                        title: 'REASON FOR REFERRAL',
+                        generatedTextIds: ['reasonForReferralGeneratedTextInput']
+                    },
+                    {
+                        title: 'PSYCHOEDUCATIONAL PROCEDURES',
+                        generatedTextIds: ['psychoeducationalProceduresGeneratedTextInput']
+                    },
+                    {
+                        title: 'CUMULATIVE RECORD REVIEW',
+                        subsections: [
+                            { title: 'Family Information', id: 'familyInformationGeneratedText' },
+                            { title: 'Health and Developmental Information', id: 'healthDevelopmentalGeneratedText' },
+                            { title: 'History of Medical/Psychiatric Diagnosis', id: 'medicalPsychiatricGeneratedText' },
+                            { title: 'History of Surgeries, Accidents, Seizures, Ear Infections', id: 'surgeriesAccidentsGeneratedText' },
+                            { title: 'Hearing and Vision Screenings', id: 'hearingVisionGeneratedText' },
+                            { title: 'School Enrollment History', id: 'schoolEnrollmentGeneratedText' },
+                            { title: 'Standardized Test Performance History', id: 'standardizedTestGeneratedText' },
+                            { title: 'Attendance History', id: 'attendanceHistoryGeneratedText' },
+                            { title: '504 Plan History', id: 'plan504GeneratedText' },
+                            { title: 'Private Assessments', id: 'privateAssessmentsGeneratedText' },
+                            { title: 'Regional Center History', id: 'regionalCenterGeneratedText' },
+                            { title: 'Drug and Alcohol History', id: 'drugAlcoholGeneratedText' },
+                            { title: 'Probation and Court Involvement', id: 'probationCourtGeneratedText' },
+                            { title: 'Child Protective Services Involvement', id: 'childProtectiveServicesGeneratedText' }
+                        ]
+                    },
+                    {
+                        title: 'CLINICAL INTERVIEWS',
+                        subsections: [
+                            { title: 'Student Input', id: 'studentInputGeneratedText' },
+                            { title: 'Parent Input', id: 'parentInputGeneratedText' },
+                            { title: 'Teacher Input', id: 'teacherInputGeneratedText' },
+                            { title: 'Other Provider Input', id: 'otherProviderInputGeneratedText' }
+                        ]
+                    },
+                    {
+                        title: 'BEHAVIOR OBSERVATIONS',
+                        subsections: [
+                            { title: 'Classroom Observation', id: 'classroomObservationGeneratedText' },
+                            { title: 'Lunchtime Observation', id: 'lunchtimeObservationGeneratedText' },
+                            { title: 'Psychoeducational Testing Behavior', id: 'psychoeducationalTestingGeneratedText' },
+                            { title: 'Language Testing Behavior', id: 'languageTestingGeneratedText' },
+                            { title: 'Academic Testing Behavior', id: 'academicTestingGeneratedText' }
+                        ]
                     }
+                ];
+
+                // Process each section
+                sectionStructure.forEach(section => {
+                    // Add section title
+                    docSections.push(
+                        new docx.Paragraph({
+                            text: section.title,
+                            heading: docx.HeadingLevel.HEADING_1,
+                            spacing: { before: 400, after: 200 }
+                        })
+                    );
                     
-                    // Get all text content in the section
-                    const labels = section.querySelectorAll('.editableLabel');
-                    const textareas = section.querySelectorAll('.editableTextarea, textarea');
-                    const inputs = section.querySelectorAll('input[type="text"]:not(.editableTitle):not(.editableSubtitle)');
-                    const selects = section.querySelectorAll('.mdc-select__selected-text');
-                    
-                    // Process labels and their associated content
-                    labels.forEach(label => {
-                        const labelText = label.textContent.trim();
-                        if (labelText) {
-                            docSections.push(
-                                new docx.Paragraph({
-                                    text: labelText,
-                                    heading: docx.HeadingLevel.HEADING_2,
-                                    spacing: { before: 200, after: 100 }
-                                })
-                            );
-                            
-                            // Find associated textarea or input
-                            const nextElement = label.nextElementSibling;
-                            if (nextElement) {
-                                let content = '';
-                                if (nextElement.classList.contains('editableTextarea') || nextElement.tagName === 'TEXTAREA') {
-                                    content = nextElement.value || nextElement.textContent || '';
-                                } else if (nextElement.tagName === 'INPUT') {
-                                    content = nextElement.value || '';
-                                }
+                    if (section.subsections) {
+                        // Process subsections
+                        section.subsections.forEach(subsection => {
+                            const textarea = document.getElementById(subsection.id);
+                            if (textarea && textarea.value && textarea.value.trim()) {
+                                // Add subsection title
+                                docSections.push(
+                                    new docx.Paragraph({
+                                        text: subsection.title,
+                                        heading: docx.HeadingLevel.HEADING_2,
+                                        spacing: { before: 200, after: 100 }
+                                    })
+                                );
                                 
-                                if (content.trim()) {
-                                    docSections.push(
-                                        new docx.Paragraph({
-                                            text: content.trim(),
-                                            spacing: { after: 200 }
-                                        })
-                                    );
-                                }
+                                // Add content
+                                docSections.push(
+                                    new docx.Paragraph({
+                                        text: textarea.value.trim(),
+                                        spacing: { after: 200 }
+                                    })
+                                );
                             }
-                        }
-                    });
-                    
-                    // Process any standalone textareas
-                    textareas.forEach(textarea => {
-                        // Skip if already processed
-                        if (textarea.previousElementSibling && textarea.previousElementSibling.classList.contains('editableLabel')) {
-                            return;
-                        }
-                        
-                        const content = textarea.value || textarea.textContent || '';
-                        if (content.trim()) {
-                            docSections.push(
-                                new docx.Paragraph({
-                                    text: content.trim(),
-                                    spacing: { after: 200 }
-                                })
-                            );
-                        }
-                    });
+                        });
+                    } else if (section.generatedTextIds) {
+                        // Process sections without subsections
+                        section.generatedTextIds.forEach(id => {
+                            const textarea = document.getElementById(id);
+                            if (textarea && textarea.value && textarea.value.trim()) {
+                                docSections.push(
+                                    new docx.Paragraph({
+                                        text: textarea.value.trim(),
+                                        spacing: { after: 200 }
+                                    })
+                                );
+                            }
+                        });
+                    }
                 });
 
                 // Create the document
@@ -8051,8 +8447,27 @@
                         Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
                 }
 
-                // Combine prompt and content for clipboard
-                const clipboardContent = `${prompt}\n\n${sectionContent}`;
+                // Add delimiter instructions for sections with subsections
+                let delimiterInstructions = '';
+                switch(section) {
+                    case 'recordsReview':
+                        delimiterInstructions = '\n\nIMPORTANT: Please provide a summary for each of the following subsections separately. After each subsection summary, add the delimiter "===SUBSECTION===" on its own line. The subsections are: Family Information, Health and Developmental Information, History of Medical/Psychiatric Diagnosis, History of Surgeries/Accidents/Seizures/Ear Infections, Hearing and Vision Screenings, School Enrollment History, Standardized Test Performance History, Attendance History, 504 Plan History, Private Assessments, Regional Center History, Drug and Alcohol History, Probation and Court Involvement, Child Protective Services Involvement.\n\n';
+                        break;
+                    case 'interviews':
+                        delimiterInstructions = '\n\nIMPORTANT: Please provide a summary for each of the following subsections separately. After each subsection summary, add the delimiter "===SUBSECTION===" on its own line. The subsections are: Student Input, Parent Input, Teacher Input, Other Provider Input.\n\n';
+                        break;
+                    case 'observations':
+                        delimiterInstructions = '\n\nIMPORTANT: Please provide a summary for each of the following subsections separately. After each subsection summary, add the delimiter "===SUBSECTION===" on its own line. The subsections are: Classroom Observation, Lunchtime Observation, Psychoeducational Testing Behavior, Language Testing Behavior, Academic Testing Behavior.\n\n';
+                        break;
+                    case 'reasonForReferral':
+                    case 'psychoeducationalProcedures':
+                        // No subsections, no delimiter instructions needed
+                        delimiterInstructions = '';
+                        break;
+                }
+
+                // Combine prompt, delimiter instructions, and content for clipboard
+                const clipboardContent = `${prompt}${delimiterInstructions}\n\n${sectionContent}`;
 
                 // Copy to clipboard
                 await navigator.clipboard.writeText(clipboardContent);
@@ -8067,6 +8482,117 @@
                 button.innerHTML = '<i class="fa fa-copy"></i> Copy Section for AI Summary';
                 
                 // Clear status after 5 seconds
+                setTimeout(() => {
+                    showSaveStatus('', '');
+                }, 5000);
+            }
+        }
+
+        // Function to paste AI-generated content into subsections
+        async function pasteFromAI(section) {
+            try {
+                // Read from clipboard
+                const clipboardText = await navigator.clipboard.readText();
+                
+                if (!clipboardText || clipboardText.trim() === '') {
+                    showSaveStatus('Clipboard is empty. Please copy AI-generated content first.', 'error');
+                    return;
+                }
+                
+                // Define subsection mappings
+                const subsectionMappings = {
+                    'recordsReview': [
+                        'familyInformationGeneratedText',
+                        'healthDevelopmentalGeneratedText',
+                        'medicalPsychiatricGeneratedText',
+                        'surgeriesAccidentsGeneratedText',
+                        'hearingVisionGeneratedText',
+                        'schoolEnrollmentGeneratedText',
+                        'standardizedTestGeneratedText',
+                        'attendanceHistoryGeneratedText',
+                        'plan504GeneratedText',
+                        'privateAssessmentsGeneratedText',
+                        'regionalCenterGeneratedText',
+                        'drugAlcoholGeneratedText',
+                        'probationCourtGeneratedText',
+                        'childProtectiveServicesGeneratedText'
+                    ],
+                    'interviews': [
+                        'studentInputGeneratedText',
+                        'parentInputGeneratedText',
+                        'teacherInputGeneratedText',
+                        'otherProviderInputGeneratedText'
+                    ],
+                    'observations': [
+                        'classroomObservationGeneratedText',
+                        'lunchtimeObservationGeneratedText',
+                        'psychoeducationalTestingGeneratedText',
+                        'languageTestingGeneratedText',
+                        'academicTestingGeneratedText'
+                    ],
+                    'reasonForReferral': ['reasonForReferralGeneratedTextInput'],
+                    'psychoeducationalProcedures': ['psychoeducationalProceduresGeneratedTextInput']
+                };
+                
+                const subsectionIds = subsectionMappings[section];
+                if (!subsectionIds) {
+                    showSaveStatus('Unknown section: ' + section, 'error');
+                    return;
+                }
+                
+                // Check if section has subsections
+                const hasSubsections = section === 'recordsReview' || section === 'interviews' || section === 'observations';
+                
+                if (hasSubsections) {
+                    // Parse content by delimiter
+                    const delimiter = '===SUBSECTION===';
+                    const parts = clipboardText.split(delimiter);
+                    
+                    // Distribute content to subsections
+                    for (let i = 0; i < Math.min(parts.length, subsectionIds.length); i++) {
+                        const textarea = document.getElementById(subsectionIds[i]);
+                        if (textarea) {
+                            const trimmedContent = parts[i].trim();
+                            if (trimmedContent) {
+                                // Append to existing content if any
+                                if (textarea.value && textarea.value.trim()) {
+                                    textarea.value += '\n\n' + trimmedContent;
+                                } else {
+                                    textarea.value = trimmedContent;
+                                }
+                                // Mark as dirty
+                                textarea.dispatchEvent(new Event('click'));
+                            }
+                        }
+                    }
+                    
+                    showSaveStatus(`Pasted content into ${Math.min(parts.length, subsectionIds.length)} subsections`, 'success');
+                } else {
+                    // Single section - paste entire content
+                    const textarea = document.getElementById(subsectionIds[0]);
+                    if (textarea) {
+                        // Append to existing content if any
+                        if (textarea.value && textarea.value.trim()) {
+                            textarea.value += '\n\n' + clipboardText.trim();
+                        } else {
+                            textarea.value = clipboardText.trim();
+                        }
+                        // Mark as dirty
+                        textarea.dispatchEvent(new Event('click'));
+                        showSaveStatus('Content pasted successfully', 'success');
+                    } else {
+                        showSaveStatus('Could not find text area for this section', 'error');
+                    }
+                }
+                
+                // Clear status after 3 seconds
+                setTimeout(() => {
+                    showSaveStatus('', '');
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Paste error:', error);
+                showSaveStatus('Error pasting content: ' + error.message, 'error');
                 setTimeout(() => {
                     showSaveStatus('', '');
                 }, 5000);
@@ -8397,13 +8923,18 @@
     <div id="demographicsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
         <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 10px;">
             <span class="close" onclick="closeDemographicsModal()" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
-            <h2 style="text-align: center; margin-bottom: 20px;">Demographics Information Required</h2>
-            <p style="text-align: center; margin-bottom: 20px;">Please fill in the demographics information before exporting the report.</p>
+            <h2 style="text-align: center; margin-bottom: 20px;">Demographics Information Suggested</h2>
+            <p style="text-align: center; margin-bottom: 20px;">We recommend filling in demographics information for a complete report. However, you may skip this step if preferred.</p>
             <div style="text-align: center;">
                 <button class="mdc-button mdc-button--raised" 
                         style="background-color: #4CAF50; color: white; margin-right: 10px;"
                         onclick="showDemographicsAndExport()">
                     <i class="fa fa-edit"></i> Fill Demographics
+                </button>
+                <button class="mdc-button mdc-button--raised" 
+                        style="background-color: #2196F3; color: white; margin-right: 10px;"
+                        onclick="skipDemographicsAndExport()">
+                    <i class="fa fa-forward"></i> Skip & Export
                 </button>
                 <button class="mdc-button mdc-button--raised" 
                         style="background-color: #f44336; color: white;"
