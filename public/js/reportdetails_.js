@@ -315,15 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let psychoeducationalProceduresList = document.getElementById('psychoeducationalProceduresList');
     let psychoeducationalProceduresAddBtn = document.getElementById('psychoeducationalProceduresAddBtn');
 
-    let defaultProcedures = ["Adaptive Behavior Assessment System-Third Edition (ABAS-3)", "Behavior Assessment Scale for Adolescents-Third Edition (Parent-Report)", "Kaufman Assessment Battery for Children-Second Edition Normative Update (KABC-2 NU)", "Wechsler Intelligence Scale For Children-Fifth Edition"];
-
-    defaultProcedures.forEach(function (procedure) {
-        let procedureElem = document.createElement('li');
-        procedureElem.className = 'mdc-list-item procedureListItem';
-        procedureElem.setAttribute('data-value', procedure);
-        procedureElem.innerHTML = getProcedureElement(procedure);
-        psychoeducationalProceduresList.appendChild(procedureElem);
-    });
+    // Default procedures removed - users must add procedures manually using the dropdown
 
     psychoeducationalProceduresAddBtn.addEventListener('click', function () {
         let input = document.getElementById('psychoeducationalProceduresSelect').querySelector('.mdc-select__selected-text');

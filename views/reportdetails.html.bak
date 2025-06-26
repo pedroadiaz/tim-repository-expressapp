@@ -1589,7 +1589,7 @@
                                         <span class="shiny__label">
                                             <input style="z-index: 3; position: relative;" class="editableTitle w-100"
                                                 id="reasonForReferralTitle" type="text" name="reasonForReferralTitle"
-                                                value="REASON FOR REFERRAL" placeholder="REASON FOR REFERRAL">
+                                                value="" placeholder="Reason for Referral">
                                             <span class="shiny__label__background"></span>
                                         </span>
                                     </span>
@@ -1751,7 +1751,7 @@
                                         <span class="shiny__label">
                                             <input style="z-index: 3; position: relative;" class="editableTitle w-100"
                                                 id="psychoeducationalProceduresTitle" type="text" 
-                                                name="psychoeducationalProceduresTitle" value="PSYCHOEDUCATIONAL PROCEDURES">
+                                                name="psychoeducationalProceduresTitle" value="Psychoeducational Procedures">
                                             <span class="shiny__label__background"></span>
                                         </span>
                                     </span>
@@ -1840,7 +1840,6 @@
 
                         <textarea class="editableTextarea" style="margin-top: 1.75rem; max-width:100%; min-width: 100%;"
                             class="descriptionInput">Environmental, cultural, and economic information: It is important to note that before initiating this evaluation the effects of environmental, cultural, and economic disadvantage on this students’ learning was evaluated. From the available data it was concluded that the presenting concerns regarding student performance is not attributable to any economic or environmental disadvantages.</textarea>
-                        <textarea class="editableTextarea" style="margin-top: 1.75rem; max-width:100%; min-width: 100%;"
                             class="descriptionInput">Student was assessed in all areas of suspected disability; all tests and materials include those tailored to assess specific areas of educational need; materials and procedures used for assessment, and educational planning are selected and administered so as not to be racially, culturally or sexually discriminatory and have been validated for the specific purposes for which they were used. As such, materials and procedures were provided in the student’s native language/mode of communication in a form most likely to yield accurate information on what the child knows and can do academically, developmentally, and functionally; each assessment was given in accordance with the test instructions provided by the producer and was administered by a trained and knowledgeable personnel; and all tests were selected and administered to best ensure that they produce results that accurately reflect the student’s abilities, not the student’s impairments, including impaired sensory, manual, or speaking skills. Assessment(s) administered in English.</textarea>
 
 
@@ -1853,7 +1852,7 @@
                                     <span class="shiny__label">
                                         <input style="z-index: 3; position: relative;" class="editableTitle w-100"
                                             id="recordsReviewTitle" type="text" name="reportTitle"
-                                            value="Informal Assessment Data">
+                                            value="INFORMAL ASSESSMENT DATA">
                                         <span class="shiny__label__background"></span>
                                     </span>
                                 </span>
@@ -1895,7 +1894,7 @@
                                     <span class="shiny__label">
                                         <input style="z-index: 3; position: relative;" class="editableTitle w-100"
                                             id="recordsReviewLabel" type="text" name="recordsReviewLabel"
-                                            value="Relevant Background Information">
+                                            value="RELEVANT BACKGROUND INFORMATION">
                                         <span class="shiny__label__background"></span>
                                     </span>
                                 </span>
@@ -3430,8 +3429,9 @@
                                 
                                 <br />
                                 <div id="testingSectionNav"></div>
-                                <div class="staticLabel">Standardized Test Performance History</div>
-                                <br />
+                                <input class="editableTitle w-100" id="standardizedTestTitle" type="text" 
+                                       name="standardizedTestTitle" value="Standardized Test Performance History"
+                                       style="text-align: center; font-size: 1.5em; font-weight: bold; margin-bottom: 10px;">
                                 
                                 <!-- Generated Text box for Standardized Test Performance History -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -3529,9 +3529,6 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_subjectStandardMetMoreInformation" class="descriptionInput" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
-                                <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Attendance History</div>
-                                <br />
 
                                 <table id="histories_attendanceHistory" class="mdc-data-table__table"
                                     aria-label="Attendance History">
@@ -3539,6 +3536,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="5">
+                                                <input class="editableTitle w-100" id="attendanceHistoryTitle" type="text" 
+                                                       name="attendanceHistoryTitle" value="Attendance History"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -3627,8 +3627,6 @@
                                     </tbody>
                                 </table>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Special Education History</div>
-                                <br />
 
                                 <table id="histories_specialEducationHistory" class="mdc-data-table__table"
                                     aria-label="Special Education History">
@@ -3636,6 +3634,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="6">
+                                                <input class="editableTitle w-100" id="specialEducationTitle" type="text" 
+                                                       name="specialEducationTitle" value="Special Education History"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -3842,7 +3843,7 @@
                                     id="histories_specialEducationMoreInformation" rows="3"
                                     placeholder="Other additional information">todo</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">504 Plan History</div>
+                                <span class="fieldLabel">504 History</span>
                                 
                                 <!-- Generated Text box for 504 Plan History -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -3857,7 +3858,7 @@
                                     id="histories_504History" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Private Assessments</div>
+                                <span class="fieldLabel">Private Assessments</span>
                                 
                                 <!-- Generated Text box for Private Assessments -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -3872,12 +3873,12 @@
                                     id="histories_privateAssessments" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Disciplinary Behavior History</div>
+                                <span class="fieldLabel">Disciplinary/Behavior History</span>
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_disciplinaryBehaviorHistory" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Regional Center History</div>
+                                <span class="fieldLabel">Regional Center History</span>
                                 
                                 <!-- Generated Text box for Regional Center History -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -3897,14 +3898,15 @@
 
                             <div id="histories_cont"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
-                                <div class="staticLabel">Drug and Alcohol History</div>
-                                <br />
                                 <table id="histories_drugAndAlcohol" class="mdc-data-table__table"
                                     aria-label="Drug and Alcohol History">
                                     <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                <input class="editableTitle w-100" id="drugAlcoholTitle" type="text" 
+                                                       name="drugAlcoholTitle" value="Drug and Alcohol History"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -4340,8 +4342,6 @@
                                     id="histories_drugAndAlcoholMoreInformation" rows="3"
                                     placeholder="Other additional information">todo</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Probation and Court Involvement</div>
-                                <br />
 
                                 <table id="histories_probationCourtInvolvement" class="mdc-data-table__table"
                                     aria-label="Probation and Court Involvement">
@@ -4349,6 +4349,9 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                <input class="editableTitle w-100" id="probationCourtTitle" type="text" 
+                                                       name="probationCourtTitle" value="Probation and Court Involvement"
+                                                       style="text-align: center; font-weight: bold; border: none; background: transparent;">
                                             </th>
                                         </tr>
                                     </thead>
@@ -4575,8 +4578,6 @@
                                     id="histories_probationCourtInvolvementMoreInformation" rows="3"
                                     placeholder="Other additional information">No history of probation/juvenile court involvement reported.</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Child Protective Services Involvement</div>
-                                <br />
 
                                 <table id="histories_cfsInvolvement" class="mdc-data-table__table"
                                     aria-label="CFS Involvement">
@@ -4584,6 +4585,7 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                CFS Involvement
                                             </th>
                                         </tr>
                                     </thead>
@@ -4683,14 +4685,13 @@
                             <div id="clinical_interviews"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
                                 <br />
-                                <div class="staticLabel">Student Input</div>
-                                <br />
                                 <table id="clinicalInterviewsStudentTable" class="mdc-data-table__table"
                                     aria-label="Clinical Interviews">
                                     <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                Student Input
                                             </th>
                                         </tr>
                                         <tr>
@@ -4962,14 +4963,12 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="interviews_studentMoreInformation" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
-                                <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Parent Input</div>
-                                <br />
                                 <table id="clinicalInterviewsParentTable" class="mdc-data-table__table">
                                     <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                Parent Input
                                             </th>
                                         </tr>
                                         <tr>
@@ -5340,15 +5339,13 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="interviews_parentMoreInformation" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
-                                <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Teacher Input</div>
-                                <br />
 
                                 <table id="clinicalInterviewsTeacherTable" class="mdc-data-table__table">
                                     <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                Teacher Input
                                             </th>
                                         </tr>
                                         <tr>
@@ -5989,12 +5986,12 @@
                                     id="interviews_teacherMoreInformation" rows="3"
                                     placeholder="Other additional information">{firstName}'s teacher was interviewed by the examiner.</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Teacher Input</div>
+                                <span class="fieldLabel">Teacher Input</span>
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="interviews_teacherMoreInformation" rows="3"
                                     placeholder="Other additional information">Type here. Delete if not needed.</textarea>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Other Provider Input</div>
+                                <span class="fieldLabel">Other Provider Input</span>
                                 <!-- Generated Text box for Other Provider Input -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
                                     <span class="fieldLabel">Generated Text</span>
@@ -6017,7 +6014,7 @@
                                         <span class="shiny__label">
                                             <input style="z-index: 3; position: relative;" class="editableTitle w-100"
                                                 id="observationsLabel" type="text"
-                                                name="clinicalInterviewsLabel" value="BEHAVIORAL OBSERVATIONS">
+                                                name="clinicalInterviewsLabel" value="BEHAVIOR OBSERVATIONS">
                                             <span class="shiny__label__background"></span>
                                         </span>
                                     </span>
@@ -6044,9 +6041,6 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="histories_probationCourtInvolvementMoreInformation" rows="3"
                                     placeholder="Other additional information">Observation in classroom and other appropriate settings, including relationship of behavior to student's academic and social functioning.</textarea>
-                                <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Classroom Observation</div>
-                                <br />
 
                                 <!-- Generated Text box for Classroom Observation -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -6062,6 +6056,7 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="2">
+                                                Classroom Observation
                                             </th>
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
                                                 <div class="mdc-text-field mdc-text-field--filled w-100">
@@ -6644,14 +6639,13 @@
                                 </table>
 
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Lunchtime Observation</div>
-                                <br />
 
                                 <table id="lunchtimeObservationsTable" class="mdc-data-table__table">
                                     <thead class="mdc-data-table__header">
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="3">
+                                                Lunchtime Observation
                                             </th>
                                         </tr>
                                     </thead>
@@ -6796,8 +6790,6 @@
                                     </tbody>
                                 </table>
                                 <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Psychoeducational Testing Behavior</div>
-                                <br />
 
 
                                 <table id="psychoeducationalTestingBehaviorTable" class="mdc-data-table__table">
@@ -6805,6 +6797,7 @@
                                         <tr class="mdc-data-table__header-row">
                                             <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
                                                 colspan="3">
+                                                Psychoeducational Testing Behavior
                                             </th>
                                         </tr>
                                     </thead>
@@ -7662,7 +7655,7 @@
 
 
 
-                                <div class="staticLabel">Language Testing Behavior</div>
+                                <span class="fieldLabel">Language Testing Behavior</span>
                                 <!-- Generated Text box for Language Testing Behavior -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
                                     <span class="fieldLabel">Generated Text</span>
@@ -7674,7 +7667,7 @@
                                 <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
                                     id="languageTestingBehaviorMoreInformation" rows="3"
                                     placeholder="Other additional information">todo</textarea>
-                                <div class="staticLabel">Academic Testing Behavior</div>
+                                <span class="fieldLabel">Academic Testing Behavior</span>
                                 <!-- Generated Text box for Academic Testing Behavior -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
                                     <span class="fieldLabel">Generated Text</span>
