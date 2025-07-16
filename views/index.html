@@ -237,6 +237,27 @@
       </div>
     </div>
   </div>
+  
+  <!-- Cancel Subscription Modal -->
+  <div id="cancelSubscriptionModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCancelSubscriptionModal()">&times;</span>
+      <div id="cancelSubscriptionMessage">
+        <h3 style="color: #e74c3c; margin-bottom: 20px;">Cancel Subscription</h3>
+        <p style="margin-bottom: 20px;">Are you sure you want to cancel your subscription?</p>
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 5px; padding: 15px; margin-bottom: 20px;">
+          <p style="margin: 0; color: #856404;"><strong>Important:</strong></p>
+          <ul style="margin: 10px 0 0 20px; color: #856404;">
+            <li>Your subscription will remain active until the end of your current billing period</li>
+            <li>You will lose access to your account after the subscription expires</li>
+            <li>This action cannot be undone</li>
+          </ul>
+        </div>
+        <button class="modalButton danger" id="confirmCancelSubscription" onclick="confirmCancelSubscription()">Yes, Cancel My Subscription</button>
+        <button class="modalButton" id="keepSubscription" onclick="closeCancelSubscriptionModal()">Keep My Subscription</button>
+      </div>
+    </div>
+  </div>
   <img src="./full_logo.png" alt="SimpleReports Logo" width="150px" class="logo"
     style="position: absolute; top: 0; left: 0" />
   <div id="chartpanel" class="row" data-equalizer>
@@ -250,6 +271,8 @@
             </span></div>
           <a href="/settings"> <i class="fa fa-cog dashboard-icons dashboard-icons-next-to-another"
               aria-hidden="true" title="Settings"></i></a>
+          <a href="#" onclick="showCancelSubscriptionModal(event)"> <i class="fa fa-times-circle dashboard-icons dashboard-icons-next-to-another"
+              aria-hidden="true" title="Cancel Subscription" style="color: #e74c3c;"></i></a>
           <a href="/logout"> <i class="fa fa-sign-out-alt dashboard-icons dashboard-icons-next-to-another"
               aria-hidden="true" title="Logout"></i></a>
 
@@ -378,6 +401,16 @@
               reportCountDiv.style.color = currentReports >= REPORT_LIMIT ? '#ff0000' : '#666';
               if (currentReports >= REPORT_LIMIT) {
                 reportCountDiv.innerHTML += ' <span style="font-weight: bold;">(Limit Reached)</span>';
+              } else {
+                // Re-enable the add button when below limit
+                const addBtn = document.getElementById('addReportBtn');
+                if (addBtn && addBtn.classList.contains('disabled')) {
+                  addBtn.classList.remove('disabled');
+                  addBtn.style.opacity = '1';
+                  addBtn.style.cursor = 'pointer';
+                  addBtn.innerHTML = `<i class="fa fa-plus"></i>`;
+                  addBtn.title = 'Create new report';
+                }
               }
             }
           })
@@ -467,9 +500,31 @@
               const newReportButton = document.createElement('div');
               newReportButton.id = 'addReportBtn';
               newReportButton.classList.add('ffolder', 'small', 'white', 'spacingFolder');
-              newReportButton.innerHTML = `<i class="fa fa-plus"></i>`;
+              
+              // Check if limit is reached
+              const currentReports = document.querySelectorAll('.ffolder').length; // Current count before adding the + button
+              const REPORT_LIMIT = 5;
+              
+              if (currentReports >= REPORT_LIMIT) {
+                // Disable the button when limit is reached
+                newReportButton.classList.add('disabled');
+                newReportButton.style.opacity = '0.5';
+                newReportButton.style.cursor = 'not-allowed';
+                newReportButton.innerHTML = `<i class="fa fa-ban"></i>`;
+                newReportButton.title = 'Report limit reached (5 reports maximum)';
+              } else {
+                newReportButton.innerHTML = `<i class="fa fa-plus"></i>`;
+                newReportButton.title = 'Create new report';
+              }
+              
               reportContents.appendChild(newReportButton);
               newReportButton.addEventListener('click', () => {
+                // Check limit again when clicked
+                const currentReportCount = document.querySelectorAll('.ffolder').length - 1; // -1 for add button
+                if (currentReportCount >= REPORT_LIMIT) {
+                  alert('You have reached the maximum limit of 5 reports. Please delete an existing report to create a new one.');
+                  return;
+                }
                 fetch('/app/addReportEntry', {
                   method: 'POST',
                   headers: {
@@ -515,6 +570,16 @@
                       reportCountDiv.style.color = currentReports >= REPORT_LIMIT ? '#ff0000' : '#666';
                       if (currentReports >= REPORT_LIMIT) {
                         reportCountDiv.innerHTML += ' <span style="font-weight: bold;">(Limit Reached)</span>';
+                        
+                        // Disable the add button when limit is reached
+                        const addBtn = document.getElementById('addReportBtn');
+                        if (addBtn) {
+                          addBtn.classList.add('disabled');
+                          addBtn.style.opacity = '0.5';
+                          addBtn.style.cursor = 'not-allowed';
+                          addBtn.innerHTML = `<i class="fa fa-ban"></i>`;
+                          addBtn.title = 'Report limit reached (5 reports maximum)';
+                        }
                       }
                     }
 
@@ -536,6 +601,67 @@
     InitialLoad();
 
     // Admin user button functionality removed as person icon was removed
+    
+    // Cancel Subscription functionality
+    function showCancelSubscriptionModal(event) {
+      event.preventDefault();
+      document.getElementById('cancelSubscriptionModal').style.display = 'block';
+    }
+    
+    function closeCancelSubscriptionModal() {
+      document.getElementById('cancelSubscriptionModal').style.display = 'none';
+    }
+    
+    function confirmCancelSubscription() {
+      // Show loading state
+      const confirmBtn = document.getElementById('confirmCancelSubscription');
+      const originalText = confirmBtn.innerHTML;
+      confirmBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Cancelling...';
+      confirmBtn.disabled = true;
+      
+      fetch('/app/cancelSubscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+      })
+      .then(result => {
+        // Show success message
+        const messageDiv = document.getElementById('cancelSubscriptionMessage');
+        messageDiv.innerHTML = `
+          <div style="text-align: center;">
+            <i class="fa fa-check-circle" style="color: #28a745; font-size: 48px; margin-bottom: 20px;"></i>
+            <h3 style="color: #28a745;">Subscription Cancelled Successfully</h3>
+            <p>Your subscription has been cancelled. You will continue to have access until:</p>
+            <p style="font-size: 20px; font-weight: bold; color: #333;">${new Date(result.accessUntil).toLocaleDateString()}</p>
+            <p style="margin-top: 20px;">After this date, you will no longer be able to log in.</p>
+            <button class="modalButton" onclick="closeCancelSubscriptionModal()">Close</button>
+          </div>
+        `;
+      })
+      .catch(error => {
+        // Reset button
+        confirmBtn.innerHTML = originalText;
+        confirmBtn.disabled = false;
+        
+        console.error('Error:', error);
+        alert(error.message || 'Failed to cancel subscription. Please try again or contact support.');
+      });
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('cancelSubscriptionModal');
+      if (event.target == modal) {
+        closeCancelSubscriptionModal();
+      }
+    }
   </script>
   
   <!-- Trial Warning Modal -->

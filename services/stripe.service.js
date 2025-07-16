@@ -447,4 +447,17 @@ exports.createCustomerPortalSession = async (customerId) => {
     return session;
 };
 
+/**
+ * Cancel a subscription at period end
+ * @param {string} subscriptionId - Stripe subscription ID
+ * @returns {Promise<Object>} - Updated subscription
+ */
+exports.cancelSubscription = async (subscriptionId) => {
+    const subscription = await getStripe().subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true
+    });
+    
+    return subscription;
+};
+
 module.exports = exports;

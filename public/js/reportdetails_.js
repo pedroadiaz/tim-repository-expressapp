@@ -318,14 +318,41 @@ document.addEventListener('DOMContentLoaded', function () {
     // Default procedures removed - users must add procedures manually using the dropdown
 
     psychoeducationalProceduresAddBtn.addEventListener('click', function () {
-        let input = document.getElementById('psychoeducationalProceduresSelect').querySelector('.mdc-select__selected-text');
-        let procedure = input.textContent;
-        let newProcedureElem = document.createElement('li');
-        newProcedureElem.className = 'mdc-list-item';
-        newProcedureElem.setAttribute('data-value', procedure);
-        newProcedureElem.innerHTML = getProcedureElement(procedure);
-        psychoeducationalProceduresList.appendChild(newProcedureElem);
-        input.textContent = '';
+        let procedureInput = document.getElementById('psychoeducationalProceduresInput');
+        let dateInput = document.getElementById('psychoeducationalProceduresDate');
+        let procedure = procedureInput.value.trim();
+        let date = dateInput.value;
+        
+        if (procedure) {
+            let newProcedureElem = document.createElement('li');
+            newProcedureElem.className = 'mdc-list-item';
+            newProcedureElem.setAttribute('data-value', procedure);
+            newProcedureElem.innerHTML = `<span class="mdc-list-item__ripple"></span>
+<span class="mdc-list-item__text">${procedure}</span>
+<div class="reportListDateColumn">
+  <input class="mdc-text-field__input" type="date" value="${date}" aria-label="Date">
+</div>`;
+            psychoeducationalProceduresList.appendChild(newProcedureElem);
+            
+            // Clear inputs after adding
+            procedureInput.value = '';
+            dateInput.value = '';
+            
+            // Clone the input container to create a new row
+            let currentContainer = document.getElementById('psychoeducationalProceduresInputContainer');
+            let newContainer = currentContainer.cloneNode(true);
+            newContainer.id = ''; // Remove ID to avoid duplicates
+            
+            // Clear the values in the cloned inputs
+            newContainer.querySelector('input[type="text"]').value = '';
+            newContainer.querySelector('input[type="date"]').value = '';
+            
+            // Insert the new container after the current one
+            currentContainer.parentNode.insertBefore(newContainer, currentContainer.nextSibling);
+            
+            // Add event listener to the new Add button
+            newContainer.querySelector('button').addEventListener('click', arguments.callee);
+        }
     });
 
 

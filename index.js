@@ -147,6 +147,16 @@ authUser = (user, password, done) => {
             return done(null, false, {message: "Account is locked. Please reset your password."});
         }
         
+        // Check if subscription is cancelled and expired
+        if (rows[0].subscription_cancelled && rows[0].subscription_end_date) {
+            const endDate = new Date(rows[0].subscription_end_date);
+            const now = new Date();
+            if (now > endDate) {
+                console.log("Subscription has expired");
+                return done(null, false, {message: "Your subscription has expired. Please contact support to reactivate your account."});
+            }
+        }
+        
         if (bcrypt.compareSync(password, rows[0].password)) {
             console.log("Authenticated");
             return done(null, rows[0])
@@ -682,6 +692,78 @@ app.get(prefix + '/billing-portal', checkAuthenticated, async (req, res) => {
             }
         }
     );
+});
+
+// Cancel subscription endpoint
+app.post(prefix + '/app/cancelSubscription', checkAuthenticated, async (req, res) => {
+    try {
+        // Get user from database
+        const query = "SELECT * FROM " + tableName + ".users WHERE id = ?";
+        connectionPool.query(query, [req.user.id], async (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+            
+            const user = rows[0];
+            
+            // Check if user has a subscription
+            if (!user.stripe_subscription_id) {
+                return res.status(400).json({
+                    success: false,
+                    message: "No active subscription found"
+                });
+            }
+            
+            try {
+                // Cancel the subscription at period end
+                const cancelResult = await stripeService.cancelSubscription(user.stripe_subscription_id);
+                
+                // Update user record with cancellation info
+                const updateQuery = `
+                    UPDATE ${tableName}.users 
+                    SET subscription_cancelled = TRUE,
+                        subscription_cancel_date = NOW(),
+                        subscription_end_date = ?
+                    WHERE id = ?
+                `;
+                
+                connectionPool.query(
+                    updateQuery, 
+                    [new Date(cancelResult.current_period_end * 1000), req.user.id],
+                    (updateErr) => {
+                        if (updateErr) {
+                            console.error("Error updating user cancellation status:", updateErr);
+                            return res.status(500).json({
+                                success: false,
+                                message: "Subscription cancelled but failed to update user record"
+                            });
+                        }
+                        
+                        return res.json({
+                            success: true,
+                            message: "Subscription cancelled successfully",
+                            accessUntil: new Date(cancelResult.current_period_end * 1000)
+                        });
+                    }
+                );
+            } catch (cancelErr) {
+                console.error("Error cancelling subscription:", cancelErr);
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to cancel subscription. Please try again or contact support."
+                });
+            }
+        });
+    } catch (error) {
+        console.error("Error in cancelSubscription endpoint:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred. Please try again."
+        });
+    }
 });
 
 // Stripe webhook endpoint

@@ -824,7 +824,6 @@
                                                 <span class="shiny__label__background"></span>
                                             </span>
                                         </span>
-                                        <span class="shiny__background"></span>
                                     </div>
                                 </h2>
                             </div>
@@ -1603,7 +1602,6 @@
                                             <span class="shiny__label__background"></span>
                                         </span>
                                     </span>
-                                    <span class="shiny__background"></span>
                                 </div>
                                 
                                 <!-- AI Summary buttons for Reason for Referral -->
@@ -1739,18 +1737,6 @@
                                 </div>
                             </div>
 
-                            <div id="evaluation_areas_more_information"
-                                class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop flex-column"
-                                style="width: 100%;">
-                                <span class="fieldLabel">Generated Paragraph</span>
-                                <div style="display: flex; gap: 5px">
-                                    <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
-                                        style="min-width: 90%; text-align: left;"
-                                        id="evaluationAreasMoreInformationInput" class="descriptionInput" rows="5"
-                                        placeholder="Other additional information">NAME was referred for an (evaluation) by the (Educational Team) because of ongoing concerns with (her) (Areas of Concern -lower case-ex. reading and math abilities) despite significant intervention in the school setting. The previous interventions consisted of (Interventions attempted if not blank-lower case- ex. extended breaks and tutoring). The results of this evaluation, along with other assessments, will assist in determining eligibility for special education services. This evaluation will assess (NAME)'s (Evaluation Areas ex. academic, cognitive, and behavioral functioning) and will assist in the development of any appropriate interventions.</textarea>
-                                </div>
-                            </div>
-
 
                             <div
                                 class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
@@ -1765,7 +1751,6 @@
                                             <span class="shiny__label__background"></span>
                                         </span>
                                     </span>
-                                    <span class="shiny__background"></span>
                                 </div>
                                        
                             </div>
@@ -1777,48 +1762,16 @@
                                 <ul id="psychoeducationalProceduresList" class="mdc-list proceduresList">
                                 </ul>
 
-                                <div id="psychoeducationalProceduresSelect" class="mdc-select mdc-select--filled w-100">
-                                    <span class="mdc-select__ripple"></span>
-                                    <div class="mdc-select__anchor">
-                                        <span class="mdc-select__selected-text"></span>
-                                        <span class="mdc-select__dropdown-icon">
-                                            <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5">
-                                                <polygon class="mdc-select__dropdown-icon-inactive" stroke="none"
-                                                    fill-rule="evenodd" points="7 10 12 15 17 10">
-                                                </polygon>
-                                                <polygon class="mdc-select__dropdown-icon-active" stroke="none"
-                                                    fill-rule="evenodd" points="7 15 12 10 17 15">
-                                                </polygon>
-                                            </svg>
-                                        </span>
-                                        <span class="mdc-floating-label">Add new procedure</span>
+                                <div id="psychoeducationalProceduresInputContainer" style="display: flex; gap: 10px; align-items: center; width: 100%; flex-wrap: wrap;">
+                                    <div class="mdc-text-field mdc-text-field--filled" style="flex: 1 1 60%; min-width: 300px;">
+                                        <span class="mdc-text-field__ripple"></span>
+                                        <span class="mdc-floating-label" id="psychoeducationalProceduresLabel">Add new procedure</span>
+                                        <input class="mdc-text-field__input" type="text" id="psychoeducationalProceduresInput" aria-labelledby="psychoeducationalProceduresLabel">
                                         <span class="mdc-line-ripple"></span>
                                     </div>
-                                    <div id="psychoeducationalProceduresMenu"
-                                        class="mdc-select__menu mdc-menu mdc-menu-surface w-100">
-                                        <ul class="mdc-list">
-                                            <li class="mdc-list-item" data-value="A">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <span class="mdc-list-item__text">Adaptive Behavior Assessment
-                                                    System-Third Edition (ABAS-3)</span>
-                                            </li>
-                                            <li class="mdc-list-item" data-value="A">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <span class="mdc-list-item__text">Kaufman Assessment Battery for
-                                                    Children-Second Edition Normative Update (KABC-2 NU)</span>
-                                            </li>
-                                            <li class="mdc-list-item" data-value="A">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <span class="mdc-list-item__text">Test Third Entry</span>
-                                            </li>
-                                            <li class="mdc-list-item" data-value="A">
-                                                <span class="mdc-list-item__ripple"></span>
-                                                <span class="mdc-list-item__text">Test Fourth Entry</span>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <input type="date" id="psychoeducationalProceduresDate" class="mdc-text-field__input" style="height: 56px; padding: 0 16px; border: 1px solid rgba(0,0,0,0.12); border-radius: 4px; flex: 0 1 180px;">
                                     <button id="psychoeducationalProceduresAddBtn"
-                                        style="height:100%; border-radius: 0px 10px 10px 0px;"
+                                        style="height: 56px; border-radius: 4px; flex: 0 1 auto; min-width: 80px;"
                                         class="mdc-button mdc-button--raised" type="button">Add</button>
                                 </div>
                             </div>
@@ -3290,8 +3243,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <h2 class="staticTitle" style="margin-bottom: -15px;">Summary</h2>
-                            <div id="medical_summary"
+                            <!-- <div id="medical_summary"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop shiny">
                                 <span class="shiny__inner">
                                     <span class="shiny__label">
@@ -3343,23 +3295,16 @@
                                         </div>
                                     </span>
                                 </span>
-                                <span class="shiny__background" style="filter: blur(2px);"></span>
 
-                            </div>
+                            </div> -->
                             <div id="histories"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
 
-                                <table id="histories_schoolEnrollmentHistory" class="mdc-data-table__table"
-                                    aria-label="School Enrollment History">
-                                    <thead class="mdc-data-table__header">
-                                        <tr class="mdc-data-table__header-row">
-                                            <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
-                                                colspan="2">
-                                                School Enrollment History
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
+
+                                
+                                <br />
+                                <div class="staticLabel">School Enrollment History</div>
+                                <br />
                                 
                                 <!-- Generated Text box for School Enrollment History -->
                                 <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -4305,13 +4250,6 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <span class="fieldLabel">Generated Paragraph</span>
-                                <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
-                                    id="histories_probationCourtInvolvementMoreInformation" rows="3"
-                                    placeholder="Other additional information">No history of probation/juvenile court involvement reported.</textarea>
-                                <div class="sectionSpacerSmall"></div>
-                                <div class="staticLabel">Child Protective Services Involvement</div>
-                                <br />
 
                                 <table id="histories_cfsInvolvement" class="mdc-data-table__table"
                                     aria-label="CFS Involvement">
@@ -4354,6 +4292,7 @@
                                             </td>
                                             <td class="mdc-data-table__cell" colspan="4">
                                                 <div class="mdc-text-field mdc-text-field--filled w-100">
+                                                    <div id="interviewsSectionNav"></div>
                                                     <span class="mdc-text-field__ripple"></span>
                                                     <input id="histories_cfsInvolvement_age_to"
                                                         class="mdc-text-field__input" type="number"
@@ -4380,11 +4319,6 @@
                                     </tbody>
                                 </table>
 
-                                <div id="interviewsSectionNav"></div>
-                                <span class="fieldLabel">Generated Paragraph</span>
-                                <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
-                                    id="histories_cfsInvolvementMoreInformation" rows="3"
-                                    placeholder="Other additional information">There has been no reported history of child protective services involvement.</textarea>
                             </div>
 
                             <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
@@ -4417,9 +4351,7 @@
                             
                             <div id="clinical_interviews"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
-                                <br />
                                 <div class="staticLabel">Student Input</div>
-                                <br />
                                 <table id="clinicalInterviewsStudentTable" class="mdc-data-table__table"
                                     aria-label="Clinical Interviews">
                                     <thead class="mdc-data-table__header">
@@ -5707,10 +5639,6 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <span class="fieldLabel">Generated Paragraph</span>
-                                <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
-                                    id="interviews_teacherMoreInformation" rows="3"
-                                    placeholder="Other additional information">{firstName}'s teacher was interviewed by the examiner.</textarea>
                                 <div class="sectionSpacerSmall"></div>
                                 <div class="staticLabel">Teacher Input</div>
                                 <div class="sectionSpacerSmall"></div>
@@ -7397,7 +7325,6 @@
                                                     <span class="shiny__label__background"></span>
                                                 </span>
                                             </span>
-                                            <span class="shiny__background"></span>
                                         </div>
                                         
                                         <!-- AI Summary buttons for Testing -->
@@ -7468,6 +7395,76 @@
 
                             </div>
                         </div>
+                        
+                        <!-- Summary Section -->
+                        <br />
+                        
+                        <div class="sectionSpacer"></div>
+                        <div id="summary"
+                            class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
+                            
+                            <div class="mdc-layout-grid__inner">
+                                <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
+                                    
+                                    <div class="sectionSpacer"></div>
+                                    <div class="shiny w-100">
+                                        <span class="shiny__inner">
+                                            <span class="shiny__label">
+                                                <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                                    id="summaryTitle" type="text" name="summaryTitle"
+                                                    value="SUMMARY SECTION">
+                                                <span class="shiny__label__background"></span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- AI Summary buttons for Summary -->
+                                    <div class="ai-summary-section" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                                        <button class="mdc-button mdc-button--raised" 
+                                                style="background-color: #4CAF50; color: white; margin-right: 10px;"
+                                                onclick="generateAISummary('summary')">
+                                            <i class="fa fa-copy"></i> Copy Section for AI Summary
+                                        </button>
+                                        <button class="mdc-button mdc-button--raised" 
+                                                style="background-color: #2196F3; color: white;"
+                                                onclick="pasteFromAI('summary')">
+                                            <i class="fa fa-paste"></i> Paste from AI
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
+                                    <!-- Generated Text box for Summary -->
+                                    <div id="summary_generatedText" style="margin-bottom: 20px;">
+                                        <div style="display: flex; gap: 5px">
+                                            <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                                style="min-width: 90%; text-align: left;"
+                                                id="summaryGeneratedTextInput" class="descriptionInput" rows="3"
+                                                placeholder="Summary - Generated text from AI summary will appear here"></textarea>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Summary notes section with editable label -->
+                                    <div style="margin-top: 20px;">
+                                        <div class="shiny w-100" style="margin-bottom: 15px;">
+                                            <span class="shiny__inner">
+                                                <span class="shiny__label">
+                                                    <input style="z-index: 3; position: relative;" class="editableTitle w-100"
+                                                        id="summaryNotesLabel" type="text" name="summaryNotesLabel"
+                                                        value="Summary Notes">
+                                                    <span class="shiny__label__background"></span>
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <textarea onclick="setTextboxDirty(event)" class="editableTextarea"
+                                            style="width: 100%; min-height: 200px; padding: 12px;"
+                                            id="summaryNotesTextarea" 
+                                            placeholder="Enter your summary notes here..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
