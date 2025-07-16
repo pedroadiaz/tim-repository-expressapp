@@ -1550,13 +1550,13 @@ async function generateDocument() {
                                     children: [
                                         new docx.TextRun({
                                             text: schoolInfoName,
-                                            font: "Arial",
-                                            size: 20,
+                                            font: "Calibri",
+                                            size: 28, // 14pt * 2
                                             bold: false
                                         }),
                                         ...schoolInfoAddressTextRuns,
                                     ],
-                                    alignment: docx.AlignmentType.LEFT,
+                                    alignment: docx.AlignmentType.RIGHT,
                                 }),
                             ],
                             width: {
@@ -1588,9 +1588,9 @@ async function generateDocument() {
             new docx.TextRun({
                 text: reportTitle,
                 bold: true,
-                size: 25,
+                size: 28, // 14pt * 2 = 28 half-points
                 font: "Calibri",
-                underline: docx.UnderlineType.SINGLE,
+                allCaps: true,
             }),
             new docx.TextRun({
                 text: "",
@@ -1599,7 +1599,8 @@ async function generateDocument() {
             new docx.TextRun({
                 text: description,
                 bold: false,
-                size: 25,
+                italics: true,
+                size: 24, // 12pt * 2
                 font: "Calibri"
             }),
             new docx.TextRun({
@@ -1636,9 +1637,9 @@ async function generateDocument() {
                     children: [
                         new docx.TextRun({
                             text: text,
-                            font: "Arial",
-                            size: 20,
-                            underline: docx.UnderlineType.SINGLE,
+                            font: "Calibri",
+                            size: 28, // 14pt * 2
+                            bold: true,
                         }),
                         new docx.TextRun({
                             text: "",
@@ -1646,8 +1647,8 @@ async function generateDocument() {
                         }),
                         new docx.TextRun({
                             text: breakBeforeValue ? textValue : " " + textValue,
-                            font: "Arial",
-                            size: 20
+                            font: "Calibri",
+                            size: 28  // 14pt * 2
                         }),
                         new docx.TextRun({
                             text: "",
@@ -1671,9 +1672,9 @@ async function generateDocument() {
                     children: [
                         new docx.TextRun({
                             text: text,
-                            font: "Arial",
-                            size: 20,
-                            underline: docx.UnderlineType.SINGLE,
+                            font: "Calibri",
+                            size: 28, // 14pt * 2
+                            bold: true,
                         }),
                         new docx.TextRun({
                             text: "",
@@ -1681,8 +1682,8 @@ async function generateDocument() {
                         }),
                         new docx.TextRun({
                             text: breakBeforeValue ? textValue : " " + textValue,
-                            font: "Arial",
-                            size: 20
+                            font: "Calibri",
+                            size: 28  // 14pt * 2
                         }),
                         new docx.TextRun({
                             text: "",
@@ -1780,11 +1781,15 @@ async function generateDocument() {
                     type: docx.SectionType.CONTINUOUS,
                     page: {
                         margin: {
-                            top: 900,
-                            right: 1000,
-                            bottom: 1000,
-                            left: 1000,
+                            top: 1440, // 1 inch
+                            right: 1440,
+                            bottom: 1440,
+                            left: 1440,
                         },
+                        size: {
+                            width: 12240, // 8.5 inches
+                            height: 15840, // 11 inches
+                        }
                     }
                 },
                 children: [
@@ -1808,6 +1813,20 @@ createEditableSelect(titleElem);
 
 function setTextboxDirty(event) {
     event.target.setAttribute('data-dirty', 'true');
+}
+
+function handleNotesLabelChange(sectionId) {
+    const labelInput = document.getElementById(sectionId + 'Label');
+    const section = document.getElementById(sectionId + 'Section');
+    
+    if (labelInput && section) {
+        // If the label is empty, hide the entire section
+        if (labelInput.value.trim() === '') {
+            section.style.display = 'none';
+        } else {
+            section.style.display = 'block';
+        }
+    }
 }
 
 function changeGradeChoice() {

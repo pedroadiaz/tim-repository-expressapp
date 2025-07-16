@@ -4321,6 +4321,27 @@
 
                             </div>
 
+                            <!-- Editable Notes Section after CUMULATIVE RECORD REVIEW -->
+                            <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="cumulativeRecordReviewNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
+                                <div class="editableNotesContainer">
+                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                        <input type="text" 
+                                               id="cumulativeRecordReviewNotesLabel" 
+                                               class="editableTitle" 
+                                               placeholder="Enter label (delete to remove section)" 
+                                               value="Additional Notes" 
+                                               style="flex: 1; margin-right: 10px; text-align: left;"
+                                               onkeyup="handleNotesLabelChange('cumulativeRecordReviewNotes')"
+                                               onblur="handleNotesLabelChange('cumulativeRecordReviewNotes')">
+                                    </div>
+                                    <textarea id="cumulativeRecordReviewNotesTextarea" 
+                                              class="editableTextarea" 
+                                              style="width: 100%; min-height: 100px; text-align: left;" 
+                                              placeholder="Notes"
+                                              onclick="setTextboxDirty(event)"></textarea>
+                                </div>
+                            </div>
+
                             <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
                                 <div class="sectionSpacer"></div>
                                 <div class="shiny w-100">
@@ -5654,6 +5675,26 @@
                                 </div>
                             </div>
                             
+                            <!-- Editable Notes Section after CLINICAL INTERVIEWS -->
+                            <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="clinicalInterviewsNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
+                                <div class="editableNotesContainer">
+                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                        <input type="text" 
+                                               id="clinicalInterviewsNotesLabel" 
+                                               class="editableTitle" 
+                                               placeholder="Enter label (delete to remove section)" 
+                                               value="Additional Notes" 
+                                               style="flex: 1; margin-right: 10px; text-align: left;"
+                                               onkeyup="handleNotesLabelChange('clinicalInterviewsNotes')"
+                                               onblur="handleNotesLabelChange('clinicalInterviewsNotes')">
+                                    </div>
+                                    <textarea id="clinicalInterviewsNotesTextarea" 
+                                              class="editableTextarea" 
+                                              style="width: 100%; min-height: 100px; text-align: left;" 
+                                              placeholder="Notes"
+                                              onclick="setTextboxDirty(event)"></textarea>
+                                </div>
+                            </div>
                             
                             <div class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop center">
                                 <div class="sectionSpacer"></div>
@@ -7309,6 +7350,28 @@
                             </div>
                             
                             <div class="sectionSpacer"></div>
+                            
+                            <!-- Editable Notes Section after BEHAVIOR OBSERVATIONS -->
+                            <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="behaviorObservationsNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
+                                <div class="editableNotesContainer">
+                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                        <input type="text" 
+                                               id="behaviorObservationsNotesLabel" 
+                                               class="editableTitle" 
+                                               placeholder="Enter label (delete to remove section)" 
+                                               value="Additional Notes" 
+                                               style="flex: 1; margin-right: 10px; text-align: left;"
+                                               onkeyup="handleNotesLabelChange('behaviorObservationsNotes')"
+                                               onblur="handleNotesLabelChange('behaviorObservationsNotes')">
+                                    </div>
+                                    <textarea id="behaviorObservationsNotesTextarea" 
+                                              class="editableTextarea" 
+                                              style="width: 100%; min-height: 100px; text-align: left;" 
+                                              placeholder="Notes"
+                                              onclick="setTextboxDirty(event)"></textarea>
+                                </div>
+                            </div>
+                            
                             <div id="testing"
                                 class="editableSection mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop">
                                 
@@ -7393,6 +7456,27 @@
                                     </div>
                                 </div>
 
+                            </div>
+                        </div>
+                        
+                        <!-- Editable Notes Section after TESTING -->
+                        <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="testingNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
+                            <div class="editableNotesContainer">
+                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <input type="text" 
+                                           id="testingNotesLabel" 
+                                           class="editableTitle" 
+                                           placeholder="Enter label (delete to remove section)" 
+                                           value="Additional Notes" 
+                                           style="flex: 1; margin-right: 10px; text-align: left;"
+                                           onkeyup="handleNotesLabelChange('testingNotes')"
+                                           onblur="handleNotesLabelChange('testingNotes')">
+                                </div>
+                                <textarea id="testingNotesTextarea" 
+                                          class="editableTextarea" 
+                                          style="width: 100%; min-height: 100px; text-align: left;" 
+                                          placeholder="Notes"
+                                          onclick="setTextboxDirty(event)"></textarea>
                             </div>
                         </div>
                         
@@ -7723,16 +7807,41 @@
                 // Create document sections
                 const docSections = [];
                 
-                // Add title
+                // Add title with proper formatting
                 const reportTitle = document.getElementById('reportTitle')?.value || 'Assessment Report';
+                const description = document.getElementById('description')?.value || '';
+                
                 docSections.push(
                     new docx.Paragraph({
-                        text: reportTitle,
-                        heading: docx.HeadingLevel.TITLE,
+                        children: [
+                            new docx.TextRun({
+                                text: reportTitle.toUpperCase(),
+                                bold: true,
+                                size: 28, // 14pt * 2
+                                font: "Calibri"
+                            })
+                        ],
                         alignment: docx.AlignmentType.CENTER,
-                        spacing: { after: 400 }
+                        spacing: { after: 200 }
                     })
                 );
+                
+                if (description) {
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: description,
+                                    italics: true,
+                                    size: 24, // 12pt * 2
+                                    font: "Calibri"
+                                })
+                            ],
+                            alignment: docx.AlignmentType.CENTER,
+                            spacing: { after: 400 }
+                        })
+                    );
+                }
 
                 // Add demographics section if not skipping
                 if (!skipDemographics) {
@@ -7760,20 +7869,30 @@
                         }
                     }
                     
-                    // Add demographics heading
+                    // Add page break before demographics
                     docSections.push(
                         new docx.Paragraph({
-                            text: 'STUDENT INFORMATION',
-                            heading: docx.HeadingLevel.HEADING_1,
-                            spacing: { before: 400, after: 200 }
+                            children: [new docx.PageBreak()],
                         })
                     );
                     
-                    // Add student name
+                    // Add student name with proper formatting
                     if (demographics.firstName || demographics.lastName) {
                         docSections.push(
                             new docx.Paragraph({
-                                text: `Student Name: ${demographics.firstName} ${demographics.lastName}`,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "Name: ",
+                                        bold: true,
+                                        size: 28, // 14pt * 2
+                                        font: "Calibri"
+                                    }),
+                                    new docx.TextRun({
+                                        text: `${demographics.firstName} ${demographics.lastName}`,
+                                        size: 28,
+                                        font: "Calibri"
+                                    })
+                                ],
                                 spacing: { after: 100 }
                             })
                         );
@@ -7783,7 +7902,19 @@
                     if (demographics.studentId) {
                         docSections.push(
                             new docx.Paragraph({
-                                text: `Student ID: ${demographics.studentId}`,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "Student ID: ",
+                                        bold: true,
+                                        size: 28,
+                                        font: "Calibri"
+                                    }),
+                                    new docx.TextRun({
+                                        text: demographics.studentId,
+                                        size: 28,
+                                        font: "Calibri"
+                                    })
+                                ],
                                 spacing: { after: 100 }
                             })
                         );
@@ -7793,7 +7924,19 @@
                     if (demographics.birthDate) {
                         docSections.push(
                             new docx.Paragraph({
-                                text: `Date of Birth: ${demographics.birthDate}`,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "Birth Date: ",
+                                        bold: true,
+                                        size: 28,
+                                        font: "Calibri"
+                                    }),
+                                    new docx.TextRun({
+                                        text: demographics.birthDate,
+                                        size: 28,
+                                        font: "Calibri"
+                                    })
+                                ],
                                 spacing: { after: 100 }
                             })
                         );
@@ -7803,7 +7946,19 @@
                     if (demographics.grade && demographics.grade !== 'Select' && demographics.grade !== '') {
                         docSections.push(
                             new docx.Paragraph({
-                                text: `Grade: ${demographics.grade}`,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "Grade: ",
+                                        bold: true,
+                                        size: 28,
+                                        font: "Calibri"
+                                    }),
+                                    new docx.TextRun({
+                                        text: demographics.grade,
+                                        size: 28,
+                                        font: "Calibri"
+                                    })
+                                ],
                                 spacing: { after: 100 }
                             })
                         );
@@ -7813,7 +7968,19 @@
                     if (demographics.placement && demographics.placement !== 'Select' && demographics.placement !== '') {
                         docSections.push(
                             new docx.Paragraph({
-                                text: `Placement: ${demographics.placement}`,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "Current Placement: ",
+                                        bold: true,
+                                        size: 28,
+                                        font: "Calibri"
+                                    }),
+                                    new docx.TextRun({
+                                        text: demographics.placement,
+                                        size: 28,
+                                        font: "Calibri"
+                                    })
+                                ],
                                 spacing: { after: 100 }
                             })
                         );
@@ -7823,7 +7990,19 @@
                     if (demographics.examiners) {
                         docSections.push(
                             new docx.Paragraph({
-                                text: `Examiners: ${demographics.examiners}`,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "Examiners: ",
+                                        bold: true,
+                                        size: 28,
+                                        font: "Calibri"
+                                    }),
+                                    new docx.TextRun({
+                                        text: demographics.examiners,
+                                        size: 28,
+                                        font: "Calibri"
+                                    })
+                                ],
                                 spacing: { after: 200 }
                             })
                         );
@@ -7865,7 +8044,8 @@
                             { title: 'Drug and Alcohol History', id: 'drugAlcoholGeneratedText' },
                             { title: 'Probation and Court Involvement', id: 'probationCourtGeneratedText' },
                             { title: 'Child Protective Services Involvement', id: 'childProtectiveServicesGeneratedText' }
-                        ]
+                        ],
+                        notesId: 'cumulativeRecordReviewNotes'
                     },
                     {
                         title: 'CLINICAL INTERVIEWS',
@@ -7874,7 +8054,8 @@
                             { title: 'Parent Input', id: 'parentInputGeneratedText' },
                             { title: 'Teacher Input', id: 'teacherInputGeneratedText' },
                             { title: 'Other Provider Input', id: 'otherProviderInputGeneratedText' }
-                        ]
+                        ],
+                        notesId: 'clinicalInterviewsNotes'
                     },
                     {
                         title: 'BEHAVIOR OBSERVATIONS',
@@ -7884,21 +8065,30 @@
                             { title: 'Psychoeducational Testing Behavior', id: 'psychoeducationalTestingGeneratedText' },
                             { title: 'Language Testing Behavior', id: 'languageTestingGeneratedText' },
                             { title: 'Academic Testing Behavior', id: 'academicTestingGeneratedText' }
-                        ]
+                        ],
+                        notesId: 'behaviorObservationsNotes'
                     },
                     {
                         title: 'TESTING',
-                        generatedTextIds: ['testingGeneratedTextInput']
+                        generatedTextIds: ['testingGeneratedTextInput'],
+                        notesId: 'testingNotes'
                     }
                 ];
 
                 // Process each section
                 sectionStructure.forEach(section => {
-                    // Add section title
+                    // Add section title with proper formatting
                     docSections.push(
                         new docx.Paragraph({
-                            text: section.title,
-                            heading: docx.HeadingLevel.HEADING_1,
+                            children: [
+                                new docx.TextRun({
+                                    text: section.title,
+                                    bold: true,
+                                    size: 28, // 14pt * 2
+                                    font: "Calibri",
+                                    allCaps: true
+                                })
+                            ],
                             spacing: { before: 400, after: 200 }
                         })
                     );
@@ -7911,8 +8101,14 @@
                                 // Add subsection title
                                 docSections.push(
                                     new docx.Paragraph({
-                                        text: subsection.title,
-                                        heading: docx.HeadingLevel.HEADING_2,
+                                        children: [
+                                            new docx.TextRun({
+                                                text: subsection.title,
+                                                bold: true,
+                                                size: 24, // 12pt * 2
+                                                font: "Calibri"
+                                            })
+                                        ],
                                         spacing: { before: 200, after: 100 }
                                     })
                                 );
@@ -7920,7 +8116,13 @@
                                 // Add content
                                 docSections.push(
                                     new docx.Paragraph({
-                                        text: textarea.value.trim(),
+                                        children: [
+                                            new docx.TextRun({
+                                                text: textarea.value.trim(),
+                                                size: 22, // 11pt * 2
+                                                font: "Calibri"
+                                            })
+                                        ],
                                         spacing: { after: 200 }
                                     })
                                 );
@@ -7933,19 +8135,74 @@
                             if (textarea && textarea.value && textarea.value.trim()) {
                                 docSections.push(
                                     new docx.Paragraph({
-                                        text: textarea.value.trim(),
+                                        children: [
+                                            new docx.TextRun({
+                                                text: textarea.value.trim(),
+                                                size: 22, // 11pt * 2
+                                                font: "Calibri"
+                                            })
+                                        ],
                                         spacing: { after: 200 }
                                     })
                                 );
                             }
                         });
                     }
+                    
+                    // Add notes section if present
+                    if (section.notesId) {
+                        const notesLabel = document.getElementById(section.notesId + 'Label');
+                        const notesTextarea = document.getElementById(section.notesId + 'Textarea');
+                        
+                        if (notesLabel && notesTextarea && notesLabel.value.trim() && notesTextarea.value.trim()) {
+                            // Add notes with label
+                            docSections.push(
+                                new docx.Paragraph({
+                                    children: [
+                                        new docx.TextRun({
+                                            text: notesLabel.value.trim(),
+                                            bold: true,
+                                            size: 24, // 12pt * 2
+                                            font: "Calibri"
+                                        })
+                                    ],
+                                    spacing: { before: 200, after: 100 }
+                                })
+                            );
+                            
+                            docSections.push(
+                                new docx.Paragraph({
+                                    children: [
+                                        new docx.TextRun({
+                                            text: notesTextarea.value.trim(),
+                                            size: 22, // 11pt * 2
+                                            font: "Calibri"
+                                        })
+                                    ],
+                                    spacing: { after: 200 }
+                                })
+                            );
+                        }
+                    }
                 });
 
-                // Create the document
+                // Create the document with proper page setup
                 const doc = new docx.Document({
                     sections: [{
-                        properties: {},
+                        properties: {
+                            page: {
+                                margin: {
+                                    top: 1440, // 1 inch
+                                    right: 1440,
+                                    bottom: 1440,
+                                    left: 1440,
+                                },
+                                size: {
+                                    width: 12240, // 8.5 inches
+                                    height: 15840, // 11 inches
+                                }
+                            }
+                        },
                         children: docSections
                     }]
                 });
