@@ -8264,6 +8264,12 @@
                                     allCaps: true
                                 })
                             ],
+                            alignment: docx.AlignmentType.CENTER,
+                            shading: {
+                                fill: "D9D9D9", // Light gray background
+                                type: docx.ShadingType.CLEAR,
+                                color: "auto"
+                            },
                             spacing: { before: 400, after: 200 }
                         })
                     );
@@ -8507,11 +8513,14 @@
                         }
                         
                         // Get Areas of Concern checkboxes
-                        const areasOfConcern = document.querySelectorAll('#areas_of_concern input[type="checkbox"]:checked');
+                        const areasOfConcern = document.querySelectorAll('#areas_of_concern .mdc-checkbox__native-control:checked');
                         if (areasOfConcern.length > 0) {
                             sectionContent += 'Areas of Concern:\n';
                             areasOfConcern.forEach(checkbox => {
-                                const label = checkbox.nextElementSibling?.textContent || checkbox.parentElement?.textContent || '';
+                                // Find the label - it's a sibling element with class checkboxGridLabel
+                                const labelElement = checkbox.closest('.mdc-form-field')?.querySelector('.checkboxGridLabel') || 
+                                                   checkbox.closest('.mdc-form-field')?.querySelector('label[for="' + checkbox.id + '"]');
+                                const label = labelElement?.textContent || '';
                                 if (label) {
                                     sectionContent += '• ' + label.trim() + '\n';
                                 }
@@ -8529,11 +8538,14 @@
                         }
                         
                         // Get Interventions Attempted checkboxes
-                        const interventions = document.querySelectorAll('#interventions_attempted input[type="checkbox"]:checked');
+                        const interventions = document.querySelectorAll('#interventions_attempted .mdc-checkbox__native-control:checked');
                         if (interventions.length > 0) {
                             sectionContent += 'Interventions Attempted:\n';
                             interventions.forEach(checkbox => {
-                                const label = checkbox.nextElementSibling?.textContent || checkbox.parentElement?.textContent || '';
+                                // Find the label - it's a sibling label element
+                                const labelElement = checkbox.closest('.mdc-checkbox')?.nextElementSibling || 
+                                                   checkbox.closest('div')?.querySelector('label[for="' + checkbox.id + '"]');
+                                const label = labelElement?.textContent || '';
                                 if (label) {
                                     sectionContent += '• ' + label.trim() + '\n';
                                 }
@@ -8542,11 +8554,14 @@
                         }
                         
                         // Get Evaluation Areas checkboxes
-                        const evaluationAreas = document.querySelectorAll('#evaluation_areas input[type="checkbox"]:checked');
+                        const evaluationAreas = document.querySelectorAll('#evaluation_areas .mdc-checkbox__native-control:checked');
                         if (evaluationAreas.length > 0) {
                             sectionContent += 'Evaluation Areas:\n';
                             evaluationAreas.forEach(checkbox => {
-                                const label = checkbox.nextElementSibling?.textContent || checkbox.parentElement?.textContent || '';
+                                // Find the label - similar structure to interventions
+                                const labelElement = checkbox.closest('.mdc-checkbox')?.nextElementSibling || 
+                                                   checkbox.closest('div')?.querySelector('label[for="' + checkbox.id + '"]');
+                                const label = labelElement?.textContent || '';
                                 if (label) {
                                     sectionContent += '• ' + label.trim() + '\n';
                                 }
@@ -8799,7 +8814,8 @@
                     ],
                     'reasonForReferral': ['reasonForReferralGeneratedTextInput'],
                     'psychoeducationalProcedures': ['psychoeducationalProceduresGeneratedTextInput'],
-                    'testing': ['testingGeneratedTextInput']
+                    'testing': ['testingGeneratedTextInput'],
+                    'summary': ['summaryGeneratedTextInput']
                 };
                 
                 const subsectionIds = subsectionMappings[section];
