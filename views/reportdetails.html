@@ -781,27 +781,19 @@
                 <div id="survey-form">
                     <div class="mdc-layout-grid">
 
-                        <div id="demographicsSectionNav"></div>
-                        
-                        <!-- Demographics Section Wrapper -->
-                        <div id="demographicsSection" style="display: none;">
-                        
+                        <!-- School Information and Logo Section (Always Visible) -->
                         <div class="mdc-layout-grid__inner">
                             <div class="customLogos"
-                                style="display: flex; width: 812px; justify-content: space-between;">
+                                style="display: flex; width: 812px; justify-content: space-between; margin-bottom: 20px;">
                                 <div id="custom_logo" class="customLogo shiftableTop">
                                     <form id="customLogo" class="customImageLogoUpload" method="post"
                                         enctype="multipart/form-data" action="/upload">
                                         <input type="file" name="logo">
-
-
                                     </form>
-
                                 </div>
                                 <div id="school_information" class="">
                                     <input id="schoolInformationName" class="plainInput" value=""
                                         placeholder="School Name" />
-
                                     <textarea style="resize: none" id="schoolInformationAddress" class="plainInput"
                                         value="" placeholder="School Address" rows="3"></textarea>
                                 </div>
@@ -809,7 +801,6 @@
 
                             <div
                                 class="mdc-layout-grid__cell--span-4-phone mdc-layout-grid__cell--span-8-tablet mdc-layout-grid__cell--span-12-desktop">
-
                                 <p style="text-align: center;"><input id="description" class="descriptionInput"
                                         value="Confidential"></input>
                                 </p>
@@ -833,6 +824,15 @@
                 <h2>Personal Details</h2>
             -->
                             </div>
+
+                        </div>
+
+                        <div id="demographicsSectionNav"></div>
+                        
+                        <!-- Demographics Section Wrapper -->
+                        <div id="demographicsSection" style="display: none;">
+                        
+                        <div class="mdc-layout-grid__inner">
 
                             <div id="name" class="fieldContainer shiftable">
                                 <div class="fieldLabel">
@@ -4324,21 +4324,14 @@
                             <!-- Editable Notes Section after CUMULATIVE RECORD REVIEW -->
                             <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="cumulativeRecordReviewNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
                                 <div class="editableNotesContainer">
-                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                        <input type="text" 
-                                               id="cumulativeRecordReviewNotesLabel" 
-                                               class="editableTitle" 
-                                               placeholder="Enter label (delete to remove section)" 
-                                               value="Additional Notes" 
-                                               style="flex: 1; margin-right: 10px; text-align: left;"
-                                               onkeyup="handleNotesLabelChange('cumulativeRecordReviewNotes')"
-                                               onblur="handleNotesLabelChange('cumulativeRecordReviewNotes')">
+                                    <div id="cumulativeRecordReviewNotesFieldsContainer" style="margin-bottom: 15px;">
+                                        <!-- Dynamic fields will be added here -->
                                     </div>
-                                    <textarea id="cumulativeRecordReviewNotesTextarea" 
-                                              class="editableTextarea" 
-                                              style="width: 100%; min-height: 100px; text-align: left;" 
-                                              placeholder="Notes"
-                                              onclick="setTextboxDirty(event)"></textarea>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white;"
+                                            onclick="addEditableField('cumulativeRecordReviewNotes')">
+                                        <i class="fa fa-plus"></i> Add Field
+                                    </button>
                                 </div>
                             </div>
 
@@ -5678,21 +5671,14 @@
                             <!-- Editable Notes Section after CLINICAL INTERVIEWS -->
                             <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="clinicalInterviewsNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
                                 <div class="editableNotesContainer">
-                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                        <input type="text" 
-                                               id="clinicalInterviewsNotesLabel" 
-                                               class="editableTitle" 
-                                               placeholder="Enter label (delete to remove section)" 
-                                               value="Additional Notes" 
-                                               style="flex: 1; margin-right: 10px; text-align: left;"
-                                               onkeyup="handleNotesLabelChange('clinicalInterviewsNotes')"
-                                               onblur="handleNotesLabelChange('clinicalInterviewsNotes')">
+                                    <div id="clinicalInterviewsNotesFieldsContainer" style="margin-bottom: 15px;">
+                                        <!-- Dynamic fields will be added here -->
                                     </div>
-                                    <textarea id="clinicalInterviewsNotesTextarea" 
-                                              class="editableTextarea" 
-                                              style="width: 100%; min-height: 100px; text-align: left;" 
-                                              placeholder="Notes"
-                                              onclick="setTextboxDirty(event)"></textarea>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white;"
+                                            onclick="addEditableField('clinicalInterviewsNotes')">
+                                        <i class="fa fa-plus"></i> Add Field
+                                    </button>
                                 </div>
                             </div>
                             
@@ -7354,21 +7340,14 @@
                             <!-- Editable Notes Section after BEHAVIOR OBSERVATIONS -->
                             <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="behaviorObservationsNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
                                 <div class="editableNotesContainer">
-                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                        <input type="text" 
-                                               id="behaviorObservationsNotesLabel" 
-                                               class="editableTitle" 
-                                               placeholder="Enter label (delete to remove section)" 
-                                               value="Additional Notes" 
-                                               style="flex: 1; margin-right: 10px; text-align: left;"
-                                               onkeyup="handleNotesLabelChange('behaviorObservationsNotes')"
-                                               onblur="handleNotesLabelChange('behaviorObservationsNotes')">
+                                    <div id="behaviorObservationsNotesFieldsContainer" style="margin-bottom: 15px;">
+                                        <!-- Dynamic fields will be added here -->
                                     </div>
-                                    <textarea id="behaviorObservationsNotesTextarea" 
-                                              class="editableTextarea" 
-                                              style="width: 100%; min-height: 100px; text-align: left;" 
-                                              placeholder="Notes"
-                                              onclick="setTextboxDirty(event)"></textarea>
+                                    <button class="mdc-button mdc-button--raised" 
+                                            style="background-color: #4CAF50; color: white;"
+                                            onclick="addEditableField('behaviorObservationsNotes')">
+                                        <i class="fa fa-plus"></i> Add Field
+                                    </button>
                                 </div>
                             </div>
                             
@@ -7462,21 +7441,14 @@
                         <!-- Editable Notes Section after TESTING -->
                         <div class="mdc-layout-grid__cell--span-12-phone mdc-layout-grid__cell--span-12-tablet mdc-layout-grid__cell--span-12-desktop" id="testingNotesSection" style="margin-top: 20px; margin-bottom: 20px;">
                             <div class="editableNotesContainer">
-                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                    <input type="text" 
-                                           id="testingNotesLabel" 
-                                           class="editableTitle" 
-                                           placeholder="Enter label (delete to remove section)" 
-                                           value="Additional Notes" 
-                                           style="flex: 1; margin-right: 10px; text-align: left;"
-                                           onkeyup="handleNotesLabelChange('testingNotes')"
-                                           onblur="handleNotesLabelChange('testingNotes')">
+                                <div id="testingNotesFieldsContainer" style="margin-bottom: 15px;">
+                                    <!-- Dynamic fields will be added here -->
                                 </div>
-                                <textarea id="testingNotesTextarea" 
-                                          class="editableTextarea" 
-                                          style="width: 100%; min-height: 100px; text-align: left;" 
-                                          placeholder="Notes"
-                                          onclick="setTextboxDirty(event)"></textarea>
+                                <button class="mdc-button mdc-button--raised" 
+                                        style="background-color: #4CAF50; color: white;"
+                                        onclick="addEditableField('testingNotes')">
+                                    <i class="fa fa-plus"></i> Add Field
+                                </button>
                             </div>
                         </div>
                         
@@ -7591,9 +7563,7 @@
                 grade: document.querySelector('#grade .mdc-select__selected-text')?.textContent || '',
                 placement: document.querySelector('#placement .mdc-select__selected-text')?.textContent || '',
                 studentId: document.getElementById('studentId')?.value || '',
-                examiners: document.getElementById('examinersInput')?.value || '',
-                schoolName: document.getElementById('schoolInformationName')?.value || '',
-                schoolAddress: document.getElementById('schoolInformationAddress')?.value || ''
+                examiners: document.getElementById('examinersInput')?.value || ''
             };
             return demographicsData;
         }
@@ -7604,10 +7574,10 @@
                 metadata: {
                     title: document.getElementById('reportTitle')?.value || '',
                     description: document.getElementById('description')?.value || '',
-                    // Exclude school info from metadata if it's part of demographics
-                    schoolName: includeDemographics ? (document.getElementById('schoolInformationName')?.value || '') : '',
-                    schoolAddress: includeDemographics ? (document.getElementById('schoolInformationAddress')?.value || '') : '',
-                    logoSrc: includeDemographics ? (document.getElementById('customUserLogo')?.src || null) : null,
+                    // Always save school info and logo (they're no longer part of demographics)
+                    schoolName: document.getElementById('schoolInformationName')?.value || '',
+                    schoolAddress: document.getElementById('schoolInformationAddress')?.value || '',
+                    logoSrc: document.getElementById('customUserLogo')?.src || null,
                     lastSaved: new Date().toISOString()
                 },
                 fields: []
@@ -7632,6 +7602,35 @@
                         className: element.className || '',
                         selectBoxOptions: element.getAttribute('selectBoxOptions') || null
                     });
+                }
+            });
+
+            // Collect dynamic editable fields
+            const editableFieldContainers = [
+                'cumulativeRecordReviewNotesFieldsContainer',
+                'clinicalInterviewsNotesFieldsContainer', 
+                'behaviorObservationsNotesFieldsContainer',
+                'testingNotesFieldsContainer'
+            ];
+
+            reportData.editableFields = {};
+            editableFieldContainers.forEach(containerId => {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    const fields = [];
+                    const fieldEntries = container.querySelectorAll('.editable-field-entry');
+                    fieldEntries.forEach((entry, index) => {
+                        const labelInput = entry.querySelector('input[type="text"]');
+                        const valueTextarea = entry.querySelector('textarea');
+                        if (labelInput && valueTextarea) {
+                            fields.push({
+                                label: labelInput.value || '',
+                                value: valueTextarea.value || '',
+                                order: index
+                            });
+                        }
+                    });
+                    reportData.editableFields[containerId] = fields;
                 }
             });
 
@@ -7804,8 +7803,183 @@
                 exportBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Exporting...';
                 showSaveStatus('Preparing Word document...', '');
 
+                // Get logo and school info
+                const logoElement = document.getElementById('customUserLogo');
+                const schoolName = document.getElementById('schoolInformationName')?.value || '';
+                const schoolAddress = document.getElementById('schoolInformationAddress')?.value || '';
+                
+                console.log('Export - Logo element:', logoElement);
+                console.log('Export - School name:', schoolName);
+                console.log('Export - School address:', schoolAddress);
+                
+                // Create header elements
+                const headerChildren = [];
+                
+                // Convert logo to base64 if it exists
+                let logoImage = null;
+                if (logoElement && logoElement.src) {
+                    try {
+                        console.log('Export - Logo src:', logoElement.src);
+                        
+                        // Try different methods to handle potential CORS issues
+                        let arrayBuffer;
+                        
+                        // Method 1: Try direct fetch (works if CORS is properly configured)
+                        try {
+                            const response = await fetch(logoElement.src, {
+                                mode: 'cors',
+                                credentials: 'include'
+                            });
+                            const blob = await response.blob();
+                            arrayBuffer = await blob.arrayBuffer();
+                        } catch (fetchError) {
+                            console.log('Direct fetch failed, trying alternative method:', fetchError);
+                            
+                            // Method 2: Create a canvas and draw the image
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            
+                            // Create a new image element
+                            const img = new Image();
+                            img.crossOrigin = 'anonymous';
+                            
+                            // Wait for image to load
+                            await new Promise((resolve, reject) => {
+                                img.onload = resolve;
+                                img.onerror = reject;
+                                img.src = logoElement.src;
+                            });
+                            
+                            // Set canvas size to match image
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            
+                            // Draw image to canvas
+                            ctx.drawImage(img, 0, 0);
+                            
+                            // Convert canvas to blob
+                            const blob = await new Promise(resolve => {
+                                canvas.toBlob(resolve, 'image/png');
+                            });
+                            
+                            arrayBuffer = await blob.arrayBuffer();
+                        }
+                        
+                        logoImage = new docx.ImageRun({
+                            data: arrayBuffer,
+                            transformation: {
+                                width: 100,
+                                height: 60,
+                            },
+                        });
+                        console.log('Export - Logo image created successfully');
+                    } catch (error) {
+                        console.error('Error loading logo:', error);
+                        console.error('Logo might have CORS restrictions. Consider uploading through the form.');
+                    }
+                }
+
                 // Create document sections
                 const docSections = [];
+                
+                // Add logo and school address at the top (not in header)
+                if (logoImage || schoolName || schoolAddress) {
+                    docSections.push(
+                        new docx.Table({
+                            width: {
+                                size: 100,
+                                type: docx.WidthType.PERCENTAGE,
+                            },
+                            borders: {
+                                top: { style: docx.BorderStyle.NONE },
+                                bottom: { style: docx.BorderStyle.NONE },
+                                left: { style: docx.BorderStyle.NONE },
+                                right: { style: docx.BorderStyle.NONE },
+                                insideHorizontal: { style: docx.BorderStyle.NONE },
+                                insideVertical: { style: docx.BorderStyle.NONE },
+                            },
+                            rows: [
+                                new docx.TableRow({
+                                    children: [
+                                        // Left cell - Logo
+                                        new docx.TableCell({
+                                            borders: {
+                                                top: { style: docx.BorderStyle.NONE },
+                                                bottom: { style: docx.BorderStyle.NONE },
+                                                left: { style: docx.BorderStyle.NONE },
+                                                right: { style: docx.BorderStyle.NONE },
+                                            },
+                                            children: logoImage ? [
+                                                new docx.Paragraph({
+                                                    alignment: docx.AlignmentType.LEFT,
+                                                    children: [logoImage],
+                                                })
+                                            ] : [
+                                                new docx.Paragraph({
+                                                    children: [
+                                                        new docx.TextRun({
+                                                            text: '',  // Empty if no logo
+                                                        })
+                                                    ],
+                                                })
+                                            ],
+                                            width: {
+                                                size: 50,
+                                                type: docx.WidthType.PERCENTAGE,
+                                            },
+                                        }),
+                                        // Right cell - School address
+                                        new docx.TableCell({
+                                            borders: {
+                                                top: { style: docx.BorderStyle.NONE },
+                                                bottom: { style: docx.BorderStyle.NONE },
+                                                left: { style: docx.BorderStyle.NONE },
+                                                right: { style: docx.BorderStyle.NONE },
+                                            },
+                                            children: [
+                                                new docx.Paragraph({
+                                                    alignment: docx.AlignmentType.RIGHT,
+                                                    children: [
+                                                        new docx.TextRun({
+                                                            text: schoolName,
+                                                            size: 24, // 12pt
+                                                            font: "Calibri"
+                                                        })
+                                                    ],
+                                                }),
+                                                // Split school address by newlines and create separate paragraphs
+                                                ...(schoolAddress ? schoolAddress.split(/\r\n|\r|\n/).map(line => 
+                                                    new docx.Paragraph({
+                                                        alignment: docx.AlignmentType.RIGHT,
+                                                        children: [
+                                                            new docx.TextRun({
+                                                                text: line,
+                                                                size: 22, // 11pt
+                                                                font: "Calibri"
+                                                            })
+                                                        ],
+                                                    })
+                                                ) : []),
+                                            ],
+                                            width: {
+                                                size: 50,
+                                                type: docx.WidthType.PERCENTAGE,
+                                            },
+                                        }),
+                                    ],
+                                }),
+                            ],
+                        })
+                    );
+                    
+                    // Add some spacing after the logo/address section
+                    docSections.push(
+                        new docx.Paragraph({
+                            text: '',
+                            spacing: { after: 200 }
+                        })
+                    );
+                }
                 
                 // Add title with proper formatting
                 const reportTitle = document.getElementById('reportTitle')?.value || 'Assessment Report';
@@ -7847,28 +8021,6 @@
                 if (!skipDemographics) {
                     const demographics = collectDemographicsData();
                     
-                    // Add school information at the top if available
-                    if (demographics.schoolName || demographics.schoolAddress) {
-                        if (demographics.schoolName) {
-                            docSections.push(
-                                new docx.Paragraph({
-                                    text: demographics.schoolName,
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 50 }
-                                })
-                            );
-                        }
-                        if (demographics.schoolAddress) {
-                            docSections.push(
-                                new docx.Paragraph({
-                                    text: demographics.schoolAddress,
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 200 }
-                                })
-                            );
-                        }
-                    }
-                    
                     // Add page break before demographics
                     docSections.push(
                         new docx.Paragraph({
@@ -7876,137 +8028,155 @@
                         })
                     );
                     
-                    // Add student name with proper formatting
-                    if (demographics.firstName || demographics.lastName) {
-                        docSections.push(
-                            new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: "Name: ",
-                                        bold: true,
-                                        size: 28, // 14pt * 2
-                                        font: "Calibri"
-                                    }),
-                                    new docx.TextRun({
-                                        text: `${demographics.firstName} ${demographics.lastName}`,
-                                        size: 28,
-                                        font: "Calibri"
-                                    })
-                                ],
-                                spacing: { after: 100 }
-                            })
-                        );
-                    }
+                    // Add student name - always show label even if empty
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Name: ",
+                                    bold: true,
+                                    size: 28, // 14pt * 2
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: `${demographics.firstName || ''} ${demographics.lastName || ''}`.trim(),
+                                    bold: true, // Match the label's bold styling
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 100 }
+                        })
+                    );
                     
-                    // Add student ID
-                    if (demographics.studentId) {
-                        docSections.push(
-                            new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: "Student ID: ",
-                                        bold: true,
-                                        size: 28,
-                                        font: "Calibri"
-                                    }),
-                                    new docx.TextRun({
-                                        text: demographics.studentId,
-                                        size: 28,
-                                        font: "Calibri"
-                                    })
-                                ],
-                                spacing: { after: 100 }
-                            })
-                        );
-                    }
+                    // Add birth date - always show label
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Birth Date: ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: demographics.birthDate || '',
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 100 }
+                        })
+                    );
                     
-                    // Add birth date
-                    if (demographics.birthDate) {
-                        docSections.push(
-                            new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: "Birth Date: ",
-                                        bold: true,
-                                        size: 28,
-                                        font: "Calibri"
-                                    }),
-                                    new docx.TextRun({
-                                        text: demographics.birthDate,
-                                        size: 28,
-                                        font: "Calibri"
-                                    })
-                                ],
-                                spacing: { after: 100 }
-                            })
-                        );
-                    }
+                    // Add student ID - always show label
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Student I.D. #: ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: demographics.studentId || '',
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 100 }
+                        })
+                    );
                     
-                    // Add grade
-                    if (demographics.grade && demographics.grade !== 'Select' && demographics.grade !== '') {
-                        docSections.push(
-                            new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: "Grade: ",
-                                        bold: true,
-                                        size: 28,
-                                        font: "Calibri"
-                                    }),
-                                    new docx.TextRun({
-                                        text: demographics.grade,
-                                        size: 28,
-                                        font: "Calibri"
-                                    })
-                                ],
-                                spacing: { after: 100 }
-                            })
-                        );
-                    }
+                    // Add chronological age - always show label
+                    // Note: This would need to be calculated from birth date if needed
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Chronological Age: ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: '', // This could be calculated if needed
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 100 }
+                        })
+                    );
                     
-                    // Add placement
-                    if (demographics.placement && demographics.placement !== 'Select' && demographics.placement !== '') {
-                        docSections.push(
-                            new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: "Current Placement: ",
-                                        bold: true,
-                                        size: 28,
-                                        font: "Calibri"
-                                    }),
-                                    new docx.TextRun({
-                                        text: demographics.placement,
-                                        size: 28,
-                                        font: "Calibri"
-                                    })
-                                ],
-                                spacing: { after: 100 }
-                            })
-                        );
-                    }
+                    // Add grade - always show label
+                    const gradeText = (demographics.grade && demographics.grade !== 'Select') ? demographics.grade : '';
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Grade: ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: gradeText,
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 100 }
+                        })
+                    );
                     
-                    // Add examiners
-                    if (demographics.examiners) {
-                        docSections.push(
-                            new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: "Examiners: ",
-                                        bold: true,
-                                        size: 28,
-                                        font: "Calibri"
-                                    }),
-                                    new docx.TextRun({
-                                        text: demographics.examiners,
-                                        size: 28,
-                                        font: "Calibri"
-                                    })
-                                ],
-                                spacing: { after: 200 }
-                            })
-                        );
-                    }
+                    // Add current placement - always show label
+                    const placementText = (demographics.placement && demographics.placement !== 'Select') ? demographics.placement : '';
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Current Placement: ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: placementText,
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 100 }
+                        })
+                    );
+                    
+                    // Add examiners - always show label
+                    docSections.push(
+                        new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: "Examiners: ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                }),
+                                new docx.TextRun({
+                                    text: demographics.examiners || '',
+                                    bold: true,
+                                    size: 28,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spacing: { after: 200 }
+                        })
+                    );
                     
                     // Add spacing after demographics section
                     docSections.push(
@@ -8072,6 +8242,11 @@
                         title: 'TESTING',
                         generatedTextIds: ['testingGeneratedTextInput'],
                         notesId: 'testingNotes'
+                    },
+                    {
+                        title: 'SUMMARY',
+                        generatedTextIds: ['summaryGeneratedTextInput'],
+                        notesId: 'summaryNotes'
                     }
                 ];
 
@@ -8149,26 +8324,68 @@
                         });
                     }
                     
-                    // Add notes section if present
+                    // Add dynamic notes fields if present
                     if (section.notesId) {
-                        const notesLabel = document.getElementById(section.notesId + 'Label');
-                        const notesTextarea = document.getElementById(section.notesId + 'Textarea');
-                        
-                        if (notesLabel && notesTextarea && notesLabel.value.trim() && notesTextarea.value.trim()) {
-                            // Add notes with label
-                            docSections.push(
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({
-                                            text: notesLabel.value.trim(),
-                                            bold: true,
-                                            size: 24, // 12pt * 2
-                                            font: "Calibri"
+                        const fieldsContainer = document.getElementById(section.notesId + 'FieldsContainer');
+                        if (fieldsContainer) {
+                            const fieldEntries = fieldsContainer.querySelectorAll('.editable-field-entry');
+                            fieldEntries.forEach(entry => {
+                                const labelInput = entry.querySelector('input[type="text"]');
+                                const valueTextarea = entry.querySelector('textarea');
+                                
+                                if (labelInput && valueTextarea && labelInput.value.trim() && valueTextarea.value.trim()) {
+                                    // Add field label
+                                    docSections.push(
+                                        new docx.Paragraph({
+                                            children: [
+                                                new docx.TextRun({
+                                                    text: labelInput.value.trim(),
+                                                    bold: true,
+                                                    size: 24, // 12pt * 2
+                                                    font: "Calibri"
+                                                })
+                                            ],
+                                            spacing: { before: 200, after: 100 }
                                         })
-                                    ],
-                                    spacing: { before: 200, after: 100 }
-                                })
-                            );
+                                    );
+                                    
+                                    // Add field content
+                                    docSections.push(
+                                        new docx.Paragraph({
+                                            children: [
+                                                new docx.TextRun({
+                                                    text: valueTextarea.value.trim(),
+                                                    size: 22, // 11pt * 2
+                                                    font: "Calibri"
+                                                })
+                                            ],
+                                            spacing: { after: 200 }
+                                        })
+                                    );
+                                }
+                            });
+                        }
+                        
+                        // Also check for old-style notes (for summary section which might still use the old format)
+                        const notesTextarea = document.getElementById(section.notesId + 'Textarea');
+                        if (notesTextarea && notesTextarea.value && notesTextarea.value.trim()) {
+                            // Check if there's a label for it
+                            const notesLabel = document.getElementById(section.notesId + 'Label');
+                            if (notesLabel && notesLabel.value && notesLabel.value.trim()) {
+                                docSections.push(
+                                    new docx.Paragraph({
+                                        children: [
+                                            new docx.TextRun({
+                                                text: notesLabel.value.trim(),
+                                                bold: true,
+                                                size: 24, // 12pt * 2
+                                                font: "Calibri"
+                                            })
+                                        ],
+                                        spacing: { before: 200, after: 100 }
+                                    })
+                                );
+                            }
                             
                             docSections.push(
                                 new docx.Paragraph({
@@ -8186,7 +8403,7 @@
                     }
                 });
 
-                // Create the document with proper page setup
+                // Create the document with proper page setup and header
                 const doc = new docx.Document({
                     sections: [{
                         properties: {
@@ -8274,6 +8491,76 @@
                 let sectionElement;
                 
                 switch(section) {
+                    case 'reasonForReferral':
+                        // Get content from Reason for Referral section
+                        
+                        // Get Referred By dropdown
+                        const referredBySelect = document.querySelector('#referred_by .mdc-select__selected-text');
+                        if (referredBySelect && referredBySelect.textContent && !shouldFilterValue(referredBySelect.textContent)) {
+                            sectionContent += 'Referred By: ' + referredBySelect.textContent.trim() + '\n\n';
+                        }
+                        
+                        // Get the generated text area content
+                        const reasonForReferralText = document.getElementById('reasonForReferralGeneratedTextInput');
+                        if (reasonForReferralText && reasonForReferralText.value && !shouldFilterValue(reasonForReferralText.value)) {
+                            sectionContent += 'Reason for Referral:\n' + reasonForReferralText.value.trim() + '\n\n';
+                        }
+                        
+                        // Get Areas of Concern checkboxes
+                        const areasOfConcern = document.querySelectorAll('#areas_of_concern input[type="checkbox"]:checked');
+                        if (areasOfConcern.length > 0) {
+                            sectionContent += 'Areas of Concern:\n';
+                            areasOfConcern.forEach(checkbox => {
+                                const label = checkbox.nextElementSibling?.textContent || checkbox.parentElement?.textContent || '';
+                                if (label) {
+                                    sectionContent += '• ' + label.trim() + '\n';
+                                }
+                            });
+                        }
+                        
+                        // Get Areas of Concern Other field
+                        const areasOtherTextarea = document.querySelector('#areas_of_concern_other textarea');
+                        if (areasOtherTextarea && areasOtherTextarea.value && !shouldFilterValue(areasOtherTextarea.value)) {
+                            sectionContent += '• Other: ' + areasOtherTextarea.value.trim() + '\n';
+                        }
+                        
+                        if (areasOfConcern.length > 0 || (areasOtherTextarea && areasOtherTextarea.value)) {
+                            sectionContent += '\n';
+                        }
+                        
+                        // Get Interventions Attempted checkboxes
+                        const interventions = document.querySelectorAll('#interventions_attempted input[type="checkbox"]:checked');
+                        if (interventions.length > 0) {
+                            sectionContent += 'Interventions Attempted:\n';
+                            interventions.forEach(checkbox => {
+                                const label = checkbox.nextElementSibling?.textContent || checkbox.parentElement?.textContent || '';
+                                if (label) {
+                                    sectionContent += '• ' + label.trim() + '\n';
+                                }
+                            });
+                            sectionContent += '\n';
+                        }
+                        
+                        // Get Evaluation Areas checkboxes
+                        const evaluationAreas = document.querySelectorAll('#evaluation_areas input[type="checkbox"]:checked');
+                        if (evaluationAreas.length > 0) {
+                            sectionContent += 'Evaluation Areas:\n';
+                            evaluationAreas.forEach(checkbox => {
+                                const label = checkbox.nextElementSibling?.textContent || checkbox.parentElement?.textContent || '';
+                                if (label) {
+                                    sectionContent += '• ' + label.trim() + '\n';
+                                }
+                            });
+                        }
+                        
+                        // Get Evaluation Areas Other field
+                        const evalOtherTextarea = document.querySelector('#evaluation_areas_other textarea');
+                        if (evalOtherTextarea && evalOtherTextarea.value && !shouldFilterValue(evalOtherTextarea.value)) {
+                            sectionContent += '• Other: ' + evalOtherTextarea.value.trim() + '\n';
+                        }
+                        
+                        break;
+                        
                     case 'recordsReview':
                         // Get all content from Records Review section
                         const recordsStart = document.getElementById('recordsReviewSectionNav');
@@ -8355,6 +8642,24 @@
                             });
                         }
                         break;
+                        
+                    case 'summary':
+                        // Get content from Summary section
+                        const summarySection = document.getElementById('summary');
+                        if (summarySection) {
+                            // Get the generated text area content
+                            const summaryGeneratedText = document.getElementById('summaryGeneratedTextInput');
+                            if (summaryGeneratedText && summaryGeneratedText.value && !shouldFilterValue(summaryGeneratedText.value)) {
+                                sectionContent += 'Generated Summary Text:\n' + summaryGeneratedText.value.trim() + '\n\n';
+                            }
+                            
+                            // Get the summary notes content
+                            const summaryNotesTextarea = document.getElementById('summaryNotesTextarea');
+                            if (summaryNotesTextarea && summaryNotesTextarea.value && !shouldFilterValue(summaryNotesTextarea.value)) {
+                                sectionContent += 'Summary Notes:\n' + summaryNotesTextarea.value.trim() + '\n';
+                            }
+                        }
+                        break;
                 }
 
                 if (!sectionContent.trim()) {
@@ -8364,6 +8669,9 @@
                 // Create appropriate prompt based on section
                 let prompt = "";
                 switch(section) {
+                    case 'reasonForReferral':
+                        prompt = `Please revise the following reason for referral information, making it grammatically correct, in full sentences, and free of spelling errors. Use clear, parent-friendly language while maintaining a professional tone. Do not add any interpretation or speculation beyond what is provided. Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
+                        break;
                     case 'recordsReview':
                         prompt = `Please provide a concise summary of the following records review information, make each section grammatically correct, in full sentences, and free of spelling errors. Do not add any interpretation or speculation. Use clear, parent-friendly language while maintaining a professional tone. Preserve the original content and structure as pasted.
                         Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
@@ -8378,7 +8686,7 @@
                         break;
                     case 'testing':
                         prompt = `Please provide a summary of the following testing data and results, write a psychological report section that includes the following in this exact order:
-                                1. The full name of the test (e.g., “Wechsler Intelligence Scale for Children, Fifth Edition (WISC-V)”).
+                                1. The full name of the test (e.g., "Wechsler Intelligence Scale for Children, Fifth Edition (WISC-V)").
 
 
                                 2. A brief, parent-friendly summary paragraph of what the test measures overall.
@@ -8389,10 +8697,14 @@
 
 
                                 4. Paragraph summaries for each index and its subtests.
-                                Briefly describe what each one measures and how the student performed, using full sentences. Include the score in parentheses — e.g., “The student scored in the Average range (SS=10) in their ability to recall a sequence of numbers from memory.”
+                                Briefly describe what each one measures and how the student performed, using full sentences. Include the score in parentheses — e.g., "The student scored in the Average range (SS=10) in their ability to recall a sequence of numbers from memory."
 
 
                                 Use complete sentences with correct grammar and spelling. Do not speculate or include diagnoses. Keep the tone professional, objective, and easy for parents to understand. Use only the data provided — do not add or assume anything beyond what is given.`;
+                    break;
+                    
+                    case 'summary':
+                        prompt = `Please provide a comprehensive summary of the following information, making it grammatically correct, in full sentences, and free of spelling errors. This should be a cohesive summary that integrates all the information provided. Use clear, parent-friendly language while maintaining a professional tone. Do not add any interpretation or speculation beyond what is provided. Do not include diagnostic language or eligibility recommendations unless they are already present in the text.`;
                     break;
                     
                     default:
@@ -8415,6 +8727,7 @@
                     case 'reasonForReferral':
                     case 'psychoeducationalProcedures':
                     case 'testing':
+                    case 'summary':
                         // No subsections, no delimiter instructions needed
                         delimiterInstructions = '';
                         break;
@@ -8704,6 +9017,53 @@
                         });
                     }
 
+                    // Restore dynamic editable fields
+                    if (data.editableFields) {
+                        Object.keys(data.editableFields).forEach(containerId => {
+                            const container = document.getElementById(containerId);
+                            if (container) {
+                                // Clear existing fields
+                                container.innerHTML = '';
+                                
+                                // Recreate saved fields
+                                const fields = data.editableFields[containerId];
+                                fields.forEach(field => {
+                                    const sectionId = containerId.replace('FieldsContainer', '');
+                                    const fieldCount = container.children.length;
+                                    const fieldId = sectionId + '_field_' + fieldCount;
+                                    
+                                    const newField = document.createElement('div');
+                                    newField.className = 'editable-field-entry';
+                                    newField.style.cssText = 'margin-bottom: 15px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; background-color: #f9f9f9;';
+                                    
+                                    newField.innerHTML = `
+                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                            <input type="text" 
+                                                   id="${fieldId}_label" 
+                                                   class="editableTitle" 
+                                                   placeholder="Enter field label" 
+                                                   value="${field.label || ''}"
+                                                   style="flex: 1; margin-right: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                                                   onclick="setTextboxDirty(event)">
+                                            <button class="mdc-button mdc-button--raised" 
+                                                    style="background-color: #f44336; color: white; padding: 5px 10px; min-width: auto;"
+                                                    onclick="removeEditableField(this)">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <textarea id="${fieldId}_value" 
+                                                  class="editableTextarea" 
+                                                  style="width: 100%; min-height: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" 
+                                                  placeholder="Enter field content"
+                                                  onclick="setTextboxDirty(event)">${field.value || ''}</textarea>
+                                    `;
+                                    
+                                    container.appendChild(newField);
+                                });
+                            }
+                        });
+                    }
+
                     console.log('Report loaded successfully');
                     
                     // Update MDC text fields to properly handle loaded values
@@ -8774,6 +9134,71 @@
                 showSaveStatus('Cannot remove the last test entry', 'error');
                 setTimeout(() => showSaveStatus('', ''), 2000);
             }
+        }
+
+        // Function to handle notes label change (placeholder for now)
+        function handleNotesLabelChange(notesId) {
+            // This function will be called when the label changes
+            // Implementation can be added later if needed
+            console.log('Notes label changed for:', notesId);
+        }
+
+        // Function to add a new field to the editable notes section
+        function addEditableField(sectionId) {
+            const container = document.getElementById(sectionId + 'FieldsContainer');
+            if (!container) {
+                console.error('Container not found:', sectionId + 'FieldsContainer');
+                return;
+            }
+
+            const fieldCount = container.children.length;
+            const fieldId = sectionId + '_field_' + fieldCount;
+            
+            const newField = document.createElement('div');
+            newField.className = 'editable-field-entry';
+            newField.style.cssText = 'margin-bottom: 15px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; background-color: #f9f9f9;';
+            
+            newField.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="text" 
+                           id="${fieldId}_label" 
+                           class="editableTitle" 
+                           placeholder="Enter field label" 
+                           style="flex: 1; margin-right: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                           onclick="setTextboxDirty(event)">
+                    <button class="mdc-button mdc-button--raised" 
+                            style="background-color: #f44336; color: white; padding: 5px 10px; min-width: auto;"
+                            onclick="removeEditableField(this)">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <textarea id="${fieldId}_value" 
+                          class="editableTextarea" 
+                          style="width: 100%; min-height: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" 
+                          placeholder="Enter field content"
+                          onclick="setTextboxDirty(event)"></textarea>
+            `;
+            
+            container.appendChild(newField);
+            
+            // Auto-expand functionality for the new textarea
+            const textarea = newField.querySelector('textarea');
+            if (textarea && window.autoExpandTextarea) {
+                window.autoExpandTextarea(textarea);
+            }
+            
+            showSaveStatus('Field added', 'success');
+            setTimeout(() => showSaveStatus('', ''), 2000);
+        }
+
+        // Function to remove an editable field
+        function removeEditableField(button) {
+            const field = button.closest('.editable-field-entry');
+            const container = field.parentElement;
+            
+            field.remove();
+            showSaveStatus('Field removed', 'success');
+            setTimeout(() => showSaveStatus('', ''), 2000);
         }
 
         // Update MDC text fields to properly handle pre-filled values
@@ -8847,7 +9272,13 @@
             
             // Hide the upload form and show the image
             document.getElementById('customLogo').style.display = 'none';
-            document.getElementById('customLogo').insertAdjacentElement('afterend', img);
+            // Insert the image in the parent div, not after the form
+            const logoContainer = document.getElementById('custom_logo');
+            if (logoContainer) {
+                logoContainer.appendChild(img);
+            } else {
+                document.getElementById('customLogo').insertAdjacentElement('afterend', img);
+            }
         }
 
         // Auto-save when user tries to leave the page
