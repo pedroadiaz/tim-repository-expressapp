@@ -909,6 +909,45 @@ app.post(prefix + '/app/uploadLogo', uploadLogos.single('logo'), async (req, res
 
 app.use(prefix + '/user-uploaded', express.static('public/user-uploaded'));
 
+const axios = require('axios');
+
+// Proxy endpoint for S3 images to bypass CORS
+app.get(prefix + '/proxy/logo/:filename', async (req, res) => {
+    try {
+        const filename = req.params.filename;
+        // The actual S3 URL pattern from the error message shows bucket.s3.region.amazonaws.com
+        const s3Url = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/logos/${filename}`;
+        
+        console.log('Proxying logo request for:', filename);
+        console.log('S3 URL:', s3Url);
+        
+        const response = await axios.get(s3Url, {
+            responseType: 'arraybuffer',
+            timeout: 10000
+        });
+        
+        // Set proper CORS headers
+        res.set({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET',
+            'Content-Type': response.headers['content-type'] || 'image/png',
+            'Cache-Control': 'public, max-age=3600'
+        });
+        
+        res.send(response.data);
+    } catch (error) {
+        console.error('Error proxying logo:', error.message);
+        console.error('Full error:', error);
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+        }
+        if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+            console.error('Network error - could not reach S3');
+        }
+        res.status(404).send('Logo not found');
+    }
+});
 
 app.get(prefix, (req, res) => {
     res.redirect(prefix + "/main")

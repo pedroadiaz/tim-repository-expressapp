@@ -7821,12 +7821,22 @@
                     try {
                         console.log('Export - Logo src:', logoElement.src);
                         
+                        // Convert S3 URL to proxy URL if needed
+                        let logoUrl = logoElement.src;
+                        const s3Pattern = /https:\/\/.*\.s3\..*\.amazonaws\.com\/logos\/(.+)/;
+                        const match = logoUrl.match(s3Pattern);
+                        if (match) {
+                            const filename = match[1];
+                            logoUrl = `${window.location.origin}/proxy/logo/${filename}`;
+                            console.log('Using proxy URL:', logoUrl);
+                        }
+                        
                         // Try different methods to handle potential CORS issues
                         let arrayBuffer;
                         
                         // Method 1: Try direct fetch (works if CORS is properly configured)
                         try {
-                            const response = await fetch(logoElement.src, {
+                            const response = await fetch(logoUrl, {
                                 mode: 'cors',
                                 credentials: 'include'
                             });
@@ -7847,7 +7857,7 @@
                             await new Promise((resolve, reject) => {
                                 img.onload = resolve;
                                 img.onerror = reject;
-                                img.src = logoElement.src;
+                                img.src = logoUrl;
                             });
                             
                             // Set canvas size to match image

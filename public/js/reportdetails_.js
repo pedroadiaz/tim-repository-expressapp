@@ -2471,15 +2471,55 @@ function toBase64(file) {
     });
 }
 async function toBase64FromUrl(url) {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
+    try {
+        // Try fetch with CORS mode
+        const response = await fetch(url, {
+            mode: 'cors',
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    } catch (fetchError) {
+        console.warn('Fetch with CORS failed, trying with Image element:', fetchError);
+        
+        // Fallback: Use Image element to bypass CORS
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            img.onload = function() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    const dataURL = canvas.toDataURL();
+                    resolve(dataURL);
+                } catch (canvasError) {
+                    console.error('Canvas conversion failed:', canvasError);
+                    reject(canvasError);
+                }
+            };
+            
+            img.onerror = function(error) {
+                console.error('Image loading failed:', error);
+                reject(new Error('Failed to load image'));
+            };
+            
+            img.src = url;
+        });
+    }
 }
 
 function copyText(text) {
